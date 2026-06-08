@@ -6,7 +6,6 @@
 import React, { useState, useEffect } from 'react';
 import { UserSettings, Language } from './types';
 import ThemeCustomizer from './components/ThemeCustomizer';
-import DiagnosticQuiz from './components/DiagnosticQuiz';
 import CertificateVerification from './components/CertificateVerification';
 import GeminiConsultant from './components/GeminiConsultant';
 import OrgChart from './components/OrgChart';
@@ -39,7 +38,8 @@ import {
   User as UserIcon,
   ChevronDown,
   GraduationCap,
-  Calculator
+  Calculator,
+  Home
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -90,7 +90,7 @@ export default function App() {
   const changeLang = (lang: Language) => setSettings(s => ({ ...s, lang }));
 
   const tabs = [
-    { id: 'assess', labelTH: 'ประเมินขอบข่าย', labelEN: 'ISO Assessor', icon: FileText },
+    { id: 'assess', labelTH: 'หน้าแรก', labelEN: 'Home', icon: Home },
     { id: 'standards', labelTH: 'มาตรฐานที่รับรอง', labelEN: 'Certified Standards', icon: Layers },
     { id: 'training', labelTH: 'การฝึกอบรม', labelEN: 'Training', icon: GraduationCap },
     { id: 'quote', labelTH: 'ขอใบเสนอราคา', labelEN: 'Get Proposal', icon: Calculator },
@@ -486,7 +486,6 @@ export default function App() {
                       exit={{ opacity: 0, scale: 1.02 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <DiagnosticQuiz settings={settings} />
                       <InfoSections settings={settings} onTabChange={setActiveTab} />
                     </motion.div>
                   )}

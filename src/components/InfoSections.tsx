@@ -1,3 +1,8 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import React from 'react';
 import { UserSettings } from '../types';
 import { 
@@ -12,19 +17,50 @@ import {
   ChevronRight,
   Plus,
   Minus,
-  Play
+  Play,
+  Award,
+  Compass,
+  Coins,
+  ShieldCheck,
+  Leaf,
+  Stethoscope,
+  Utensils,
+  Lock,
+  Truck,
+  Settings
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ISO_STANDARDS } from '../constants';
+import DiagnosticQuiz from './DiagnosticQuiz';
 
 interface InfoSectionsProps {
   settings: UserSettings;
   onTabChange: (tab: 'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote') => void;
 }
 
+const CATEGORY_ICONS: { [key: string]: any } = {
+  'Quality & Risk': ShieldCheck,
+  'Environmental & Energy': Leaf,
+  'Health & Safety': Stethoscope,
+  'Food Safety & GMP': Utensils,
+  'Security & Tech': Lock,
+  'Express Certifications': Truck,
+};
+
 export default function InfoSections({ settings, onTabChange }: InfoSectionsProps) {
   const t = (th: string, en: string) => settings.lang === 'TH' ? th : en;
   const [openFaq, setOpenFaq] = React.useState<number | null>(null);
   const [isPlaying, setIsPlaying] = React.useState(false);
+  const [showQuiz, setShowQuiz] = React.useState(false);
+
+  const coreStandards = [
+    ISO_STANDARDS.find(s => s.id === 'iso-9001'),
+    ISO_STANDARDS.find(s => s.id === 'iso-14001'),
+    ISO_STANDARDS.find(s => s.id === 'iso-45001'),
+    ISO_STANDARDS.find(s => s.id === 'iso-27001'),
+    ISO_STANDARDS.find(s => s.id === 'haccp'),
+    ISO_STANDARDS.find(s => s.id === 'gdp'),
+  ].filter(Boolean) as typeof ISO_STANDARDS;
 
   const sections = [
     {
@@ -73,7 +109,201 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
   ];
 
   return (
-    <div className="space-y-24 mt-20">
+    <div className="space-y-24 mt-8">
+      {/* Accreditation Trust Bar */}
+      <div className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-6">
+        <div className="flex items-center gap-4 text-center lg:text-left">
+          <div className="p-3.5 bg-blue-50 text-blue-600 rounded-2xl hidden sm:block">
+            <Award className="w-6 h-6" />
+          </div>
+          <div>
+            <h3 className="font-display font-bold text-sm text-gray-900 uppercase tracking-wider">
+              {t('การรับรองและการยอมรับระดับสากล', 'Accreditation & Recognition')}
+            </h3>
+            <p className="text-xs text-gray-500 font-sans mt-0.5">
+              {t('QAIC Thailand ได้รับการรับรองระบบงานจากสถาบันระดับสากลอย่างเต็มรูปแบบ', 'QAIC Thailand is fully accredited and certified by global institutions.')}
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center justify-center gap-6 lg:gap-8">
+          <div className="flex items-center gap-3">
+             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Accredited Body</span>
+             <div className="px-3 py-1.5 bg-gray-900 text-white rounded-xl text-[10px] font-mono font-bold tracking-wider">
+               UKAS #0046
+             </div>
+          </div>
+          <div className="h-6 w-px bg-gray-200 hidden sm:block" />
+          <div className="flex items-center gap-3">
+             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Accredited Body</span>
+             <div className="px-3 py-1.5 bg-blue-600 text-white rounded-xl text-[10px] font-mono font-bold tracking-wider">
+               NAC-045
+             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Core Standards Showcase */}
+      <div className="space-y-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-display font-bold text-gray-900 tracking-tight flex items-center gap-2">
+              <ShieldCheck className="w-6 h-6 text-blue-600" />
+              {t('มาตรฐานเด่นที่ให้บริการตรวจรับรอง', 'Core Certification Standards')}
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">
+              {t('บริการตรวจประเมินตามมาตรฐานสากลที่เป็นที่นิยมและจำเป็นที่สุดในการดำเนินธุรกิจ', 'Our most requested international standards for organizations.')}
+            </p>
+          </div>
+          <button 
+            onClick={() => onTabChange('standards')}
+            className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-all flex items-center gap-1 cursor-pointer group self-start md:self-auto"
+          >
+            <span>{t('ดูมาตรฐานทั้งหมดที่รับรอง', 'View All Standards')}</span>
+            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {coreStandards.map((std) => {
+            const Icon = CATEGORY_ICONS[std.category] || Settings;
+            return (
+              <div
+                key={std.id}
+                className="group relative bg-white p-6 rounded-[2rem] border border-gray-100 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 flex flex-col justify-between h-full"
+              >
+                <div>
+                  <div className="mb-6 flex items-center justify-between">
+                    <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    {std.accreditation.length > 0 && (
+                      <div className="flex gap-1">
+                        {std.accreditation.map(acc => (
+                          <span key={acc} className="text-[8px] font-bold px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded uppercase">
+                            {acc}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <h3 className="text-lg font-display font-bold text-gray-900 mb-2">{std.code}</h3>
+                  <h4 className="text-xs font-bold text-blue-600 mb-4">{t(std.nameTH, std.nameEN)}</h4>
+                  <p className="text-xs text-gray-500 font-sans leading-relaxed mb-6">
+                    {t(std.shortDescTH, std.shortDescEN)}
+                  </p>
+                </div>
+
+                <button 
+                  onClick={() => onTabChange('standards')}
+                  className="w-full py-3 bg-gray-50 text-gray-600 group-hover:bg-blue-600 group-hover:text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2"
+                >
+                  {t('ดูรายละเอียดและประโยชน์', 'View Details & Benefits')}
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Interactive Tools Hub */}
+      <div className="bg-gray-50 rounded-[3rem] p-8 md:p-12 border border-gray-100 space-y-8">
+        <div className="text-center max-w-2xl mx-auto space-y-3">
+          <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900">
+            {t('เครื่องมือวิเคราะห์และบริการออนไลน์', 'Interactive ISO Tools & Services')}
+          </h2>
+          <p className="text-sm text-gray-500 leading-relaxed font-sans">
+            {t('เลือกใช้บริการออนไลน์เพื่อช่วยประเมินความต้องการ ตรวจสอบสถานะใบรับรอง หรือคำนวณงบประมาณเบื้องต้น', 'Choose from our digital tools to assist with scope assessment, certificate verification, or budgeting.')}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Tool Card 1: Diagnostic Assessor */}
+          <div className="bg-white p-6 rounded-3xl border border-gray-150/50 shadow-sm flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl w-fit">
+                <Compass className="w-6 h-6" />
+              </div>
+              <h3 className="text-base font-bold text-gray-900">{t('วิเคราะห์ขอบข่ายและประเมินราคา', 'ISO Scope & Cost Assessor')}</h3>
+              <p className="text-xs text-gray-500 font-sans leading-relaxed">
+                {t('ตอบคำถาม 4 ข้อ เพื่อแนะนำมาตรฐานที่เหมาะสมกับธุรกิจคุณ พร้อมคำนวณค่าธรรมเนียมและจำนวนวันประเมิน (Man-Days) อัตโนมัติ', 'Answer a quick 4-step quiz to find the right standard and estimate costs and audit man-days.')}
+              </p>
+            </div>
+            <button 
+              onClick={() => {
+                setShowQuiz(!showQuiz);
+                if(!showQuiz) {
+                  setTimeout(() => {
+                    document.getElementById('quiz-section')?.scrollIntoView({ behavior: 'smooth' });
+                  }, 100);
+                }
+              }}
+              className="mt-6 w-full py-3 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-gray-800 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <span>{showQuiz ? t('ปิดโปรแกรมประเมิน', 'Close Assessor') : t('เริ่มประเมินความต้องการ', 'Start Assessment')}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          {/* Tool Card 2: Verify Certificate */}
+          <div className="bg-white p-6 rounded-3xl border border-gray-150/50 shadow-sm flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl w-fit">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <h3 className="text-base font-bold text-gray-900">{t('ตรวจสอบความถูกต้องใบรับรอง', 'Verify ISO Certificate')}</h3>
+              <p className="text-xs text-gray-500 font-sans leading-relaxed">
+                {t('ตรวจสอบสถานะและความถูกต้องของใบรับรองที่ออกโดย QAIC Thailand ได้ทันทีผ่านฐานข้อมูลกลางของระบบสากล', 'Instantly check the status and validity of certificates issued by QAIC Thailand using our database registry.')}
+              </p>
+            </div>
+            <button 
+              onClick={() => onTabChange('verify')}
+              className="mt-6 w-full py-3 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/10"
+            >
+              <span>{t('ตรวจสอบใบรับรอง', 'Verify Certificate')}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          {/* Tool Card 3: Request Quote */}
+          <div className="bg-white p-6 rounded-3xl border border-gray-150/50 shadow-sm flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="p-3 bg-amber-50 text-amber-600 rounded-2xl w-fit">
+                <Coins className="w-6 h-6" />
+              </div>
+              <h3 className="text-base font-bold text-gray-900">{t('ขอใบเสนอราคาอย่างเป็นทางการ', 'Request Official Proposal')}</h3>
+              <p className="text-xs text-gray-500 font-sans leading-relaxed">
+                {t('ส่งข้อมูลขอบข่ายงานขององค์กร รายละเอียดสาขา และจำนวนพนักงาน เพื่อรับเอกสารใบเสนอราคาสำหรับการตรวจประเมิน', 'Submit your corporate scope, facility details, and headcount to receive an official price proposal.')}
+              </p>
+            </div>
+            <button 
+              onClick={() => onTabChange('quote')}
+              className="mt-6 w-full py-3 bg-amber-600 text-white rounded-xl text-xs font-bold hover:bg-amber-700 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-md shadow-amber-600/10"
+            >
+              <span>{t('ขอใบเสนอราคาด่วน', 'Request Proposal')}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Collapsible Quiz Panel */}
+        <AnimatePresence>
+          {showQuiz && (
+            <motion.div 
+              id="quiz-section"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+              className="overflow-hidden bg-white p-6 md:p-8 rounded-[2rem] border border-gray-150 shadow-inner"
+            >
+              <DiagnosticQuiz settings={settings} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
       {/* Intro Grid */}
       <div className="grid md:grid-cols-3 gap-8">
         {sections.map((section, idx) => (
@@ -203,7 +433,7 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
 
             <button 
               onClick={() => onTabChange('quote')}
-              className="w-full py-4 bg-white text-blue-700 font-bold rounded-2xl hover:bg-blue-50 transition-all flex items-center justify-center gap-2 group cursor-pointer"
+              className="w-full py-4 bg-white text-blue-700 font-bold rounded-2xl hover:bg-blue-50 transition-all flex items-center justify-center gap-2 group cursor-pointer border-none"
             >
               <span>{t('ขอใบเสนอราคาด่วน', 'Get Instant Quote')}</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -231,7 +461,7 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
               >
                 <button 
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                  className="w-full flex items-center justify-between p-5 text-left font-bold text-gray-900 hover:bg-gray-50 transition-colors cursor-pointer"
+                  className="w-full flex items-center justify-between p-5 text-left font-bold text-gray-900 hover:bg-gray-50 transition-colors cursor-pointer border-none bg-transparent"
                 >
                   <span className="text-sm">{faq.q}</span>
                   {openFaq === idx ? <Minus className="w-4 h-4 text-blue-600" /> : <Plus className="w-4 h-4 text-gray-400" />}
@@ -254,7 +484,10 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
             ))}
           </div>
 
-          <button className="mt-8 flex items-center gap-2 text-blue-600 font-bold text-sm hover:translate-x-1 transition-transform cursor-pointer">
+          <button 
+            onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
+            className="mt-8 flex items-center gap-2 text-blue-600 font-bold text-sm hover:translate-x-1 transition-transform cursor-pointer border-none bg-transparent"
+          >
             <span>{t('ดูคำถามทั้งหมด', 'View all FAQs')}</span>
             <ChevronRight className="w-4 h-4" />
           </button>
