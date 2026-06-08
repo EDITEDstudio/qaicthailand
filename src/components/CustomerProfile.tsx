@@ -25,6 +25,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 interface CustomerProfileProps {
   settings: UserSettings;
+  user: any;
 }
 
 interface Certificate {
@@ -48,7 +49,7 @@ interface AuditProject {
   outstandingBalance: number;
 }
 
-export default function CustomerProfile({ settings }: CustomerProfileProps) {
+export default function CustomerProfile({ settings, user }: CustomerProfileProps) {
   const [certs, setCerts] = useState<Certificate[]>([]);
   const [audits, setAudits] = useState<AuditProject[]>([]);
   const [loading, setLoading] = useState(true);
@@ -58,7 +59,6 @@ export default function CustomerProfile({ settings }: CustomerProfileProps) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const user = auth.currentUser;
       if (!user) {
         setLoading(false);
         return;
@@ -140,8 +140,8 @@ export default function CustomerProfile({ settings }: CustomerProfileProps) {
       <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 flex flex-col md:flex-row items-center gap-8 shadow-sm">
         <div className="relative">
            <div className="w-24 h-24 rounded-3xl bg-blue-100 text-blue-600 flex items-center justify-center overflow-hidden">
-             {auth.currentUser?.photoURL ? (
-               <img src={auth.currentUser.photoURL} className="w-full h-full object-cover" />
+             {user?.photoURL ? (
+               <img src={user.photoURL} className="w-full h-full object-cover" />
              ) : (
                <ShieldCheck className="w-10 h-10" />
              )}
@@ -152,7 +152,7 @@ export default function CustomerProfile({ settings }: CustomerProfileProps) {
         </div>
         <div className="flex-1 text-center md:text-left space-y-1">
           <h2 className="text-3xl font-display font-bold text-gray-900 tracking-tight">
-            {auth.currentUser?.displayName || 'Client Name'}
+            {user?.displayName || 'Client Name'}
           </h2>
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-sm text-gray-500">
             <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> {t('สมาชิกตั้งแต่: 15 ม.ค. 2023', 'Member since: Jan 15, 2023')}</span>

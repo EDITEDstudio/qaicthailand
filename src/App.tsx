@@ -69,7 +69,10 @@ export default function App() {
     window.addEventListener('scroll', handleScroll);
 
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+      setUser((prevUser: any) => {
+        if (prevUser && prevUser.isMock) return prevUser;
+        return currentUser;
+      });
     });
 
     return () => {
@@ -80,7 +83,11 @@ export default function App() {
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
+      if (user && user.isMock) {
+        setUser(null);
+      } else {
+        await signOut(auth);
+      }
       setUserMenuOpen(false);
     } catch (error) {
       console.error('Logout error:', error);
@@ -525,7 +532,7 @@ export default function App() {
                       transition={{ duration: 0.3 }}
                     >
                       {user ? (
-                        <CustomerProfile settings={settings} />
+                        <CustomerProfile settings={settings} user={user} />
                       ) : (
                         <div className="text-center py-24 bg-white rounded-[2.5rem] border border-gray-100 border-dashed max-w-2xl mx-auto">
                            <div className="w-20 h-20 bg-gray-50 text-gray-300 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -672,6 +679,7 @@ export default function App() {
         onClose={() => setAuthModal(s => ({ ...s, isOpen: false }))}
         settings={settings}
         initialMode={authModal.mode}
+        onMockLogin={(mockUser) => setUser(mockUser)}
       />
 
       {/* Floating AI Assistant */}

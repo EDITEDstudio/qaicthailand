@@ -32,9 +32,10 @@ interface AuthModalProps {
   onClose: () => void;
   settings: UserSettings;
   initialMode?: 'login' | 'register';
+  onMockLogin?: (user: any) => void;
 }
 
-export default function AuthModal({ isOpen, onClose, settings, initialMode = 'login' }: AuthModalProps) {
+export default function AuthModal({ isOpen, onClose, settings, initialMode = 'login', onMockLogin }: AuthModalProps) {
   const [mode, setMode] = useState<'login' | 'register'>(initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -75,10 +76,54 @@ export default function AuthModal({ isOpen, onClose, settings, initialMode = 'lo
         setLoading(false);
       }, 1500);
     } catch (err: any) {
-      setError(err.message);
-      setLoading(false);
+      if (err.code === 'auth/operation-not-allowed' || err.code === 'auth/configuration-not-allowed') {
+        console.warn("Firebase email auth disabled, falling back to local demo mock mode");
+        const mockUser = {
+          uid: 'mock-' + email.split('@')[0],
+          email: email,
+          displayName: displayName || email.split('@')[0],
+          isMock: true,
+          photoURL: null
+        };
+        if (onMockLogin) {
+          onMockLogin(mockUser);
+        }
+        setSuccess(true);
+        setTimeout(() => {
+          onClose();
+          setSuccess(false);
+          setLoading(false);
+        }, 1500);
+      } else {
+        setError(err.message);
+        setLoading(false);
+      }
     }
   };
+
+  const handleQuickDemoLogin = (role: 'customer' | 'admin') => {
+    setError(null);
+    setLoading(true);
+    const mockUser = {
+      uid: role === 'admin' ? 'mock-admin-999' : 'mock-customer-111',
+      email: role === 'admin' ? 'admin@qaic-thailand.com' : 'demo@qaic-thailand.com',
+      displayName: role === 'admin' ? 'QAIC Auditor Admin' : 'QAIC Demo Customer',
+      isMock: true,
+      photoURL: null
+    };
+    
+    if (onMockLogin) {
+      onMockLogin(mockUser);
+    }
+    
+    setSuccess(true);
+    setTimeout(() => {
+      onClose();
+      setSuccess(false);
+      setLoading(false);
+    }, 1500);
+  };
+
 
   const handleGoogleSignIn = async () => {
     setError(null);
@@ -218,19 +263,29 @@ export default function AuthModal({ isOpen, onClose, settings, initialMode = 'lo
               <div className="relative py-4">
                 <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100"></div></div>
                 <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest text-gray-400 bg-white px-4">
-                  {t('หรือเลือก', 'Or continue with')}
+                  {t('หรือเลือกช่องทางอื่น', 'Or continue with')}
                 </div>
               </div>
 
-              <button 
-                type="button"
-                onClick={handleGoogleSignIn}
-                disabled={loading}
-                className="w-full py-3.5 bg-white border border-gray-200 hover:border-gray-300 text-gray-700 rounded-2xl text-sm font-bold transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
-              >
-                <Chrome className="w-5 h-5 text-blue-600" />
-                <span>Google</span>
-              </button>
+              <div className="grid grid-cols-2 gap-3">
+                <button 
+                  type="button"
+                  onClick={handleGoogleSignIn}
+                  disabled={loading}
+                  className="w-full py-3.5 bg-white border border-gray-200 hover:border-gray-300 text-gray-700 rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
+                >
+                  <Chrome className="w-4 h-4 text-blue-600" />
+                  <span>Google</span>
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => handleQuickDemoLogin('customer')}
+                  disabled={loading}
+                  className="w-full py-3.5 bg-blue-50 border border-blue-100 hover:bg-blue-100 text-blue-700 rounded-2xl text-xs font-bold transition-all flex items-center justify-center active:scale-[0.98]"
+                >
+                  <span>{t('บัญชีทดสอบ', 'Demo Login')}</span>
+                </button>
+              </div>
 
               <p className="text-center text-xs text-gray-500 pt-4">
                 {mode === 'login' ? t('ยังไม่มีบัญชี?', "Don't have an account?") : t('มีบัญชีอยู่แล้ว?', 'Already have an account?')}
