@@ -454,26 +454,6 @@ export default function App() {
 
           {/* Interactive Portal Area */}
           <div className="bg-white rounded-[2rem] border border-gray-100 shadow-2xl shadow-gray-200/50 overflow-hidden min-h-[700px]">
-             {/* Tab Switcher */}
-             <div className="flex border-b border-gray-100 p-2 overflow-x-auto no-scrollbar bg-gray-50/50">
-               {tabs.map(tab => {
-                 const Icon = tab.icon;
-                 return (
-                  <button 
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id as any)}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-xs font-bold uppercase tracking-wider transition-all flex-shrink-0 cursor-pointer ${
-                      activeTab === tab.id 
-                        ? 'bg-white text-blue-700 shadow-sm border border-blue-100 ring-4 ring-blue-500/5' 
-                        : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100/50'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span>{t(tab.labelTH, tab.labelEN)}</span>
-                  </button>
-                 );
-               })}
-             </div>
 
              {/* Tab Content */}
              <div className="p-8">
