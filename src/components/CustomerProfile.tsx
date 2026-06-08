@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { db, auth } from '../lib/firebase';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, setDoc } from 'firebase/firestore';
 import { UserSettings } from '../types';
 import { 
   ShieldCheck, 
@@ -32,7 +32,11 @@ import {
   Upload,
   Send,
   HelpCircle,
-  FileBadge
+  FileBadge,
+  Sliders,
+  X,
+  RefreshCw,
+  AlertTriangle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -79,11 +83,10 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
   // Simulated Interactive States
   const [confirmedSchedule, setConfirmedSchedule] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<'unpaid' | 'verifying' | 'paid'>('unpaid');
-  const [ncStatus, setNcStatus] = useState<'action_required' | 'under_review'>('action_required');
-  const [ncText, setNcText] = useState('');
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(false);
+  const [simulatorOpen, setSimulatorOpen] = useState(false);
 
   // Document checklist status
   const [docStatuses, setDocStatuses] = useState<{ [key: string]: 'approved' | 'pending' | 'under_review' | 'action_required' }>({
@@ -91,6 +94,56 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
     managementReview: 'approved',
     internalAudit: 'pending',
     riskAssessment: 'pending'
+  });
+
+  // Dynamic Invoices State
+  const [invoices, setInvoices] = useState<any[]>([
+    {
+      id: 'inv-1',
+      invoiceNo: 'INV-2024-001',
+      descriptionTH: 'ค่าธรรมเนียมสมัครและทบทวนเอกสาร Stage 1',
+      descriptionEN: 'ISO 45001 Application & Stage 1 Review Fee',
+      amount: 15400,
+      dueDate: '2024-01-20',
+      status: 'paid',
+      paidDate: '2024-01-15'
+    },
+    {
+      id: 'inv-2',
+      invoiceNo: 'INV-2024-002',
+      descriptionTH: 'ค่าบริการคณะตรวจและรับรอง Stage 2',
+      descriptionEN: 'ISO 45001 Stage 2 Audit & Certification Fee',
+      amount: 15400,
+      dueDate: '2024-03-20',
+      status: 'unpaid'
+    }
+  ]);
+
+  // Dynamic Auditor State
+  const [assignedAuditor, setAssignedAuditor] = useState<any>({
+    id: 'auditor-1',
+    nameTH: 'คุณอนิรุทธ์ รักษาสัตย์',
+    nameEN: 'Mr. Anirut Raksasat',
+    roleTH: 'หัวหน้าคณะผู้ตรวจประเมิน',
+    roleEN: 'Lead Auditor',
+    deptTH: 'แผนกตรวจประเมิน',
+    deptEN: 'Auditing Department',
+    avatar: 'AR',
+    bioTH: 'ผู้ตรวจประเมินอาวุโสจดทะเบียน IRCA, เชี่ยวชาญมาตรฐาน OHSAS/ISO 45001 ประสบการณ์ตรวจอุตสาหกรรมกว่า 10 ปี',
+    bioEN: 'Senior registered IRCA auditor, specializing in ISO 45001 with 10+ years of industrial audit experience.'
+  });
+
+  // Dynamic NC/CAR State
+  const [ncFinding, setNcFinding] = useState<any | null>({
+    id: 'nc-1',
+    findingTH: 'รายงานบันทึกการตรวจประเมินภายในไม่ครบถ้วน',
+    findingEN: 'Internal Audit Record Incomplete',
+    commentTH: 'รายงานผลลัพธ์การประชุมทบทวนรายงานการตรวจสอบภายในตามแผนไม่มีหลักฐานอ้างอิงชัดเจน',
+    commentEN: 'No clear record of management review inputs mapping from last internal audit.',
+    clause: '9.2.2',
+    severity: 'Major NC',
+    status: 'action_required',
+    dueDate: '2024-03-30'
   });
 
   // Certificate Viewer Modal
@@ -213,28 +266,133 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
     setUploadProgress(true);
     setTimeout(() => {
       setPaymentStatus('verifying');
+      setInvoices(prev => prev.map(inv => inv.invoiceNo === 'INV-2024-002' ? { ...inv, status: 'verifying' } : inv));
       setUploadProgress(false);
       setPaymentModalOpen(false);
-    }, 1500);
+    }, 1200);
   };
 
   const handleCARSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setUploadProgress(true);
     setTimeout(() => {
-      setNcStatus('under_review');
+      setNcFinding(prev => prev ? { ...prev, status: 'under_review' } : null);
       setUploadProgress(false);
-    }, 1500);
+    }, 1200);
   };
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center py-32">
-        <Loader2 className="w-12 h-12 text-blue-600 animate-spin mb-4" />
-        <p className="text-gray-500 font-sans">{t('กำลังโหลดข้อมูลพอร์ทัล...', 'Loading portal data...')}</p>
-      </div>
-    );
-  }
+  // --- SIMULATION COMMAND HANDLERS ---
+  const simAssignAuditor = (auditorType: 'anirut' | 'poranee') => {
+    if (auditorType === 'anirut') {
+      setAssignedAuditor({
+        id: 'auditor-1',
+        nameTH: 'คุณอนิรุทธ์ รักษาสัตย์',
+        nameEN: 'Mr. Anirut Raksasat',
+        roleTH: 'หัวหน้าคณะผู้ตรวจประเมิน',
+        roleEN: 'Lead Auditor',
+        deptTH: 'แผนกตรวจประเมิน',
+        deptEN: 'Auditing Department',
+        avatar: 'AR',
+        bioTH: 'ผู้ตรวจประเมินอาวุโสจดทะเบียน IRCA, เชี่ยวชาญมาตรฐาน OHSAS/ISO 45001 ประสบการณ์ตรวจอุตสาหกรรมกว่า 10 ปี',
+        bioEN: 'Senior registered IRCA auditor, specializing in ISO 45001 with 10+ years of industrial audit experience.'
+      });
+    } else {
+      setAssignedAuditor({
+        id: 'auditor-2',
+        nameTH: 'คุณพรณีย์ วรรณวัฒน์',
+        nameEN: 'Ms. Poranee Wannawat',
+        roleTH: 'ผู้ประสานงานหลักและผู้ตรวจประเมินร่วม',
+        roleEN: 'Co-Auditor & Coordinator',
+        deptTH: 'แผนกตรวจและประเมินเอกสาร',
+        deptEN: 'Technical Review Department',
+        avatar: 'PW',
+        bioTH: 'ผู้เชี่ยวชาญการประเมินเอกสารสอดคล้องระดับประเทศ, ประสบการณ์ตรงด้านตรวจประเมินความปลอดภัยโรงงานเคมีและอาหาร 8 ปี',
+        bioEN: 'Expert technical document assessor with 8+ years experience in food safety and chemical safety compliance.'
+      });
+    }
+  };
+
+  const simReviewDocuments = (action: 'approve' | 'reject') => {
+    if (action === 'approve') {
+      setDocStatuses({
+        qualityManual: 'approved',
+        managementReview: 'approved',
+        internalAudit: 'approved',
+        riskAssessment: 'approved'
+      });
+    } else {
+      setDocStatuses(prev => ({
+        ...prev,
+        internalAudit: 'action_required',
+        riskAssessment: 'action_required'
+      }));
+    }
+  };
+
+  const simRaiseMajorNC = () => {
+    setNcFinding({
+      id: 'nc-1',
+      findingTH: 'รายงานบันทึกการตรวจประเมินภายในไม่ครบถ้วน',
+      findingEN: 'Internal Audit Record Incomplete',
+      commentTH: 'รายงานผลลัพธ์การประชุมทบทวนรายงานการตรวจสอบภายในตามแผนไม่มีหลักฐานอ้างอิงชัดเจน',
+      commentEN: 'No clear record of management review inputs mapping from last internal audit.',
+      clause: '9.2.2',
+      severity: 'Major NC',
+      status: 'action_required',
+      dueDate: '2024-03-30'
+    });
+  };
+
+  const simCloseCAR = () => {
+    setNcFinding(prev => prev ? { ...prev, status: 'resolved' } : null);
+  };
+
+  const simVerifyPayment = () => {
+    setPaymentStatus('paid');
+    setInvoices(prev => prev.map(inv => inv.invoiceNo === 'INV-2024-002' ? { ...inv, status: 'paid', paidDate: '2024-03-08' } : inv));
+  };
+
+  const simIssueCertificate = async () => {
+    const newCert: Certificate = {
+      id: '3',
+      standardId: 'iso-45001',
+      code: 'ISO 45001:2018',
+      certNumber: 'QAIC/TH/45001/9924',
+      issueDate: new Date().toISOString().split('T')[0],
+      expiryDate: new Date(Date.now() + 3 * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      status: 'active',
+      companyNameTH: 'บริษัท เพรสซิเดนท์ เบเกอรี่ จำกัด (มหาชน)',
+      companyNameEN: 'President Bakery Public Company Limited',
+      scopeTH: 'การผลิตและจัดจำหน่ายขนมปังและเบเกอรี่ทุกชนิด',
+      scopeEN: 'Manufacture and distribution of bread and bakery products',
+      provinceTH: 'กรุงเทพมหานคร',
+      provinceEN: 'Bangkok',
+      country: 'Thailand',
+      category: 'ISO 45001'
+    };
+
+    // Append to local state list
+    setCerts(prev => {
+      if (prev.some(c => c.standardId === 'iso-45001')) return prev;
+      return [...prev, newCert];
+    });
+
+    // Write to Firestore if real database is configured
+    if (user && !user.isMock) {
+      try {
+        await setDoc(doc(db, 'certificates', 'mock-45001'), {
+          ...newCert,
+          userId: user.uid
+        });
+      } catch (err) {
+        console.warn('Failed to sync cert to Firestore:', err);
+      }
+    }
+  };
+
+  const totalBalance = invoices
+    .filter(inv => inv.status !== 'paid')
+    .reduce((sum, inv) => sum + inv.amount, 0);
 
   // Sidebar Menu Items
   const menuItems = [
@@ -246,7 +404,7 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
   ];
 
   return (
-    <div className="max-w-7xl mx-auto pb-24 px-4 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto pb-24 px-4 sm:px-6 lg:px-8 relative">
       {/* Profile Welcome Banner */}
       <div className="bg-gradient-to-r from-blue-900 to-indigo-950 text-white rounded-[2.5rem] p-8 md:p-10 mb-8 shadow-xl relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.15),transparent_60%)] pointer-events-none" />
@@ -350,7 +508,7 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                           </button>
                         </div>
                       )}
-                      {ncStatus === 'action_required' && (
+                      {ncFinding && ncFinding.status === 'action_required' && (
                         <div className="bg-white p-4 rounded-2xl border border-amber-200/50 flex items-start justify-between gap-3 shadow-sm">
                           <div className="space-y-1">
                             <h4 className="text-xs font-bold text-gray-900">{t('แก้ไขข้อบกพร่อง (NC)', 'Correct Audit NC')}</h4>
@@ -378,12 +536,12 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                           </button>
                         </div>
                       )}
-                      {confirmedSchedule && ncStatus === 'under_review' && paymentStatus === 'verifying' && (
+                      {confirmedSchedule && (!ncFinding || ncFinding.status === 'resolved') && paymentStatus === 'paid' && (
                         <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-2xl flex items-center gap-3 text-emerald-800 md:col-span-2 shadow-sm">
                           <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
                           <div className="text-xs">
                             <span className="font-bold block">{t('ยอดเยี่ยม! คุณจัดการข้อมูลครบถ้วนแล้ว', 'Excellent! All tasks are currently up-to-date.')}</span>
-                            <span className="text-emerald-700/80">{t('เอกสารและสลิปการเงินของคุณอยู่ระหว่างเจ้าหน้าที่ QAIC ตรวจสอบความถูกต้อง', 'Your billing details and audit evidence are under QAIC review.')}</span>
+                            <span className="text-emerald-700/80">{t('ไม่มีงานตกค้างสำหรับการตรวจประเมินรอบหลักนี้', 'No outstanding actions required for this audit cycle.')}</span>
                           </div>
                         </div>
                       )}
@@ -417,7 +575,7 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                       <div>
                         <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider leading-none mb-1.5">{t('ยอดเงินค้างชำระ', 'Balance Due')}</p>
                         <p className={`text-xl font-display font-bold ${paymentStatus === 'paid' ? 'text-emerald-600' : 'text-amber-600'}`}>
-                          {paymentStatus === 'paid' ? '฿0' : '฿15,400'}
+                          ฿{totalBalance.toLocaleString()}
                         </p>
                       </div>
                     </div>
@@ -445,8 +603,8 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                       <div className="space-y-6 relative ml-3 border-l border-gray-100 pl-6">
                         <div className="relative">
                           <div className="absolute -left-[30px] top-0.5 w-4.5 h-4.5 rounded-full bg-blue-100 border-4 border-white flex items-center justify-center"><div className="w-1.5 h-1.5 bg-blue-600 rounded-full" /></div>
-                          <p className="text-xs font-bold text-gray-900">{t('มอบหมายคณะผู้ตรวจประเมิน', 'Lead Auditor Assigned')}</p>
-                          <p className="text-[10px] text-gray-400">{t('วันนี้ - มอบหมาย คุณอนิรุทธ์ ร. เป็นหัวหน้าผู้แทนตรวจสำหรับ ISO 45001', 'Today - Assigned Anirut R. as lead auditor for ISO 45001 project.')}</p>
+                          <p className="text-xs font-bold text-gray-900">{t('จับคู่ผู้ตรวจประเมินเข้าระบบ', 'Lead Auditor Assigned')}</p>
+                          <p className="text-[10px] text-gray-400">{t(`วันนี้ - ผู้ตรวจประเมิน ${assignedAuditor.nameTH} ถูกมอบหมายสำหรับแผนงานของคุณ`, `Today - Auditor ${assignedAuditor.nameEN} assigned to your standard project.`)}</p>
                         </div>
                         {paymentStatus === 'verifying' && (
                           <div className="relative">
@@ -455,9 +613,9 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                             <p className="text-[10px] text-gray-400">{t('วันนี้ - ยื่นสลิปยอดชำระ ฿15,400 เข้าสู่ระบบ อยู่ระหว่างตรวจสอบบัญชี', 'Today - Submitted slip for ฿15,400. Pending accountant verification.')}</p>
                           </div>
                         )}
-                        {ncStatus === 'under_review' && (
+                        {ncFinding && ncFinding.status === 'under_review' && (
                           <div className="relative">
-                            <div className="absolute -left-[30px] top-0.5 w-4.5 h-4.5 rounded-full bg-emerald-100 border-4 border-white flex items-center justify-center"><div className="w-1.5 h-1.5 bg-emerald-600 rounded-full" /></div>
+                            <div className="absolute -left-[30px] top-0.5 w-4.5 h-4.5 rounded-full bg-blue-100 border-4 border-white flex items-center justify-center"><div className="w-1.5 h-1.5 bg-blue-600 rounded-full" /></div>
                             <p className="text-xs font-bold text-gray-900">{t('ลูกค้าส่งหลักฐานการแก้ไขข้อบกพร่อง (NC)', 'CAR Evidence Submitted')}</p>
                             <p className="text-[10px] text-gray-400">{t('วันนี้ - ยื่นเอกสารแก้ไขสำหรับจุดบันทึกรายงานตรวจประเมินภายใน', 'Today - Submitted corrective action report for internal audit clause.')}</p>
                           </div>
@@ -466,11 +624,6 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                           <div className="absolute -left-[30px] top-0.5 w-4.5 h-4.5 rounded-full bg-gray-100 border-4 border-white flex items-center justify-center"><div className="w-1.5 h-1.5 bg-gray-400 rounded-full" /></div>
                           <p className="text-xs font-bold text-gray-900">{t('ออกใบแจ้งหนี้ #INV-2024-002', 'Invoice INV-2024-002 Issued')}</p>
                           <p className="text-[10px] text-gray-400">{t('เมื่อวานนี้ - ออกใบแจ้งค่าบริการตรวจติดตาม ISO 45001', 'Yesterday - Invoice generated for ISO 45001 Stage 2 Audit.')}</p>
-                        </div>
-                        <div className="relative">
-                          <div className="absolute -left-[30px] top-0.5 w-4.5 h-4.5 rounded-full bg-emerald-100 border-4 border-white flex items-center justify-center"><div className="w-1.5 h-1.5 bg-emerald-600 rounded-full" /></div>
-                          <p className="text-xs font-bold text-gray-900">{t('ผ่านการอนุมัติเอกสารคู่มือคุณภาพ', 'Quality Manual Document Approved')}</p>
-                          <p className="text-[10px] text-gray-400">{t('3 วันก่อน - เอกสารคู่มือระบบงาน (Quality Manual) ได้รับอนุมัติผ่านระบบงานตรวจเอกสาร', '3 days ago - Quality Manual approved by technical assessment committee.')}</p>
                         </div>
                       </div>
                     </div>
@@ -562,13 +715,15 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                       </div>
                     ))}
 
-                    <div className="border-2 border-dashed border-gray-200 rounded-3xl p-6 flex flex-col items-center justify-center gap-4 text-gray-400 min-h-[200px]">
-                      <div className="p-4 bg-gray-50 rounded-full text-gray-400"><ShieldCheck className="w-8 h-8" /></div>
-                      <div className="text-center space-y-1">
-                        <h4 className="text-sm font-bold text-gray-700">{t('ใบรับรองอยู่ในขั้นตอนเตรียมตรวจประเมิน', 'Audit Under Preparation')}</h4>
-                        <p className="text-xs text-gray-400 max-w-xs">{t('สำหรับมาตรฐาน ISO 45001:2018 ใบรับรองจะปรากฏขึ้นหลังจากการปิดข้อบกพร่องและอนุมัติผ่านที่ประชุม', 'ISO 45001 certification will appear here after audit completion & committee approval.')}</p>
+                    {!certs.some(c => c.standardId === 'iso-45001') && (
+                      <div className="border-2 border-dashed border-gray-200 rounded-3xl p-6 flex flex-col items-center justify-center gap-4 text-gray-400 min-h-[200px]">
+                        <div className="p-4 bg-gray-50 rounded-full text-gray-400"><ShieldCheck className="w-8 h-8" /></div>
+                        <div className="text-center space-y-1">
+                          <h4 className="text-sm font-bold text-gray-700">{t('ใบรับรอง ISO 45001 อยู่ในขั้นตรวจประเมิน', 'ISO 45001 Under Audit')}</h4>
+                          <p className="text-xs text-gray-400 max-w-xs">{t('ใบรับรองจะปรากฏขึ้นหลังจากการปิดข้อบกพร่องและแอดมินออกอนุมัติใบเซอร์', 'ISO 45001 certification will appear here after audit completion & board approval.')}</p>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -622,17 +777,17 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
 
                       {/* Lead Auditor Profile */}
                       <div className="bg-gray-50/50 p-6 rounded-2xl border border-gray-100 flex items-start gap-4 col-span-2">
-                        <div className="w-14 h-14 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden font-display font-bold text-lg">
-                          AR
+                        <div className="w-14 h-14 bg-blue-600 text-white rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden font-display font-bold text-lg">
+                          {assignedAuditor.avatar}
                         </div>
                         <div className="space-y-2 flex-1">
                           <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest leading-none">{t('หัวหน้าคณะผู้ตรวจประเมิน', 'Lead Auditor Assigned')}</h4>
                           <div>
-                            <span className="text-sm font-bold text-gray-900 block">{t('คุณอนิรุทธ์ รักษาสัตย์', 'Mr. Anirut Raksasat')}</span>
-                            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">{t('แผนกตรวจประเมิน (Auditing Department)', 'Auditing Department')}</span>
+                            <span className="text-sm font-bold text-gray-900 block">{t(assignedAuditor.nameTH, assignedAuditor.nameEN)}</span>
+                            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">{t(assignedAuditor.deptTH, assignedAuditor.deptEN)}</span>
                           </div>
                           <p className="text-[11px] text-gray-500 leading-relaxed">
-                            {t('ผู้ตรวจประเมินอาวุโสจดทะเบียน IRCA, เชี่ยวชาญมาตรฐาน OHSAS/ISO 45001 ประสบการณ์ตรวจอุตสาหกรรมกว่า 10 ปี', 'Senior registered IRCA auditor, specializing in ISO 45001 with 10+ years of industrial audit experience.')}
+                            {t(assignedAuditor.bioTH, assignedAuditor.bioEN)}
                           </p>
                         </div>
                       </div>
@@ -643,7 +798,7 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                   <div className="bg-white p-6 md:p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6">
                     <div>
                       <h3 className="text-lg font-display font-bold text-gray-900 flex items-center gap-2">
-                        <AlertCircle className="w-5 h-5 text-amber-600" />
+                        <AlertCircle className="w-5 h-5 text-amber-650" />
                         {t('จุดบกพร่องที่ต้องยื่นหลักฐานแก้ไข (CAR/NC Tracker)', 'Corrective Action Reports (CAR/NC)')}
                       </h3>
                       <p className="text-xs text-gray-500 mt-1">{t('ตารางติดตามข้อบกพร่องจากการตรวจประเมินครั้งก่อนหน้า และอัปโหลดรายงานผลการแก้ไข', 'Track non-conformities from previous audits and upload corrective action reports.')}</p>
@@ -655,43 +810,51 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                         <div>{t('ข้อกำหนด', 'Clause')}</div>
                         <div>{t('ระดับความรุนแรง', 'Severity')}</div>
                         <div>{t('สถานะ', 'Status')}</div>
-                        <div className="text-right">{t('การจัดการ', 'Actions')}</div>
+                        <div className="text-right">{t('กำหนดปิดงาน', 'Deadline')}</div>
                       </div>
 
                       <div className="divide-y divide-gray-50 text-xs">
-                        <div className="p-4 grid grid-cols-6 gap-4 items-center">
-                          <div className="col-span-2 space-y-1">
-                            <span className="font-bold text-gray-900 block">{t('รายงานบันทึกการตรวจประเมินภายในไม่ครบถ้วน', 'Internal Audit Record Incomplete')}</span>
-                            <span className="text-[10px] text-gray-400 leading-relaxed block italic">"{t('รายงานผลลัพธ์การประชุมทบทวนรายงานการตรวจสอบภายในตามแผนไม่มีหลักฐานอ้างอิงชัดเจน', 'No clear record of management review inputs mapping from last internal audit.')}"</span>
+                        {ncFinding ? (
+                          <div className="p-4 grid grid-cols-6 gap-4 items-center">
+                            <div className="col-span-2 space-y-1">
+                              <span className="font-bold text-gray-900 block">{t(ncFinding.findingTH, ncFinding.findingEN)}</span>
+                              <span className="text-[10px] text-gray-400 leading-relaxed block italic">"{t(ncFinding.commentTH, ncFinding.commentEN)}"</span>
+                            </div>
+                            <div className="font-mono text-gray-650">{ncFinding.clause}</div>
+                            <div>
+                              <span className="px-2 py-0.5 bg-red-50 text-red-700 text-[9px] font-bold rounded">{ncFinding.severity}</span>
+                            </div>
+                            <div>
+                              {ncFinding.status === 'action_required' && (
+                                <span className="px-2.5 py-0.5 bg-amber-100 text-amber-800 text-[9px] font-bold rounded-full uppercase tracking-wider">{t('ต้องปรับปรุง', 'Action Required')}</span>
+                              )}
+                              {ncFinding.status === 'under_review' && (
+                                <span className="px-2.5 py-0.5 bg-blue-100 text-blue-800 text-[9px] font-bold rounded-full uppercase tracking-wider">{t('รอตรวจสอบ', 'Under Review')}</span>
+                              )}
+                              {ncFinding.status === 'resolved' && (
+                                <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[9px] font-bold rounded-full uppercase tracking-wider">{t('ปิดข้อบกพร่องแล้ว', 'Resolved')}</span>
+                              )}
+                            </div>
+                            <div className="text-right">
+                              <span className="text-[10px] text-gray-400 font-mono block mb-1">Due: {ncFinding.dueDate}</span>
+                            </div>
                           </div>
-                          <div className="font-mono text-gray-600">9.2.2</div>
-                          <div>
-                            <span className="px-2 py-0.5 bg-red-50 text-red-700 text-[9px] font-bold rounded">Major NC</span>
+                        ) : (
+                          <div className="p-8 text-center text-gray-400 col-span-6">
+                            {t('ไม่มีบันทึกข้อบกพร่อง (NC)', 'No active Non-Conformities (NC) reported.')}
                           </div>
-                          <div>
-                            {ncStatus === 'action_required' ? (
-                              <span className="px-2.5 py-0.5 bg-amber-100 text-amber-800 text-[9px] font-bold rounded-full uppercase tracking-wider">{t('ต้องปรับปรุง', 'Action Required')}</span>
-                            ) : (
-                              <span className="px-2.5 py-0.5 bg-blue-100 text-blue-800 text-[9px] font-bold rounded-full uppercase tracking-wider">{t('รอการตรวจสอบ', 'Under Review')}</span>
-                            )}
-                          </div>
-                          <div className="text-right">
-                            <span className="text-[10px] text-gray-400 font-mono block mb-1">Due: 30 Mar 2024</span>
-                          </div>
-                        </div>
+                        )}
                       </div>
                     </div>
 
-                    {ncStatus === 'action_required' ? (
+                    {ncFinding && ncFinding.status === 'action_required' && (
                       <form onSubmit={handleCARSubmit} className="bg-gray-50/50 p-6 rounded-2xl border border-gray-100 space-y-4">
-                        <h4 className="text-xs font-bold text-gray-900">{t('ยื่นแผนแก้ไขและสลักสลิปหลักฐานการปรับปรุง (Submit CAR Report)', 'Submit Corrective Action Plan & Evidence')}</h4>
+                        <h4 className="text-xs font-bold text-gray-900">{t('ยื่นแผนแก้ไขและหลักฐานการปรับปรุง (Submit CAR Report)', 'Submit Corrective Action Plan & Evidence')}</h4>
                         <div className="space-y-4">
                           <div className="space-y-2">
                             <label className="text-[10px] font-bold text-gray-500 uppercase block">{t('การวิเคราะห์สาเหตุและแนวทางป้องกัน (Root Cause & Corrective Action Analysis)', 'Root Cause & Action Plan')}</label>
                             <textarea 
                               required
-                              value={ncText}
-                              onChange={(e) => setNcText(e.target.value)}
                               placeholder={t('ระบุสาเหตุที่ตรวจพบข้อบกพร่อง พร้อมทั้งรายละเอียดการจัดอบรมหรือปรับแก้ขั้นตอนปฏิบัติงาน...', 'Describe root cause and preventive measures taken...')}
                               className="w-full p-3 bg-white border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-sans min-h-[80px]"
                             />
@@ -716,17 +879,29 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                               className="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5"
                             >
                               {uploadProgress ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                              <span>{t('ส่งสลักแผนงานตรวจประเมิน', 'Submit Evidence')}</span>
+                              <span>{t('ส่งรายงานแผนงานแก้ไข', 'Submit Evidence')}</span>
                             </button>
                           </div>
                         </div>
                       </form>
-                    ) : (
+                    )}
+
+                    {ncFinding && ncFinding.status === 'under_review' && (
+                      <div className="bg-blue-50/50 p-6 rounded-2xl border border-blue-100 flex items-start gap-4">
+                        <CheckCircle2 className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                        <div className="space-y-1">
+                          <h4 className="text-xs font-bold text-gray-900">{t('ส่งหลักฐานแก้ไขแล้ว (Evidence Submitted)', 'Evidence Under Audit Review')}</h4>
+                          <p className="text-[11px] text-gray-600">{t(`แผนการแก้ไขและหลักฐานของคุณถูกส่งไปยังผู้ตรวจประเมิน ${assignedAuditor.nameTH} เรียบร้อยแล้ว อยู่ระหว่างรีวิวปิดงาน`, `We have forwarded your action evidence to ${assignedAuditor.nameEN} (Lead Auditor) for final approval.`)}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {ncFinding && ncFinding.status === 'resolved' && (
                       <div className="bg-emerald-50/50 p-6 rounded-2xl border border-emerald-100 flex items-start gap-4">
                         <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
                         <div className="space-y-1">
-                          <h4 className="text-xs font-bold text-gray-900">{t('ส่งหลักฐานแก้ไขแล้ว (Evidence Submitted)', 'Evidence Under Audit Review')}</h4>
-                          <p className="text-[11px] text-gray-600">{t('รายงานการวิเคราะห์และหลักฐานของคุณถูกส่งไปยังหัวหน้าคณะผู้ตรวจประเมินเรียบร้อยแล้ว สถานะจะเปลี่ยนเมื่อหัวหน้าผู้ตรวจปิดประเด็น', 'We have forwarded your action evidence and analysis to Mr. Anirut R. (Lead Auditor) for official sign-off.')}</p>
+                          <h4 className="text-xs font-bold text-gray-900">{t('ข้อบกพร่องได้รับการแก้ไขเสร็จสมบูรณ์ (NC Closed)', 'NC Resolved & Closed')}</h4>
+                          <p className="text-[11px] text-emerald-700">{t('ผู้ตรวจตรวจสอบความถูกต้องและผ่านการอนุมัติปิดประเด็นเรียบร้อยในระบบบอร์ดประเมิน', 'Auditor reviewed the corrective records and closed the finding.')}</p>
                         </div>
                       </div>
                     )}
@@ -784,9 +959,15 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                                     {t('รอการตรวจสอบ', 'Under Review')}
                                   </span>
                                 )}
+                                {status === 'action_required' && (
+                                  <span className="px-2.5 py-1 bg-amber-50 text-amber-700 text-[10px] font-bold rounded-full uppercase tracking-wider flex items-center gap-1">
+                                    <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
+                                    {t('ต้องอัปโหลดใหม่', 'Action Required')}
+                                  </span>
+                                )}
                               </div>
 
-                              {status === 'pending' ? (
+                              {status === 'pending' || status === 'action_required' ? (
                                 <button 
                                   onClick={() => handleDocumentUpload(doc.key)}
                                   className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white text-[11px] font-bold rounded-xl transition-all flex items-center gap-1 pointer-events-auto shadow-sm"
@@ -826,7 +1007,7 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                       <div>
                         <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1 leading-none">{t('ยอดเงินคงค้าง', 'Amount Outstanding')}</p>
                         <p className={`text-xl font-display font-bold ${paymentStatus === 'paid' ? 'text-emerald-600' : 'text-amber-650'}`}>
-                          {paymentStatus === 'paid' ? '฿0' : '฿15,400'}
+                          ฿{totalBalance.toLocaleString()}
                         </p>
                       </div>
                     </div>
@@ -837,7 +1018,7 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                       <div>
                         <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1 leading-none">{t('ชำระแล้วเสร็จ', 'Total Paid')}</p>
                         <p className="text-xl font-display font-bold text-gray-900">
-                          {paymentStatus === 'paid' ? '฿30,800' : '฿15,400'}
+                          ฿{(invoices.filter(i => i.status === 'paid').reduce((sum, i) => sum + i.amount, 0)).toLocaleString()}
                         </p>
                       </div>
                     </div>
@@ -847,7 +1028,7 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                       </div>
                       <div>
                         <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1 leading-none">{t('จำนวนเอกสารบิล', 'Total Invoices')}</p>
-                        <p className="text-xl font-display font-bold text-gray-900">2 <span className="text-xs font-sans font-medium text-gray-400">รายการ</span></p>
+                        <p className="text-xl font-display font-bold text-gray-900">{invoices.length} <span className="text-xs font-sans font-medium text-gray-400">รายการ</span></p>
                       </div>
                     </div>
                   </div>
@@ -862,61 +1043,54 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                     </div>
 
                     <div className="divide-y divide-gray-50 text-xs">
-                      {/* INV-01: Paid */}
-                      <div className="p-5 grid grid-cols-5 gap-4 items-center">
-                        <div className="font-mono font-bold text-gray-900">#INV-2024-001</div>
-                        <div className="col-span-2">
-                          <span className="block font-bold text-gray-800">{t('ค่าธรรมเนียมสมัครและทบทวนเอกสาร Stage 1', 'ISO 45001 Application & Stage 1 Review Fee')}</span>
-                          <span className="text-[10px] text-gray-400">{t('ชำระเมื่อ: 15 ม.ค. 2024 (แนบสลิปผ่านระบบแล้ว)', 'Paid on Jan 15, 2024 via Bank Transfer')}</span>
-                        </div>
-                        <div className="font-display font-bold text-gray-900">฿15,400.00</div>
-                        <div>
-                          <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-full uppercase tracking-wider flex items-center gap-1 w-fit">
-                            <Check className="w-3.5 h-3.5" />
-                            {t('ชำระเงินแล้ว', 'Paid')}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* INV-02: Interactive */}
-                      <div className="p-5 grid grid-cols-5 gap-4 items-center">
-                        <div className="font-mono font-bold text-gray-900">#INV-2024-002</div>
-                        <div className="col-span-2">
-                          <span className="block font-bold text-gray-800">{t('ค่าบริการคณะตรวจและรับรอง Stage 2', 'ISO 45001 Stage 2 Audit & Certification Fee')}</span>
-                          <span className="text-[10px] text-gray-400">{t('กำหนดชำระ: 20 มี.ค. 2024', 'Payment Due: Mar 20, 2024')}</span>
-                        </div>
-                        <div className="font-display font-bold text-gray-900">฿15,400.00</div>
-                        <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-                          <div>
-                            {paymentStatus === 'unpaid' && (
-                              <span className="px-2.5 py-1 bg-amber-50 text-amber-700 text-[10px] font-bold rounded-full uppercase tracking-wider w-fit block">
-                                {t('ค้างชำระ', 'Unpaid')}
-                              </span>
+                      {invoices.map(inv => (
+                        <div key={inv.id} className="p-5 grid grid-cols-5 gap-4 items-center">
+                          <div className="font-mono font-bold text-gray-900">#{inv.invoiceNo}</div>
+                          <div className="col-span-2">
+                            <span className="block font-bold text-gray-800">{t(inv.descriptionTH, inv.descriptionEN)}</span>
+                            {inv.status === 'paid' && (
+                              <span className="text-[10px] text-emerald-600">{t(`ชำระสำเร็จ: ${inv.paidDate} (ผ่านบัญชีธนาคาร)`, `Paid on ${inv.paidDate} via Bank Transfer`)}</span>
                             )}
-                            {paymentStatus === 'verifying' && (
-                              <span className="px-2.5 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold rounded-full uppercase tracking-wider w-fit block flex items-center gap-1">
-                                <Loader2 className="w-3 h-3 animate-spin" />
-                                {t('รอตรวจสลิป', 'Verifying')}
-                              </span>
+                            {inv.status === 'unpaid' && (
+                              <span className="text-[10px] text-gray-400">{t(`กำหนดชำระ: ${inv.dueDate}`, `Payment Due: ${inv.dueDate}`)}</span>
                             )}
-                            {paymentStatus === 'paid' && (
-                              <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-full uppercase tracking-wider w-fit block flex items-center gap-1">
-                                <Check className="w-3.5 h-3.5" />
-                                {t('ชำระเงินแล้ว', 'Paid')}
-                              </span>
+                            {inv.status === 'verifying' && (
+                              <span className="text-[10px] text-blue-500">{t('ได้รับสลิปแล้ว กำลังส่งเจ้าหน้าที่บัญชีตรวจสอบ...', 'Slip uploaded, awaiting accountant review...')}</span>
                             )}
                           </div>
-                          {paymentStatus === 'unpaid' && (
-                            <button 
-                              onClick={() => setPaymentModalOpen(true)}
-                              className="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold rounded-xl transition-all shadow-sm active:scale-95 flex items-center gap-1"
-                            >
-                              <Upload className="w-3.5 h-3.5" />
-                              <span>{t('แจ้งชำระเงิน', 'Pay Slip')}</span>
-                            </button>
-                          )}
+                          <div className="font-display font-bold text-gray-900">฿{inv.amount.toLocaleString()}.00</div>
+                          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+                            <div>
+                              {inv.status === 'unpaid' && (
+                                <span className="px-2.5 py-1 bg-amber-50 text-amber-700 text-[10px] font-bold rounded-full uppercase tracking-wider w-fit block">
+                                  {t('ค้างชำระ', 'Unpaid')}
+                                </span>
+                              )}
+                              {inv.status === 'verifying' && (
+                                <span className="px-2.5 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold rounded-full uppercase tracking-wider w-fit block flex items-center gap-1">
+                                  <Loader2 className="w-3 h-3 animate-spin" />
+                                  {t('รอตรวจสลิป', 'Verifying')}
+                                </span>
+                              )}
+                              {inv.status === 'paid' && (
+                                <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-full uppercase tracking-wider w-fit block flex items-center gap-1">
+                                  <Check className="w-3.5 h-3.5" />
+                                  {t('ชำระแล้ว', 'Paid')}
+                                </span>
+                              )}
+                            </div>
+                            {inv.status === 'unpaid' && (
+                              <button 
+                                onClick={() => setPaymentModalOpen(true)}
+                                className="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold rounded-xl transition-all shadow-sm active:scale-95 flex items-center gap-1"
+                              >
+                                <Upload className="w-3.5 h-3.5" />
+                                <span>{t('แจ้งชำระเงิน', 'Pay Slip')}</span>
+                              </button>
+                            )}
+                          </div>
                         </div>
-                      </div>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -925,6 +1099,153 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
           </AnimatePresence>
         </div>
       </div>
+
+      {/* --- FLOATING ADMIN/AUDITOR SIMULATOR CONSOLE --- */}
+      <div className="fixed bottom-6 left-6 z-[95]">
+        <button
+          onClick={() => setSimulatorOpen(!simulatorOpen)}
+          className="flex items-center gap-2 px-5 py-4 bg-gray-900 hover:bg-gray-800 text-white text-xs font-bold rounded-full shadow-2xl active:scale-95 transition-all border border-gray-800"
+        >
+          <Sliders className="w-4 h-4 text-blue-400" />
+          <span>{t('แผงจำลองระบบหลังบ้าน (Developer Simulator)', 'Backoffice Simulator')}</span>
+        </button>
+      </div>
+
+      <AnimatePresence>
+        {simulatorOpen && (
+          <div className="fixed inset-0 z-[130] flex justify-end">
+            {/* Backdrop */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSimulatorOpen(false)}
+              className="absolute inset-0 bg-gray-950/40 backdrop-blur-sm"
+            />
+            {/* Drawer Panel */}
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 20 }}
+              className="relative w-full max-w-sm bg-gray-950 text-white border-l border-gray-800 h-full flex flex-col justify-between shadow-2xl overflow-y-auto"
+            >
+              <div className="p-6 md:p-8 space-y-8">
+                <div className="flex items-center justify-between border-b border-gray-800 pb-4">
+                  <div className="flex items-center gap-2.5">
+                    <Sliders className="w-5 h-5 text-blue-500" />
+                    <div>
+                      <h3 className="text-sm font-bold tracking-tight">{t('Simulator Console', 'Simulator Console')}</h3>
+                      <span className="text-[10px] text-gray-500 font-bold block uppercase">{t('จำลองคำสั่งเว็บแอดมิน/ผู้ตรวจ', 'Test Backoffice Actions')}</span>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => setSimulatorOpen(false)}
+                    className="p-1.5 hover:bg-gray-800 rounded-full text-gray-400 transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Section 1: Auditor simulator */}
+                <div className="space-y-4">
+                  <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest border-b border-gray-800 pb-2 flex items-center gap-2">
+                    <FileCheck2 className="w-4 h-4 text-blue-400" />
+                    <span>{t('1. ฝั่งผู้ตรวจประเมิน (Auditor Panel)', '1. Auditor Actions')}</span>
+                  </div>
+
+                  <div className="space-y-3.5">
+                    <div className="space-y-1">
+                      <span className="text-[9px] text-gray-400 uppercase font-bold block">{t('จำลองการจับคู่จัดตัวผู้ตรวจ (Assign Lead Auditor)', 'Assign Lead Auditor')}</span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button 
+                          onClick={() => simAssignAuditor('anirut')}
+                          className={`py-2 px-3 text-[10px] font-bold rounded-lg border transition-all ${assignedAuditor.id === 'auditor-1' ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-900 border-gray-800 text-gray-400'}`}
+                        >
+                          คุณอนิรุทธ์
+                        </button>
+                        <button 
+                          onClick={() => simAssignAuditor('poranee')}
+                          className={`py-2 px-3 text-[10px] font-bold rounded-lg border transition-all ${assignedAuditor.id === 'auditor-2' ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-900 border-gray-800 text-gray-400'}`}
+                        >
+                          คุณพรณีย์
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <span className="text-[9px] text-gray-400 uppercase font-bold block">{t('จำลองการรีวิวและพิจารณาเอกสาร (Review Client Docs)', 'Review Client Docs')}</span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button 
+                          onClick={() => simReviewDocuments('approve')}
+                          className="py-2 px-3 text-[10px] font-bold rounded-lg bg-emerald-950/40 border border-emerald-900/60 hover:bg-emerald-900/40 text-emerald-400 transition-all flex items-center justify-center gap-1"
+                        >
+                          <Check className="w-3.5 h-3.5" /> Approved
+                        </button>
+                        <button 
+                          onClick={() => simReviewDocuments('reject')}
+                          className="py-2 px-3 text-[10px] font-bold rounded-lg bg-amber-950/40 border border-amber-900/60 hover:bg-amber-900/40 text-amber-400 transition-all flex items-center justify-center gap-1"
+                        >
+                          <AlertTriangle className="w-3.5 h-3.5" /> Action Req
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <span className="text-[9px] text-gray-400 uppercase font-bold block">{t('ประเมินความสอดคล้องหน้างาน (CAR/NC Findings)', 'CAR/NC Findings')}</span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button 
+                          onClick={simRaiseMajorNC}
+                          className="py-2 px-2.5 text-[10px] font-bold rounded-lg bg-red-950/40 border border-red-900/60 hover:bg-red-900/40 text-red-400 transition-all block text-center"
+                        >
+                          {t('ออกใบ NC (Major)', 'Raise Major NC')}
+                        </button>
+                        <button 
+                          onClick={simCloseCAR}
+                          disabled={!ncFinding}
+                          className="py-2 px-2.5 text-[10px] font-bold rounded-lg bg-emerald-950/40 border border-emerald-900/60 hover:bg-emerald-900/40 text-emerald-400 transition-all block text-center disabled:opacity-40"
+                        >
+                          {t('ผู้ตรวจปิด NC (Close)', 'Resolve/Close NC')}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section 2: Admin simulator */}
+                <div className="space-y-4">
+                  <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest border-b border-gray-800 pb-2 flex items-center gap-2">
+                    <Receipt className="w-4 h-4 text-blue-400" />
+                    <span>{t('2. ฝั่งแอดมินและการเงิน (Admin & Decision Panel)', '2. Admin & Finance')}</span>
+                  </div>
+
+                  <div className="space-y-3.5">
+                    <button 
+                      onClick={simVerifyPayment}
+                      className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/10 active:scale-95"
+                    >
+                      <Receipt className="w-4 h-4" />
+                      <span>{t('ฝ่ายบัญชีอนุมัติยอดโอนสลิปเงิน', 'Accountant Approve Payment')}</span>
+                    </button>
+                    <button 
+                      onClick={simIssueCertificate}
+                      className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/10 active:scale-95"
+                    >
+                      <Award className="w-4 h-4" />
+                      <span>{t('คณะกรรมการอนุมัติ & ออกใบรับรอง', 'Issue ISO 45001 Certificate')}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Developer notice */}
+              <div className="p-6 md:p-8 bg-gray-900/60 border-t border-gray-800 text-[10px] text-gray-400 leading-relaxed">
+                <span>{t('* แผงควบคุมนี้จำลองเหตุการณ์เสมือนผ่าน API/Firestore เมื่อแอดมินหรือคณะผู้ตรวจจัดการข้อมูลหลังบ้าน ระบบพอร์ทัลฝั่งลูกค้าจะอัปเดตตอบรับทันทีแบบเรียลไทม์', '* This developer panel simulates Firestore events written by separate backoffice portals to showcase dynamic client state sync.')}</span>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* POPUP MODAL: Upload Billing Bank Slip */}
       <AnimatePresence>
@@ -940,9 +1261,9 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
               <p className="text-xs text-gray-500 mb-6">{t('กรุณาโอนเงินเข้าบัญชีธนาคารกรุงเทพ เลขที่ 123-4-56789-0 บจก. คิวเอไอซี ประเทศไทย และอัปโหลดหลักฐาน', 'Please transfer ฿15,400 to Bangkok Bank 123-4-56789-0 (QAIC Thailand) and upload the slip.')}</p>
               
               <form onSubmit={handlePaymentSubmit} className="space-y-6">
-                <div className="border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center hover:border-blue-400 transition-all flex flex-col items-center justify-center gap-3 cursor-pointer">
+                <div className="border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center hover:border-blue-400 transition-all flex flex-col items-center justify-center gap-3 cursor-pointer relative">
                   <div className="p-3 bg-blue-50 text-blue-600 rounded-full"><Upload className="w-6 h-6" /></div>
-                  <span className="text-xs font-semibold text-gray-650">{selectedFile ? selectedFile.name : t('เลือกภาพถ่ายสลิป / สลิปโอนเงิน', 'Choose Slip Photo / Receipt File')}</span>
+                  <span className="text-xs font-semibold text-gray-600">{selectedFile ? selectedFile.name : t('เลือกภาพถ่ายสลิป / สลิปโอนเงิน', 'Choose Slip Photo / Receipt File')}</span>
                   <input 
                     type="file" 
                     required
@@ -959,7 +1280,7 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                   <button 
                     type="button" 
                     onClick={() => setPaymentModalOpen(false)}
-                    className="flex-1 py-3.5 bg-gray-50 hover:bg-gray-100 text-gray-650 text-xs font-bold rounded-xl transition-all"
+                    className="flex-1 py-3.5 bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-bold rounded-xl transition-all border border-gray-250"
                   >
                     {t('ยกเลิก', 'Cancel')}
                   </button>
@@ -969,7 +1290,7 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                     className="flex-1 py-3.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-md shadow-blue-600/10 active:scale-95"
                   >
                     {uploadProgress && <Loader2 className="w-4 h-4 animate-spin" />}
-                    <span>{t('แจ้งชำระเงิน', 'Submit Slip')}</span>
+                    <span>{t('ส่งแจ้งข้อมูล', 'Submit Slip')}</span>
                   </button>
                 </div>
               </form>
@@ -993,7 +1314,7 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                 onClick={() => setCertModalOpen(false)}
                 className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-900 rounded-full hover:bg-gray-100 transition-all z-15"
               >
-                <ChevronRight className="w-5 h-5 rotate-90" />
+                <X className="w-5 h-5" />
               </button>
 
               <div className="text-center space-y-6">
