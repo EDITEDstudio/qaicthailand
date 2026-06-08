@@ -480,149 +480,22 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Right Column: Dynamic Mockup Tablet & Floating Badges */}
+              {/* Right Column: Hero Image */}
               <div className="lg:col-span-5 relative flex items-center justify-center py-6">
                 <div className="absolute inset-0 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
                 
-                {/* Mockup Tablet Wrapper */}
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.2 }}
-                  className="relative w-full aspect-[4/3] max-w-[400px] bg-slate-950 border-[6px] border-slate-900 rounded-[2rem] shadow-2xl overflow-hidden flex flex-col p-2.5 text-[5px] text-gray-450 font-sans"
+                  className="relative z-10 w-full max-w-[450px]"
                 >
-                  {/* Tablet Camera notch */}
-                  <div className="absolute top-1 left-1/2 -translate-x-1/2 w-8 h-1 bg-slate-900 rounded-full" />
-                  
-                  {/* Mini-Dashboard Header */}
-                  <div className="flex items-center justify-between border-b border-slate-900 pb-2 mb-2">
-                    <div className="flex items-center gap-1">
-                      <div className="w-2.5 h-2.5 rounded-full bg-blue-600 flex items-center justify-center text-[4px] font-bold text-white font-display">Q</div>
-                      <span className="font-bold text-gray-200">QAIC Dashboard</span>
-                    </div>
-                    <div className="bg-slate-900 rounded-full w-24 py-0.5 px-2 text-[4px] text-gray-500 text-center">{t('ค้นหาใบแจ้งหนี้หรือผู้ตรวจ...', 'Search billing...')}</div>
-                    <div className="w-2.5 h-2.5 rounded-full bg-slate-800" />
-                  </div>
-
-                  {/* Mini-Dashboard Body */}
-                  <div className="flex flex-1 gap-2 overflow-hidden">
-                    {/* Left Mini Sidebar */}
-                    <div className="w-8 border-r border-slate-900 flex flex-col gap-1 pr-1">
-                      <div className="w-full h-1.5 bg-blue-600 rounded" />
-                      <div className="w-full h-1.5 bg-slate-900 rounded" />
-                      <div className="w-full h-1.5 bg-slate-900 rounded" />
-                      <div className="w-full h-1.5 bg-slate-900 rounded" />
-                    </div>
-
-                    {/* Right Mini Main Grid */}
-                    <div className="flex-1 space-y-2 overflow-hidden">
-                      {/* Metric Cards Row */}
-                      <div className="grid grid-cols-4 gap-1.5">
-                        <div className="bg-slate-900 p-1.5 rounded flex flex-col justify-between">
-                          <span className="text-[3px] uppercase block leading-none mb-0.5 text-gray-600">Total Quotations</span>
-                          <span className="font-bold text-gray-200 leading-none">497</span>
-                        </div>
-                        <div className="bg-slate-900 p-1.5 rounded flex flex-col justify-between">
-                          <span className="text-[3px] uppercase block leading-none mb-0.5 text-gray-600">Pending Jobs</span>
-                          <span className="font-bold text-gray-200 leading-none">0</span>
-                        </div>
-                        <div className="bg-slate-900 p-1.5 rounded flex flex-col justify-between">
-                          <span className="text-[3px] uppercase block leading-none mb-0.5 text-gray-600">Approved Reports</span>
-                          <span className="font-bold text-gray-200 leading-none">446</span>
-                        </div>
-                        <div className="bg-slate-900 p-1.5 rounded flex flex-col justify-between">
-                          <span className="text-[3px] uppercase block leading-none mb-0.5 text-gray-600">Total Value</span>
-                          <span className="font-bold text-blue-400 leading-none">฿10.8M</span>
-                        </div>
-                      </div>
-
-                      {/* Main Table Content */}
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="bg-slate-900 p-1.5 rounded space-y-1">
-                          <span className="font-bold text-gray-300 block text-[4px] border-b border-slate-800 pb-0.5">{t('ทะเบียนลูกค้าแยกตามมาตรฐาน', 'Customers by Standard')}</span>
-                          <div className="space-y-0.5 text-[3.5px]">
-                            <div className="flex justify-between text-gray-400"><span className="truncate max-w-[45px]">GCL/ISO9001</span><span className="text-emerald-500 font-bold">75</span></div>
-                            <div className="flex justify-between text-gray-400"><span className="truncate max-w-[45px]">GCL/ISO14001</span><span className="text-emerald-500 font-bold">3</span></div>
-                            <div className="flex justify-between text-gray-400"><span className="truncate max-w-[45px]">QAIC/GHPs</span><span className="text-emerald-500 font-bold">74</span></div>
-                          </div>
-                        </div>
-                        <div className="bg-slate-900 p-1.5 rounded space-y-1">
-                          <span className="font-bold text-gray-300 block text-[4px] border-b border-slate-800 pb-0.5">{t('จำนวน Auditor แยกประเภท', 'Auditors by Type')}</span>
-                          <div className="space-y-0.5 text-[3.5px]">
-                            <div className="flex justify-between text-gray-400"><span>ISO 9001</span><span className="text-gray-300">47 ราย</span></div>
-                            <div className="flex justify-between text-gray-400"><span>GHPs</span><span className="text-gray-300">22 ราย</span></div>
-                            <div className="flex justify-between text-gray-400"><span>ISO 14001</span><span className="text-gray-300">12 ราย</span></div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Bottom Graph mockups */}
-                      <div className="grid grid-cols-3 gap-1.5">
-                        <div className="bg-slate-900 p-1 rounded col-span-2 flex items-center justify-between">
-                          <span className="text-[3px] text-gray-600 uppercase font-bold">{t('ความคืบหน้าการออดิท', 'Audit Progress')}</span>
-                          {/* Mini Line Chart SVG */}
-                          <svg className="w-16 h-4 text-blue-500" viewBox="0 0 100 30" fill="none">
-                            <path d="M0 25 C20 5, 40 25, 60 10 C80 0, 90 20, 100 5" stroke="currentColor" strokeWidth="2" fill="none" />
-                          </svg>
-                        </div>
-                        <div className="bg-slate-900 p-1 rounded flex items-center justify-center gap-1">
-                          {/* Mini Pie Donut */}
-                          <div className="w-3.5 h-3.5 rounded-full border border-blue-500 border-t-transparent animate-spin-slow flex-shrink-0" />
-                          <span className="text-[3.5px] text-gray-300 font-bold">86% Approved</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <img 
+                    src="/herosection.png" 
+                    alt="QAIC Thailand Hero Section" 
+                    className="w-full h-auto object-contain rounded-2xl shadow-xl border border-gray-150/50"
+                  />
                 </motion.div>
-
-                {/* Floating Accreditation Badges */}
-                <AnimatePresence>
-                  {/* Badge 1: ISO Globe (Top-Left) */}
-                  <motion.div 
-                    animate={{ y: [0, -6, 0] }}
-                    transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute -top-3 left-6 backdrop-blur-md bg-white/70 border border-white/50 shadow-lg rounded-full flex items-center justify-center p-2.5 w-11 h-11 pointer-events-none"
-                  >
-                    <div className="w-full h-full rounded-full bg-blue-600 text-white flex flex-col items-center justify-center font-display font-black text-[7px] leading-none">
-                      <span>ISO</span>
-                      <Globe className="w-2 h-2 mt-0.5 stroke-1" />
-                    </div>
-                  </motion.div>
-
-                  {/* Badge 2: HACCP (Bottom-Left) */}
-                  <motion.div 
-                    animate={{ y: [0, -8, 0] }}
-                    transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-                    className="absolute -bottom-4 left-10 backdrop-blur-md bg-white/70 border border-white/50 shadow-lg rounded-full flex items-center justify-center p-2 w-11 h-11 pointer-events-none"
-                  >
-                    <div className="w-full h-full rounded-full border border-blue-600/30 flex flex-col items-center justify-center text-blue-900 font-display font-extrabold text-[5px] leading-tight">
-                      <span>HACCP</span>
-                    </div>
-                  </motion.div>
-
-                  {/* Badge 3: Trust Shield Check (Middle-Right) */}
-                  <motion.div 
-                    animate={{ y: [0, -7, 0] }}
-                    transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
-                    className="absolute top-1/3 -right-3 backdrop-blur-md bg-white/70 border border-white/50 shadow-lg rounded-full flex items-center justify-center p-2 w-11 h-11 pointer-events-none"
-                  >
-                    <div className="w-full h-full rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                      <ShieldCheck className="w-5 h-5 stroke-[1.5]" />
-                    </div>
-                  </motion.div>
-
-                  {/* Badge 4: GMP (Bottom-Right) */}
-                  <motion.div 
-                    animate={{ y: [0, -9, 0] }}
-                    transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 0.9 }}
-                    className="absolute -bottom-4 right-12 backdrop-blur-md bg-white/70 border border-white/50 shadow-lg rounded-full flex items-center justify-center p-2 w-11 h-11 pointer-events-none"
-                  >
-                    <div className="w-full h-full rounded-full bg-slate-900 text-white flex flex-col items-center justify-center font-display font-black text-[6.5px] leading-none">
-                      <span className="text-blue-400">GMP</span>
-                      <span className="text-[3px] text-gray-450 font-sans tracking-tighter mt-0.5">ACCREDITED</span>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
               </div>
             </div>
           )}
