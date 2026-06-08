@@ -395,11 +395,11 @@ export default function App() {
         <div className="max-w-7xl mx-auto">
           {/* Premium Hero Section (Grid side-by-side) */}
           {activeTab === 'assess' && (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center py-12 md:py-16 bg-gradient-to-br from-blue-50/30 via-white to-indigo-50/20 rounded-[3rem] px-6 md:px-12 border border-blue-100/50 mb-12 relative overflow-hidden shadow-sm">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.08),transparent_60%)] pointer-events-none" />
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center py-12 md:py-16 bg-gradient-to-br from-[#ebf3fe] via-white to-[#d6e4fd]/70 rounded-[3rem] px-6 md:px-12 mb-12 relative overflow-hidden">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.12),transparent_70%)] pointer-events-none" />
               
               {/* Left Column: Text & Buttons */}
-              <div className="lg:col-span-7 space-y-6 text-center md:text-left relative z-10">
+              <div className="lg:col-span-6 space-y-6 text-center md:text-left relative z-10">
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -481,19 +481,19 @@ export default function App() {
               </div>
 
               {/* Right Column: Hero Image */}
-              <div className="lg:col-span-5 relative flex items-center justify-center py-6">
-                <div className="absolute inset-0 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+              <div className="lg:col-span-6 relative flex items-center justify-center py-4">
+                <div className="absolute inset-0 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
                 
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.2 }}
-                  className="relative z-10 w-full max-w-[450px]"
+                  className="relative z-10 w-full"
                 >
                   <img 
                     src="/herosection.png" 
                     alt="QAIC Thailand Hero Section" 
-                    className="w-full h-auto object-contain rounded-2xl shadow-xl border border-gray-150/50"
+                    className="w-full h-auto object-contain select-none"
                   />
                 </motion.div>
               </div>
