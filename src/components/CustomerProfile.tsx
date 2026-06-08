@@ -122,15 +122,15 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
   // Dynamic Auditor State
   const [assignedAuditor, setAssignedAuditor] = useState<any>({
     id: 'auditor-1',
-    nameTH: 'คุณอนิรุทธ์ รักษาสัตย์',
-    nameEN: 'Mr. Anirut Raksasat',
+    nameTH: 'คุณนิชชาภัทร เนตรทิพย์',
+    nameEN: 'Ms. Nitchaphat Netthip',
     roleTH: 'หัวหน้าคณะผู้ตรวจประเมิน',
     roleEN: 'Lead Auditor',
-    deptTH: 'แผนกตรวจประเมิน',
-    deptEN: 'Auditing Department',
-    avatar: 'AR',
-    bioTH: 'ผู้ตรวจประเมินอาวุโสจดทะเบียน IRCA, เชี่ยวชาญมาตรฐาน OHSAS/ISO 45001 ประสบการณ์ตรวจอุตสาหกรรมกว่า 10 ปี',
-    bioEN: 'Senior registered IRCA auditor, specializing in ISO 45001 with 10+ years of industrial audit experience.'
+    deptTH: 'แผนกตรวจประเมิน (EAC/ISIC)',
+    deptEN: 'Auditing Department (EAC/ISIC)',
+    avatar: 'NN',
+    bioTH: 'ผู้ตรวจประเมินระบบงานขึ้นทะเบียน EAC/ISIC, ผู้เชี่ยวชาญการประเมินคุณภาพด้าน ISO 9001/14001/45001 ประสบการณ์ตรวจอุตสาหกรรมกว่า 12 ปี',
+    bioEN: 'Registered Lead Assessor for EAC/ISIC, specializing in ISO 9001/14001/45001 with 12+ years of industrial audit experience.'
   });
 
   // Dynamic NC/CAR State
@@ -177,7 +177,7 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
               {
                 id: '1',
                 standardId: 'iso-9001',
-                code: 'ISO 9001:2015',
+                code: 'GCL / ISO 9001:2015',
                 certNumber: 'QAIC/TH/9001/0123',
                 issueDate: '2023-01-15',
                 expiryDate: '2026-01-14',
@@ -189,12 +189,12 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                 provinceTH: 'กรุงเทพมหานคร',
                 provinceEN: 'Bangkok',
                 country: 'Thailand',
-                category: 'ISO 9001'
+                category: 'GCL / ISO 9001'
               },
               {
                 id: '2',
                 standardId: 'iso-14001',
-                code: 'ISO 14001:2015',
+                code: 'GCL / ISO 14001:2015',
                 certNumber: 'QAIC/TH/14001/1055',
                 issueDate: '2023-03-20',
                 expiryDate: '2026-03-19',
@@ -206,14 +206,14 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                 provinceTH: 'กรุงเทพมหานคร',
                 provinceEN: 'Bangkok',
                 country: 'Thailand',
-                category: 'ISO 14001'
+                category: 'GCL / ISO 14001'
               }
             ]);
             setAudits([
               {
                 id: '101',
                 standardId: 'iso-45001',
-                code: 'ISO 45001:2018',
+                code: 'QAIC / ISO 45001:2018',
                 status: 'On-site Audit',
                 currentStep: 2,
                 totalSteps: 4,
@@ -282,32 +282,32 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
   };
 
   // --- SIMULATION COMMAND HANDLERS ---
-  const simAssignAuditor = (auditorType: 'anirut' | 'poranee') => {
-    if (auditorType === 'anirut') {
+  const simAssignAuditor = (auditorType: 'nitchaphat' | 'pakorn') => {
+    if (auditorType === 'nitchaphat') {
       setAssignedAuditor({
         id: 'auditor-1',
-        nameTH: 'คุณอนิรุทธ์ รักษาสัตย์',
-        nameEN: 'Mr. Anirut Raksasat',
+        nameTH: 'คุณนิชชาภัทร เนตรทิพย์',
+        nameEN: 'Ms. Nitchaphat Netthip',
         roleTH: 'หัวหน้าคณะผู้ตรวจประเมิน',
         roleEN: 'Lead Auditor',
-        deptTH: 'แผนกตรวจประเมิน',
-        deptEN: 'Auditing Department',
-        avatar: 'AR',
-        bioTH: 'ผู้ตรวจประเมินอาวุโสจดทะเบียน IRCA, เชี่ยวชาญมาตรฐาน OHSAS/ISO 45001 ประสบการณ์ตรวจอุตสาหกรรมกว่า 10 ปี',
-        bioEN: 'Senior registered IRCA auditor, specializing in ISO 45001 with 10+ years of industrial audit experience.'
+        deptTH: 'แผนกตรวจประเมิน (EAC/ISIC)',
+        deptEN: 'Auditing Department (EAC/ISIC)',
+        avatar: 'NN',
+        bioTH: 'ผู้ตรวจประเมินระบบงานขึ้นทะเบียน EAC/ISIC, ผู้เชี่ยวชาญการประเมินคุณภาพด้าน ISO 9001/14001/45001 ประสบการณ์ตรวจอุตสาหกรรมกว่า 12 ปี',
+        bioEN: 'Registered Lead Assessor for EAC/ISIC, specializing in ISO 9001/14001/45001 with 12+ years of industrial audit experience.'
       });
     } else {
       setAssignedAuditor({
         id: 'auditor-2',
-        nameTH: 'คุณพรณีย์ วรรณวัฒน์',
-        nameEN: 'Ms. Poranee Wannawat',
-        roleTH: 'ผู้ประสานงานหลักและผู้ตรวจประเมินร่วม',
-        roleEN: 'Co-Auditor & Coordinator',
-        deptTH: 'แผนกตรวจและประเมินเอกสาร',
-        deptEN: 'Technical Review Department',
-        avatar: 'PW',
-        bioTH: 'ผู้เชี่ยวชาญการประเมินเอกสารสอดคล้องระดับประเทศ, ประสบการณ์ตรงด้านตรวจประเมินความปลอดภัยโรงงานเคมีและอาหาร 8 ปี',
-        bioEN: 'Expert technical document assessor with 8+ years experience in food safety and chemical safety compliance.'
+        nameTH: 'คุณปกรณ์ แสนจิตต์',
+        nameEN: 'Mr. Pakorn Saenjit',
+        roleTH: 'ผู้ตรวจประเมินร่วม',
+        roleEN: 'Co-Auditor',
+        deptTH: 'แผนกตรวจประเมิน (ISIC)',
+        deptEN: 'Auditing Department (ISIC)',
+        avatar: 'PS',
+        bioTH: 'ผู้ตรวจระบบงานขึ้นทะเบียน ISIC, เชี่ยวชาญการตรวจประเมินด้านมาตรฐานสุขอนามัยอาหาร (GHPs/HACCP) และระบบความปลอดภัยโรงงานผลิต 8 ปี',
+        bioEN: 'ISIC registered assessor, specializing in GHPs/HACCP and manufacturing safety standards with 8+ years experience.'
       });
     }
   };
@@ -356,7 +356,7 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
     const newCert: Certificate = {
       id: '3',
       standardId: 'iso-45001',
-      code: 'ISO 45001:2018',
+      code: 'QAIC / ISO 45001:2018',
       certNumber: 'QAIC/TH/45001/9924',
       issueDate: new Date().toISOString().split('T')[0],
       expiryDate: new Date(Date.now() + 3 * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -368,7 +368,7 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
       provinceTH: 'กรุงเทพมหานคร',
       provinceEN: 'Bangkok',
       country: 'Thailand',
-      category: 'ISO 45001'
+      category: 'QAIC / ISO 45001'
     };
 
     // Append to local state list
@@ -1159,16 +1159,16 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                       <span className="text-[9px] text-gray-400 uppercase font-bold block">{t('จำลองการจับคู่จัดตัวผู้ตรวจ (Assign Lead Auditor)', 'Assign Lead Auditor')}</span>
                       <div className="grid grid-cols-2 gap-2">
                         <button 
-                          onClick={() => simAssignAuditor('anirut')}
+                          onClick={() => simAssignAuditor('nitchaphat')}
                           className={`py-2 px-3 text-[10px] font-bold rounded-lg border transition-all ${assignedAuditor.id === 'auditor-1' ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-900 border-gray-800 text-gray-400'}`}
                         >
-                          คุณอนิรุทธ์
+                          คุณนิชชาภัทร
                         </button>
                         <button 
-                          onClick={() => simAssignAuditor('poranee')}
+                          onClick={() => simAssignAuditor('pakorn')}
                           className={`py-2 px-3 text-[10px] font-bold rounded-lg border transition-all ${assignedAuditor.id === 'auditor-2' ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-900 border-gray-800 text-gray-400'}`}
                         >
-                          คุณพรณีย์
+                          คุณปกรณ์
                         </button>
                       </div>
                     </div>
