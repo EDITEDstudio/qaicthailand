@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "IBM Plex Sans Thai", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", "IBM Plex Sans Thai", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-float: float 6s ease-in-out infinite;
+}
+
+@layer base {
+  /* Font Size Scaling */
+  .font-size-medium {
+    font-size: 110%;
+  }
+  .font-size-large {
+    font-size: 125%;
+  }
+
+  /* Editorial Theme Overrides */
+  .editorial {
+    --font-display: "IBM Plex Sans Thai", sans-serif;
+    --font-sans: "Inter", "IBM Plex Sans Thai", sans-serif;
+  }
+  
+  /* Cyber Theme Overrides */
+  .cyber {
+    --font-display: "JetBrains Mono", monospace;
+    --font-sans: "JetBrains Mono", monospace;
+  }
+
+  .cyber body {
+    @apply bg-black text-blue-400;
+  }
+
+  .cyber .bg-white {
+    @apply bg-gray-900 text-blue-100 border-blue-800/30;
+  }
+
+  /* Modern Theme Overrides */
+  .modern {
+    --font-display: "Space Grotesk", sans-serif;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5);
+}

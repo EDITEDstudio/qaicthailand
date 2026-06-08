@@ -1,0 +1,66 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Store user profile information and settings.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Certificate": {
+      "title": "ISO Certificate",
+      "description": "Details of an issued ISO certificate for a user.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "standardId": { "type": "string" },
+        "code": { "type": "string" },
+        "certNumber": { "type": "string" },
+        "issueDate": { "type": "string", "format": "date" },
+        "expiryDate": { "type": "string", "format": "date" },
+        "status": { "type": "string", "enum": ["active", "expired", "suspended"] }
+      },
+      "required": ["userId", "standardId", "certNumber", "status"]
+    },
+    "AuditProject": {
+      "title": "Audit Project",
+      "description": "Information about an ongoing or planned audit process.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "standardId": { "type": "string" },
+        "code": { "type": "string" },
+        "status": { "type": "string", "enum": ["document_review", "on_site_audit", "pending_approval", "completed"] },
+        "currentStep": { "type": "number" },
+        "totalSteps": { "type": "number" },
+        "scheduledDate": { "type": "string", "format": "date-time" },
+        "outstandingBalance": { "type": "number" }
+      },
+      "required": ["userId", "standardId", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles collection."
+    },
+    "/certificates/{certId}": {
+      "schema": "Certificate",
+      "description": "Collection of issued certificates."
+    },
+    "/audits/{auditId}": {
+      "schema": "AuditProject",
+      "description": "Collection of ongoing audit projects."
+    }
+  }
+}
