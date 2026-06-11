@@ -195,20 +195,20 @@ export default function StandardsDirectory({ settings }: StandardsDirectoryProps
         </div>
       )}
 
-      {/* Details Modal */}
+            {/* Details Modal */}
       <AnimatePresence>
         {selectedStandardId && selectedStandard && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-gray-900/40 backdrop-blur-sm">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-950/80 backdrop-blur-md">
             <motion.div 
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col"
+              className="bg-white/95 backdrop-blur-[35px] border border-white/60 shadow-2xl dark:bg-slate-900/95 dark:border-slate-800 w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] overflow-hidden flex flex-col"
             >
               <div className="relative h-48 bg-blue-800 p-10 flex flex-col justify-end">
                 <button 
                   onClick={() => setSelectedStandardId(null)}
-                  className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all"
+                  className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] text-white rounded-full transition-all"
                 >
                   <ArrowRight className="w-5 h-5 rotate-180" />
                 </button>
@@ -224,25 +224,25 @@ export default function StandardsDirectory({ settings }: StandardsDirectoryProps
               <div className="flex-1 overflow-y-auto p-8 md:p-12 space-y-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                    <div className="space-y-6">
-                      <h3 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-blue-100 pb-2 flex items-center gap-2">
+                      <h3 className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest border-b border-blue-100 dark:border-blue-900/40 pb-2 flex items-center gap-2">
                         <Info className="w-4 h-4" />
                         {t('ภาพรวมมาตรฐาน', 'Standard Overview')}
                       </h3>
-                      <p className="text-xl font-display font-bold text-gray-900 leading-tight">
+                      <p className="text-xl font-display font-bold text-gray-900 dark:text-white leading-tight">
                         {t(selectedStandard.nameTH, selectedStandard.nameEN)}
                       </p>
-                      <p className="text-sm text-gray-500 font-sans leading-relaxed">
+                      <p className="text-sm text-gray-600 dark:text-slate-300 font-sans leading-relaxed">
                         {t(selectedStandard.longDescTH, selectedStandard.longDescEN)}
                       </p>
                    </div>
                    <div className="space-y-6">
-                      <h3 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-blue-100 pb-2 flex items-center gap-2">
+                      <h3 className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest border-b border-blue-100 dark:border-blue-900/40 pb-2 flex items-center gap-2">
                         <ArrowRight className="w-4 h-4" />
                         {t('ประโยชน์ที่จะได้รับ', 'Key Benefits')}
                       </h3>
                       <ul className="space-y-3">
                         {t(selectedStandard.benefitsTH, selectedStandard.benefitsEN).map((benefit: string, i: number) => (
-                           <li key={i} className="flex gap-3 text-sm text-gray-600 font-sans">
+                           <li key={i} className="flex gap-3 text-sm text-gray-705 dark:text-slate-200 font-sans">
                               <ShieldCheck className="w-5 h-5 text-blue-500 flex-shrink-0" />
                               <span>{benefit}</span>
                            </li>
@@ -251,15 +251,15 @@ export default function StandardsDirectory({ settings }: StandardsDirectoryProps
                    </div>
                 </div>
 
-                <div className="bg-gray-50 rounded-3xl p-8 space-y-6 border border-gray-100">
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest text-center">
+                <div className="bg-gray-50/90 dark:bg-slate-950/40 rounded-3xl p-8 space-y-6 border border-gray-150/70 dark:border-slate-850">
+                    <h3 className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-widest text-center">
                       {t('กระบวนการประเมิน', 'Certification Journey')}
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                        {t(selectedStandard.stepsTH, selectedStandard.stepsEN).map((step: string, i: number) => (
-                          <div key={i} className="bg-white p-4 rounded-2xl border border-gray-200/50 shadow-sm">
-                             <span className="text-[10px] font-bold text-blue-600 block mb-1">STEP 0{i+1}</span>
-                             <p className="text-[11px] text-gray-600 font-sans leading-snug">{step}</p>
+                          <div key={i} className="bg-white/90 dark:bg-slate-900/60 p-4 rounded-2xl border border-gray-200/50 dark:border-slate-800 shadow-sm">
+                             <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 block mb-1">STEP 0{i+1}</span>
+                             <p className="text-[11px] text-gray-700 dark:text-slate-350 font-sans leading-snug">{step}</p>
                           </div>
                        ))}
                     </div>
@@ -268,12 +268,12 @@ export default function StandardsDirectory({ settings }: StandardsDirectoryProps
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-6">
                   <div className="flex items-center gap-8">
                      <div className="space-y-1">
-                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Audit Duration</span>
-                        <span className="text-lg font-display font-bold text-gray-900">{selectedStandard.baseDays} Man-Days</span>
+                        <span className="text-[10px] font-bold text-gray-550 dark:text-slate-455 uppercase tracking-widest block">Audit Duration</span>
+                        <span className="text-lg font-display font-bold text-gray-900 dark:text-white">{selectedStandard.baseDays} Man-Days</span>
                      </div>
-                     <div className="w-px h-10 bg-gray-100 hidden md:block" />
+                     <div className="w-px h-10 bg-gray-200 dark:bg-slate-800 hidden md:block" />
                      <div className="space-y-1">
-                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Accreditation Seals</span>
+                        <span className="text-[10px] font-bold text-gray-555 dark:text-slate-455 uppercase tracking-widest block">Accreditation Seals</span>
                         <div className="flex gap-2">
                            {selectedStandard.accreditation.map(acc => (
                              <span key={acc} className="px-2 py-0.5 bg-gray-900 text-white text-[9px] font-bold rounded uppercase">{acc}</span>
