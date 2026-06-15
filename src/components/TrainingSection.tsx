@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { 
  Search, 
@@ -11,6 +11,9 @@ import {
  MapPin, 
  Clock, 
  ChevronRight, 
+ ChevronLeft,
+ Trash2,
+ Edit3,
  ArrowRight,
  BookOpen,
  GraduationCap,
@@ -56,6 +59,15 @@ interface Course {
  image: string;
  description?: string;
  descriptionEN?: string;
+}
+
+interface ScheduledEvent {
+ id: string;
+ courseId: string;
+ date: string;
+ location: string;
+ locationEN: string;
+ time: string;
 }
 
 const COURSES: Course[] = [
@@ -809,6 +821,187 @@ export default function TrainingSection({ settings, onContactClick }: TrainingSe
  const [activeSeries, setActiveSeries] = useState('All');
  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
+  const [schedules, setSchedules] = useState<ScheduledEvent[]>(() => {
+    const saved = localStorage.getItem('qaic_training_schedules');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return [
+      {
+        id: 'sch-1',
+        courseId: 'lead-01',
+        date: '2026-06-16',
+        location: 'กรุงเทพฯ (On-site)',
+        locationEN: 'Bangkok (On-site)',
+        time: '09:00 - 16:00'
+      },
+      {
+        id: 'sch-2',
+        courseId: 'lead-02',
+        date: '2026-06-19',
+        location: 'ระบบออนไลน์ (Zoom)',
+        locationEN: 'Online (Zoom)',
+        time: '09:00 - 16:00'
+      },
+      {
+        id: 'sch-3',
+        courseId: 'lead-05',
+        date: '2026-06-23',
+        location: 'กรุงเทพฯ (On-site)',
+        locationEN: 'Bangkok (On-site)',
+        time: '09:00 - 16:00'
+      },
+      {
+        id: 'sch-4',
+        courseId: 'lead-03',
+        date: '2026-06-25',
+        location: 'กรุงเทพฯ (On-site)',
+        locationEN: 'Bangkok (On-site)',
+        time: '09:00 - 16:00'
+      },
+      {
+        id: 'sch-5',
+        courseId: 'lead-04',
+        date: '2026-07-02',
+        location: 'ชลบุรี (On-site)',
+        locationEN: 'Chonburi (On-site)',
+        time: '08:30 - 16:30'
+      }
+    ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('qaic_training_schedules', JSON.stringify(schedules));
+  }, [schedules]);
+
+  const [currentYear, setCurrentYear] = useState(2026);
+  const [currentMonth, setCurrentMonth] = useState(5); // June (0-indexed)
+  const [selectedDate, setSelectedDate] = useState('2026-06-15');
+
+  // Add/Edit Event state
+  const [isAdding, setIsAdding] = useState(false);
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
+  const [newCourseId, setNewCourseId] = useState('');
+  const [newLocationTH, setNewLocationTH] = useState('');
+  const [newLocationEN, setNewLocationEN] = useState('');
+  const [newTime, setNewTime] = useState('09:00 - 16:00');
+  const [newDate, setNewDate] = useState('2026-06-15');
+
+  const MONTHS_TH = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+  const MONTHS_EN = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+  const daysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
+  const firstDayIndex = (year: number, month: number) => new Date(year, month, 1).getDay();
+
+  const handlePrevMonth = () => {
+    if (currentMonth === 0) {
+      setCurrentMonth(11);
+      setCurrentYear(prev => prev - 1);
+    } else {
+      setCurrentMonth(prev => prev - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (currentMonth === 11) {
+      setCurrentMonth(0);
+      setCurrentYear(prev => prev + 1);
+    } else {
+      setCurrentMonth(prev => prev + 1);
+    }
+  };
+
+  const formatDateStr = (y: number, m: number, d: number) => {
+    const mm = String(m + 1).padStart(2, '0');
+    const dd = String(d).padStart(2, '0');
+    return `${y}-${mm}-${dd}`;
+  };
+
+  const formatLongDate = (dateStr: string) => {
+    if (!dateStr) return '';
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const date = new Date(y, m - 1, d);
+    if (isNaN(date.getTime())) return dateStr;
+    
+    if (settings.lang === 'TH') {
+      return `${d} ${MONTHS_TH[m - 1]} ${y + 543}`;
+    } else {
+      return `${MONTHS_EN[m - 1]} ${d}, ${y}`;
+    }
+  };
+
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case 'MANAGEMENT': return 'bg-blue-500';
+      case 'FOOD SAFETY': return 'bg-emerald-500';
+      case 'TECHNICAL': return 'bg-amber-500';
+      case 'LEAN': return 'bg-indigo-500';
+      case 'MEDICAL': return 'bg-rose-500';
+      default: return 'bg-gray-400';
+    }
+  };
+
+  const handleSaveEvent = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCourseId || !newDate || !newLocationTH) return;
+
+    if (editingEventId !== null) {
+      // Editing
+      setSchedules(prev => prev.map(s => s.id === editingEventId ? {
+        ...s,
+        courseId: newCourseId,
+        date: newDate,
+        location: newLocationTH,
+        locationEN: newLocationEN || newLocationTH,
+        time: newTime
+      } : s));
+      setEditingEventId(null);
+    } else {
+      // Adding new
+      const newSch: ScheduledEvent = {
+        id: `sch-${Date.now()}`,
+        courseId: newCourseId,
+        date: newDate,
+        location: newLocationTH,
+        locationEN: newLocationEN || newLocationTH,
+        time: newTime
+      };
+      setSchedules(prev => [...prev, newSch]);
+      setIsAdding(false);
+    }
+  };
+
+  const handleStartEdit = (ev: ScheduledEvent) => {
+    setEditingEventId(ev.id);
+    setNewCourseId(ev.courseId);
+    setNewLocationTH(ev.location);
+    setNewLocationEN(ev.locationEN);
+    setNewTime(ev.time);
+    setNewDate(ev.date);
+    setIsAdding(false);
+  };
+
+  const handleDeleteEvent = (id: string) => {
+    if (confirm(settings.lang === 'TH' ? 'คุณแน่ใจหรือไม่ที่จะลบกิจกรรมนี้?' : 'Are you sure you want to delete this event?')) {
+      setSchedules(prev => prev.filter(s => s.id !== id));
+    }
+  };
+
+  const daysCount = daysInMonth(currentYear, currentMonth);
+  const startOffset = firstDayIndex(currentYear, currentMonth);
+  const cells: (number | null)[] = [];
+  
+  for (let i = 0; i < startOffset; i++) {
+    cells.push(null);
+  }
+  for (let i = 1; i <= daysCount; i++) {
+    cells.push(i);
+  }
+
  const t = <T extends string | string[]>(th: T, en: T): T => settings.lang === 'TH' ? th : en;
 
  const handleRegister = (course?: Course) => {
@@ -879,7 +1072,303 @@ export default function TrainingSection({ settings, onContactClick }: TrainingSe
  </div>
  </div>
 
- {/* Search and Filters */}
+  {/* Training Calendar */}
+  <div className="bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] p-6 md:p-8 rounded-[2.5rem] border shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8">
+    {/* Left Panel: Calendar */}
+    <div className="lg:col-span-7 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1 text-left">
+          <h3 className="text-xl font-display font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <Calendar className="w-5 h-5 text-blue-600" />
+            {t('ปฏิทินกิจกรรมฝึกอบรม', 'Training Activity Calendar')}
+          </h3>
+          <p className="text-xs text-gray-650 dark:text-slate-400">
+            {t('คลิกเลือกวันที่เพื่อตรวจสอบหลักสูตรที่เปิดรับลงทะเบียนหรืออัปเดตกิจกรรม', 'Select a date to inspect courses or schedule sessions')}
+          </p>
+        </div>
+        <div className="flex items-center gap-1.5 bg-white/50 dark:bg-slate-800/80 px-3 py-1.5 rounded-xl border border-gray-200/50 dark:border-slate-700 w-fit">
+          <button 
+            type="button"
+            onClick={handlePrevMonth}
+            className="p-1 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-lg text-gray-700 dark:text-slate-300 transition-colors cursor-pointer border-none bg-transparent"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <span className="text-xs font-bold font-display min-w-[90px] text-center text-gray-800 dark:text-slate-200">
+            {t(MONTHS_TH[currentMonth], MONTHS_EN[currentMonth])} {currentYear}
+          </span>
+          <button 
+            type="button"
+            onClick={handleNextMonth}
+            className="p-1 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-lg text-gray-700 dark:text-slate-300 transition-colors cursor-pointer border-none bg-transparent"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      {/* Weekday Grid */}
+      <div className="grid grid-cols-7 gap-2 text-center text-[10px] font-bold text-gray-600 dark:text-slate-500 uppercase tracking-wider">
+        {t(['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'], ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']).map((d, idx) => (
+          <div key={idx} className={idx === 0 || idx === 6 ? 'text-red-500/80' : ''}>{d}</div>
+        ))}
+      </div>
+
+      {/* Day Cells Grid */}
+      <div className="grid grid-cols-7 gap-2">
+        {cells.map((day, idx) => {
+          if (day === null) {
+            return <div key={`empty-${idx}`} className="aspect-square"></div>;
+          }
+
+          const dateStr = formatDateStr(currentYear, currentMonth, day);
+          const isSelected = selectedDate === dateStr;
+          
+          const today = new Date();
+          const isToday = today.getFullYear() === currentYear && today.getMonth() === currentMonth && today.getDate() === day;
+          
+          const dayEvents = schedules.filter(s => s.date === dateStr);
+          const hasEvents = dayEvents.length > 0;
+
+          return (
+            <button
+              type="button"
+              key={`day-${day}`}
+              onClick={() => {
+                setSelectedDate(dateStr);
+                setIsAdding(false);
+                setEditingEventId(null);
+              }}
+              className={`relative aspect-square flex flex-col items-center justify-center rounded-xl transition-all cursor-pointer border-none text-xs ${
+                isSelected 
+                  ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-600/10' 
+                  : isToday 
+                    ? 'border border-blue-500/50 text-blue-600 dark:text-blue-400 font-bold bg-blue-500/5' 
+                    : 'bg-white/40 dark:bg-slate-800/30 hover:bg-white/80 dark:hover:bg-slate-800/80 text-gray-800 dark:text-slate-200'
+              }`}
+            >
+              <span>{day}</span>
+              
+              {/* Event indicators */}
+              {hasEvents && (
+                <div className="absolute bottom-1 flex gap-0.5 justify-center w-full">
+                  {dayEvents.slice(0, 3).map((ev, evIdx) => {
+                    const course = COURSES.find(c => c.id === ev.courseId);
+                    const colorClass = getCategoryColor(course?.category || 'MANAGEMENT');
+                    return (
+                      <span key={evIdx} className={`w-1.5 h-1.5 rounded-full ${colorClass}`}></span>
+                    );
+                  })}
+                </div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Legends */}
+      <div className="flex flex-wrap items-center gap-4 text-[9px] font-bold text-gray-600 dark:text-slate-500 pt-3 border-t border-gray-150/40 dark:border-slate-800">
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+          <span>MANAGEMENT</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>FOOD SAFETY</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+          <span>TECHNICAL</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+          <span>LEAN</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-rose-500"></span>
+          <span>MEDICAL</span>
+        </div>
+      </div>
+    </div>
+
+    {/* Right Panel: Daily Schedule Details */}
+    <div className="lg:col-span-5 bg-white/20 dark:bg-slate-900/20 border border-gray-150/40 dark:border-slate-800/80 p-6 rounded-[2rem] flex flex-col justify-between min-h-[320px]">
+      
+      {/* Dynamic forms / view list */}
+      {(isAdding || editingEventId !== null) ? (
+        /* Form mode */
+        <form onSubmit={handleSaveEvent} className="space-y-4 font-sans text-left flex flex-col justify-between h-full">
+          <div className="space-y-3">
+            <h4 className="text-sm font-bold text-gray-900 dark:text-white pb-2 border-b border-gray-200/50 dark:border-slate-800">
+              {editingEventId !== null ? t('แก้ไขตารางกิจกรรม', 'Edit Training Event') : t('เพิ่มกิจกรรมการฝึกอบรม', 'Add Training Event')}
+            </h4>
+
+            <div className="space-y-1">
+              <label className="text-[9px] font-bold text-gray-600 dark:text-slate-500 uppercase tracking-widest">{t('เลือกหลักสูตรที่เปิดสอน', 'Select Course')}</label>
+              <select
+                required
+                value={newCourseId}
+                onChange={(e) => setNewCourseId(e.target.value)}
+                className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-xs focus:ring-1 focus:ring-blue-500 dark:text-white"
+              >
+                <option value="">-- {t('กรุณาเลือกหลักสูตร', 'Please select course')} --</option>
+                {COURSES.map(c => (
+                  <option key={c.id} value={c.id}>[{c.code}] {c.title}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[9px] font-bold text-gray-600 dark:text-slate-500 uppercase tracking-widest">{t('วันที่ดำเนินการ', 'Date')}</label>
+              <input
+                type="date"
+                required
+                value={newDate}
+                onChange={(e) => setNewDate(e.target.value)}
+                className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-xs focus:ring-1 focus:ring-blue-500 dark:text-white"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold text-gray-600 dark:text-slate-500 uppercase tracking-widest">{t('สถานที่จัดอบรม', 'Location')}</label>
+                <input
+                  type="text"
+                  required
+                  placeholder={t('เช่น กรุงเทพฯ, Zoom', 'e.g. Bangkok, Zoom')}
+                  value={newLocationTH}
+                  onChange={(e) => {
+                    setNewLocationTH(e.target.value);
+                    if (!newLocationEN) setNewLocationEN(e.target.value);
+                  }}
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-xs focus:ring-1 focus:ring-blue-500 dark:text-white"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[9px] font-bold text-gray-600 dark:text-slate-500 uppercase tracking-widest">{t('เวลาจัดอบรม', 'Time')}</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="09:00 - 16:00"
+                  value={newTime}
+                  onChange={(e) => setNewTime(e.target.value)}
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-xs focus:ring-1 focus:ring-blue-500 dark:text-white"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-2 pt-4">
+            <button
+              type="submit"
+              className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer border-none shadow-md"
+            >
+              {t('บันทึก', 'Save')}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsAdding(false);
+                setEditingEventId(null);
+              }}
+              className="px-4 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold cursor-pointer border-none"
+            >
+              {t('ยกเลิก', 'Cancel')}
+            </button>
+          </div>
+        </form>
+      ) : (
+        /* List mode */
+        <div className="space-y-4 flex-1 flex flex-col justify-between text-left h-full">
+          <div className="space-y-4 flex-1 flex flex-col">
+            <div className="border-b border-gray-200/50 dark:border-slate-800 pb-3 flex justify-between items-center">
+              <div>
+                <h4 className="text-sm font-bold text-gray-900 dark:text-white">
+                  {t('ตารางอบรมประจำวันที่', 'Training Events for')}
+                </h4>
+                <p className="text-[10px] text-gray-500 dark:text-slate-400 font-mono mt-0.5">
+                  {formatLongDate(selectedDate)}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setNewCourseId('');
+                  setNewLocationTH('');
+                  setNewLocationEN('');
+                  setNewTime('09:00 - 16:00');
+                  setNewDate(selectedDate);
+                  setIsAdding(true);
+                }}
+                className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[10px] font-bold cursor-pointer border-none shadow-sm"
+              >
+                + {t('เพิ่มอบรม', 'Add Event')}
+              </button>
+            </div>
+
+            {/* Event List */}
+            <div className="space-y-3 overflow-y-auto flex-1 max-h-[220px] pr-1">
+              {schedules.filter(s => s.date === selectedDate).length > 0 ? (
+                schedules.filter(s => s.date === selectedDate).map(ev => {
+                  const course = COURSES.find(c => c.id === ev.courseId);
+                  if (!course) return null;
+                  return (
+                    <div 
+                      key={ev.id}
+                      className="bg-white dark:bg-slate-800/80 p-3 rounded-2xl border border-gray-150/40 dark:border-slate-800/50 shadow-sm flex items-start justify-between gap-3 group/item"
+                    >
+                      <div className="space-y-1.5 flex-1 min-w-0">
+                        <span className={`inline-block px-2 py-0.5 rounded text-[8px] font-bold text-white ${getCategoryColor(course.category)}`}>
+                          {course.category}
+                        </span>
+                        <h5 className="text-xs font-bold text-gray-800 dark:text-white truncate">
+                          {t(course.title, course.titleEN)}
+                        </h5>
+                        <div className="flex flex-col gap-1 text-[10px] text-gray-600 dark:text-slate-450 font-sans">
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-3 h-3 text-blue-500" />
+                            <span>{ev.time}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3 text-blue-500" />
+                            <span>{t(ev.location, ev.locationEN)}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1 self-center opacity-85 lg:opacity-0 lg:group-hover/item:opacity-100 transition-opacity">
+                        <button
+                          type="button"
+                          onClick={() => handleStartEdit(ev)}
+                          className="p-1.5 bg-gray-100 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg text-gray-600 dark:text-slate-350 cursor-pointer border-none bg-transparent"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteEvent(ev.id)}
+                          className="p-1.5 bg-gray-100 hover:bg-red-50 hover:text-red-600 dark:bg-slate-700 dark:hover:bg-slate-650 rounded-lg text-gray-600 dark:text-slate-300 cursor-pointer border-none bg-transparent"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="flex flex-col items-center justify-center py-8 text-center text-gray-500 dark:text-slate-400 space-y-2 my-auto">
+                  <Calendar className="w-8 h-8 text-gray-300 dark:text-slate-700 stroke-1" />
+                  <p className="text-xs font-medium">{t('ไม่มีตารางอบรมสำหรับวันนี้', 'No training events scheduled for this day')}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+
+  {/* Search and Filters */}
  <div className="space-y-6">
  <div className="bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] p-4 rounded-[2rem] border shadow-sm flex flex-col md:flex-row items-center gap-4">
  <div className="relative flex-1 w-full">
