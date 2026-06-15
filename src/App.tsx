@@ -16,6 +16,7 @@ import TrainingSection from './components/TrainingSection';
 import InfoSections from './components/InfoSections';
 import ProposalForm from './components/ProposalForm';
 import AuthModal from './components/auth/AuthModal';
+import NewsSection from './components/NewsSection';
 import { auth } from './lib/firebase';
 import { onAuthStateChanged, User, signOut } from 'firebase/auth';
 import { 
@@ -51,7 +52,7 @@ export default function App() {
  primaryColor: '#2563eb' // Blue 600
  });
 
- const [activeTab, setActiveTab] = useState<'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote'>('assess');
+ const [activeTab, setActiveTab] = useState<'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote' | 'news'>('assess');
  const [isAiOpen, setIsAiOpen] = useState(false);
  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
  const [scrolled, setScrolled] = useState(false);
@@ -72,7 +73,7 @@ export default function App() {
  // Parse URL parameter to support direct tab routing
  const params = new URLSearchParams(window.location.search);
  const tabParam = params.get('tab');
- if (tabParam && ['assess', 'standards', 'training', 'verify', 'org', 'profile', 'quote'].includes(tabParam)) {
+ if (tabParam && ['assess', 'standards', 'training', 'verify', 'org', 'profile', 'quote', 'news'].includes(tabParam)) {
  setActiveTab(tabParam as any);
  }
 
@@ -105,14 +106,15 @@ export default function App() {
  const changeLang = (lang: Language) => setSettings(s => ({ ...s, lang }));
 
  const tabs = [
- { id: 'assess', labelTH: 'หน้าแรก', labelEN: 'Home', icon: Home },
- { id: 'standards', labelTH: 'มาตรฐานที่รับรอง', labelEN: 'Certified Standards', icon: Layers },
- { id: 'training', labelTH: 'การฝึกอบรม', labelEN: 'Training', icon: GraduationCap },
- { id: 'quote', labelTH: 'ขอใบเสนอราคา', labelEN: 'Get Proposal', icon: Calculator },
- { id: 'verify', labelTH: 'ตรวจใบรับรอง', labelEN: 'Verify Certificate', icon: ShieldCheck },
- { id: 'profile', labelTH: 'โปรไฟล์ลูกค้า', labelEN: 'Customer Profile', icon: UserIcon },
- { id: 'org', labelTH: 'เกี่ยวกับเรา', labelEN: 'About Us', icon: Users },
- ];
+  { id: 'assess', labelTH: 'หน้าแรก', labelEN: 'Home', icon: Home },
+  { id: 'standards', labelTH: 'มาตรฐานที่รับรอง', labelEN: 'Certified Standards', icon: Layers },
+  { id: 'training', labelTH: 'การฝึกอบรม', labelEN: 'Training', icon: GraduationCap },
+  { id: 'news', labelTH: 'ข่าวสารประชาสัมพันธ์', labelEN: 'News & PR', icon: FileText },
+  { id: 'quote', labelTH: 'ขอใบเสนอราคา', labelEN: 'Get Proposal', icon: Calculator },
+  { id: 'verify', labelTH: 'ตรวจใบรับรอง', labelEN: 'Verify Certificate', icon: ShieldCheck },
+  { id: 'profile', labelTH: 'โปรไฟล์ลูกค้า', labelEN: 'Customer Profile', icon: UserIcon },
+  { id: 'org', labelTH: 'เกี่ยวกับเรา', labelEN: 'About Us', icon: Users },
+  ];
 
  const t = (th: string, en: string) => settings.lang === 'TH' ? th : en;
 
@@ -177,6 +179,12 @@ export default function App() {
  >
  {t('ฝึกอบรม', 'Training')}
  </button>
+  <button 
+  onClick={() => setActiveTab('news')} 
+  className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer ${activeTab === 'news' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}
+  >
+  {t('ข่าวสาร', 'News')}
+  </button>
  <button 
  onClick={() => setActiveTab('profile')} 
  className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer ${activeTab === 'profile' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}
@@ -328,6 +336,12 @@ export default function App() {
  >
  {t('การฝึกอบรม', 'Training')}
  </button>
+  <button 
+  onClick={() => { setActiveTab('news'); setMobileMenuOpen(false); }}
+  className={`text-left text-3xl font-display font-bold transition-colors cursor-pointer ${activeTab === 'news' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-900 dark:text-white/40 dark:text-slate-500 hover:text-gray-900 dark:text-white dark:hover:text-white'}`}
+  >
+  {t('ข่าวสารประชาสัมพันธ์', 'News & PR')}
+  </button>
  <button 
  onClick={() => { setActiveTab('profile'); setMobileMenuOpen(false); }}
  className={`text-left text-3xl font-display font-bold transition-colors cursor-pointer ${activeTab === 'profile' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-900 dark:text-white/40 dark:text-slate-500 hover:text-gray-900 dark:text-white dark:hover:text-white'}`}
