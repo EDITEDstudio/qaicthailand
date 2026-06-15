@@ -636,6 +636,17 @@ export default function App() {
  )}
  </motion.div>
  )}
+ {activeTab === 'news' && (
+ <motion.div 
+ key="news"
+ initial={{ opacity: 0, scale: 0.98 }}
+ animate={{ opacity: 1, scale: 1 }}
+ exit={{ opacity: 0, scale: 1.02 }}
+ transition={{ duration: 0.3 }}
+ >
+ <NewsSection settings={settings} />
+ </motion.div>
+ )}
  {activeTab === 'org' && (
  <motion.div 
  key="org"
