@@ -162,46 +162,46 @@ export default function App() {
  </div>
 
  {/* Desktop Nav */}
- <div className="hidden lg:flex items-center gap-6">
- <div className="flex items-center gap-6 mr-4">
- <button onClick={() => setActiveTab('assess')} className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer ${activeTab === 'assess' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}>
+ <div className="hidden lg:flex items-center gap-3 xl:gap-6">
+ <div className="flex items-center gap-3 xl:gap-6 mr-2 xl:mr-4">
+ <button onClick={() => setActiveTab('assess')} className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap ${activeTab === 'assess' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}>
  {t('หน้าแรก', 'Home')}
  </button>
- <button onClick={() => setActiveTab('org')} className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer ${activeTab === 'org' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}>
+ <button onClick={() => setActiveTab('org')} className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap ${activeTab === 'org' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}>
  {t('เกี่ยวกับเรา', 'About')}
  </button>
- <button onClick={() => setActiveTab('standards')} className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer ${activeTab === 'standards' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}>
+ <button onClick={() => setActiveTab('standards')} className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap ${activeTab === 'standards' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}>
  {t('บริการ', 'Services')}
  </button>
  <button 
  onClick={() => setActiveTab('training')} 
- className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer ${activeTab === 'training' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}
+ className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap ${activeTab === 'training' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}
  >
  {t('ฝึกอบรม', 'Training')}
  </button>
   <button 
   onClick={() => setActiveTab('news')} 
-  className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer ${activeTab === 'news' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}
+  className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap ${activeTab === 'news' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}
   >
   {t('ข่าวสาร', 'News')}
   </button>
  <button 
  onClick={() => setActiveTab('profile')} 
- className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer ${activeTab === 'profile' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}
+ className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap ${activeTab === 'profile' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}
  >
  {t('โปรไฟล์', 'Profile')}
  </button>
  <button 
  onClick={() => setActiveTab('verify')} 
- className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer flex items-center gap-1.5 ${activeTab === 'verify' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}
+ className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${activeTab === 'verify' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}
  >
- <span>{t('ตรวจใบรับรอง (มกษ./ISO)', 'Verify (TAS/ISO)')}</span>
+ <span className="whitespace-nowrap">{t('ตรวจใบรับรอง (มกษ./ISO)', 'Verify (TAS/ISO)')}</span>
  <span className="relative flex h-2 w-2">
  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
  </span>
  </button>
- <button onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })} className="text-[10px] text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 font-bold uppercase tracking-widest transition-colors cursor-pointer">
+ <button onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })} className="text-[10px] text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap">
  {t('ติดต่อ', 'Contact')}
  </button>
  </div>
@@ -283,13 +283,13 @@ export default function App() {
  <>
  <button 
  onClick={() => setAuthModal({ isOpen: true, mode: 'login' })}
- className="text-[10px] font-bold text-gray-800 dark:text-slate-300 px-4 py-2 hover:text-blue-600 transition-colors uppercase tracking-widest cursor-pointer"
+ className="text-[10px] font-bold text-gray-800 dark:text-slate-300 px-4 py-2 hover:text-blue-600 transition-colors uppercase tracking-widest cursor-pointer whitespace-nowrap"
  >
  {t('เข้าสู่ระบบ', 'Login')}
  </button>
  <button 
  onClick={() => setAuthModal({ isOpen: true, mode: 'register' })}
- className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold rounded-xl transition-all shadow-lg shadow-blue-600/10 active:scale-95 cursor-pointer uppercase tracking-widest"
+ className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold rounded-xl transition-all shadow-lg shadow-blue-600/10 active:scale-95 cursor-pointer uppercase tracking-widest whitespace-nowrap"
  >
  {t('ลงทะเบียน', 'Register')}
  </button>
