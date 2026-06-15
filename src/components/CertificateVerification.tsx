@@ -841,287 +841,180 @@ export default function CertificateVerification({ settings }: CertificateVerific
  </div>
  </div>
 
- {/* ACTIVE CERTIFICATE VERIFICATION DETAIL MODAL SHEET */}
- {activeCert && (
- <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-md flex flex-col items-center justify-center p-4 overflow-y-auto">
- {/* Layout Toggle Buttons */}
- <div className="flex justify-center gap-2 mb-4 pointer-events-auto relative z-10">
- <button
- type="button"
- onClick={() => setCertLayout('paper')}
- className={`px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
- certLayout === 'paper' 
- ? 'bg-red-800 text-white shadow-md' 
- : ' bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] text-red-850 border border-red-800 hover:bg-white'
- }`}
- >
- {t('รูปแบบใบจริง (Paper View)', 'Paper Certificate View')}
- </button>
- <button
- type="button"
- onClick={() => setCertLayout('digital')}
- className={`px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
- certLayout === 'digital' 
- ? 'bg-red-800 text-white shadow-md' 
- : ' bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] text-red-855 border border-red-800 hover:bg-white'
- }`}
- >
- {t('รูปแบบดิจิทัล (Digital View)', 'Digital Data View')}
- </button>
- </div>
+  {/* ACTIVE CERTIFICATE VERIFICATION DETAIL MODAL SHEET */}
+  {activeCert && (
+    <div className="fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+      <div className="relative w-full max-w-2xl bg-white/95 backdrop-blur-[35px] border border-white/60 shadow-2xl dark:bg-slate-900/95 dark:border-slate-800 rounded-[2rem] overflow-hidden flex flex-col p-6 md:p-8 space-y-6 animate-scaleIn">
+        
+        {/* Close Button */}
+        <button
+          onClick={closeVerificationModal}
+          className="absolute top-6 right-6 p-2 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 rounded-full transition-colors cursor-pointer border-none"
+        >
+          <XCircle className="w-5 h-5" />
+        </button>
 
- <div className={`relative w-full max-w-xl rounded-2xl overflow-hidden shadow-2xl animate-scaleIn select-none p-6 transition-all duration-300 ${
- certLayout === 'digital' 
- ? 'bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] border-transparent' 
- : 'bg-[#faf6ee] border-[10px] border-[#991b1b]'
- }`}>
- {/* Close Button top edge outside critical borders */}
- <button
- onClick={closeVerificationModal}
- className="absolute -top-4 -right-4 p-2 bg-red-800 text-white rounded-full hover:bg-red-700 transition-colors shadow-lg cursor-pointer pointer-events-auto z-30"
- >
- <XCircle className="w-5 h-5" />
- </button>
+        {/* Modal Header */}
+        <div className="flex items-start gap-4 border-b border-gray-100 dark:border-slate-800 pb-4">
+          <div className="p-3 bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-400 rounded-2xl">
+            <ShieldCheck className="w-6 h-6" />
+          </div>
+          <div>
+            <h3 className="text-lg font-display font-bold text-gray-900 dark:text-white text-left">
+              {t('ผลการตรวจสอบใบรับรองมาตรฐาน', 'Certificate Verification Details')}
+            </h3>
+            <p className="text-xs text-gray-600 dark:text-slate-400 text-left">
+              {t('ข้อมูลสถานะระบบทะเบียนผู้ได้รับอนุมัติการรับรองสากลอย่างเป็นทางการ', 'Official registration status and compliance records')}
+            </p>
+          </div>
+        </div>
 
- {certLayout === 'digital' ? (
- /* INNER FORMAL BORDER FRAME "ล้อมกรอบลายดนตรีสีแดงดูเป็นทางการ" */
- <div className="border border-red-800 m-1.5 p-6 rounded-lg relative min-h-[460px] md:min-h-[500px]">
- {/* Corner Traditional Accents */}
- <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-red-800"></div>
- <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-red-800"></div>
- <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-red-800"></div>
- <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-red-800"></div>
+        {/* Content Info Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-sans text-left">
+          
+          {/* Left Column */}
+          <div className="space-y-4">
+            <div>
+              <span className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider block mb-1">
+                {t('ชื่อองค์กร (ไทย)', 'Company Name (TH)')}
+              </span>
+              <p className="text-sm font-bold text-gray-900 dark:text-white leading-snug">
+                {activeCert.companyNameTH}
+              </p>
+            </div>
 
- {/* Background Safety Lion Crest Watermark */}
- <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03]">
- <Award className="w-[300px] h-[300px] text-red-900" />
- </div>
+            <div>
+              <span className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider block mb-1">
+                {t('ชื่อองค์กร (อังกฤษ)', 'Company Name (EN)')}
+              </span>
+              <p className="text-sm font-bold text-gray-800 dark:text-slate-200 leading-snug">
+                {activeCert.companyNameEN}
+              </p>
+            </div>
 
- {/* Certificate content */}
- <div className="text-center space-y-6 pt-4 relative z-10">
- {/* Header Section representing official CB */}
- <div className="space-y-1">
- <span className="text-[10px] font-bold text-red-800 tracking-widest uppercase font-mono">
- QAIC ACCREDITATION REGISTRAR
- </span>
- <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900 dark:text-white tracking-wide">
- CERTIFICATE OF COMPLIANCE
- </h3>
- <p className="text-[9px] text-red-800 font-bold tracking-widest uppercase">
- {activeCert.category === 'TAS' 
- ? 'THAILAND AGRICULTURAL STANDARD IN COMPLIANCE WITH ACFS / มกอช.' 
- : 'INTERNATIONAL STANDARDS ORGANISATION COMPLIANCE'}
- </p>
- <div className="w-16 h-0.5 bg-red-800 mx-auto mt-2"></div>
- </div>
+            <div>
+              <span className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider block mb-1">
+                {t('เกณฑ์มาตรฐานที่รับรอง', 'Accredited Standard')}
+              </span>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/50 rounded-full text-xs font-bold text-red-800 dark:text-red-400">
+                <Award className="w-3.5 h-3.5" />
+                <span>{activeCert.standard}</span>
+              </div>
+            </div>
 
- {/* Main Body - Grantee details */}
- <div className="space-y-1 py-2">
- <span className="text-[10px] italic text-gray-700 dark:text-slate-400 font-sans block">{t('เอกสารนี้รับรองว่า', 'This is to certify that')}</span>
- <h4 className="text-base md:text-xl font-bold text-gray-900 dark:text-white leading-snug">
- {lang === 'TH' ? activeCert.companyNameTH : activeCert.companyNameEN}
- </h4>
- <p className="text-[11px] text-gray-800 dark:text-slate-300 font-sans font-medium">
- {lang === 'TH' ? activeCert.companyNameEN : activeCert.companyNameTH}
- </p>
- <p className="text-[10px] text-gray-600 dark:text-slate-500 font-sans">
- {t('จังหวัดพิกัดโรงงาน / Operating Province: ', 'Operating Province: ')} {t(activeCert.provinceTH, activeCert.provinceEN)}, {activeCert.country}
- </p>
- </div>
+            <div>
+              <span className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider block mb-1">
+                {t('พื้นที่ดำเนินการ (Location)', 'Operating Location')}
+              </span>
+              <div className="flex items-center gap-1.5 text-xs text-gray-700 dark:text-slate-300">
+                <MapPin className="w-4 h-4 text-gray-400" />
+                <span>{t(activeCert.provinceTH, activeCert.provinceEN)}, {activeCert.country}</span>
+              </div>
+            </div>
+          </div>
 
- {/* Achieved Standard Section */}
- <div className="bg-red-800/5 py-4 px-3 rounded-xl border border-red-800/10 max-w-md mx-auto space-y-1">
- <span className="text-[9px] font-bold uppercase text-red-800 font-sans tracking-widest">
- {t('ได้รับการตรวจรับรองสอดคล้องตามเกณฑ์มาตรฐาน', 'Has been assessed for')}
- </span>
- <div className="text-lg md:text-xl font-black text-red-900 font-display tracking-wider">
- {activeCert.standard}
- </div>
- </div>
+          {/* Right Column */}
+          <div className="space-y-4">
+            <div>
+              <span className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider block mb-1">
+                {t('เลขที่ใบรับรอง (Certificate No.)', 'Certificate Number')}
+              </span>
+              <p className="text-xs font-bold font-mono text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-800 px-2 py-1 rounded border border-gray-200/50 dark:border-slate-700 w-fit">
+                {activeCert.certificateNo}
+              </p>
+            </div>
 
- {/* Certified Scope details */}
- <div className="space-y-1 max-w-lg mx-auto">
- <span className="text-[9.5px] font-bold uppercase text-gray-600 dark:text-slate-500 tracking-widest font-sans block">
- {t('ขอบข่ายการรับรองระบบ', 'Certified Scope of Operations')}
- </span>
- <p className="text-[11px] text-gray-700 dark:text-slate-200 leading-relaxed font-sans italic text-center px-4">
- "{lang === 'TH' ? activeCert.scopeTH : activeCert.scopeEN}"
- </p>
- </div>
+            <div>
+              <span className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider block mb-1">
+                {t('สถานะใบรับรอง (Status)', 'Certification Status')}
+              </span>
+              <div>
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
+                  activeCert.status === 'Active' 
+                    ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50' 
+                    : 'bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-400 border border-amber-100 dark:border-amber-900/50'
+                }`}>
+                  <span className="relative flex h-2 w-2">
+                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${activeCert.status === 'Active' ? 'bg-emerald-400' : 'bg-amber-500'}`}></span>
+                    <span className={`relative inline-flex rounded-full h-2 w-2 ${activeCert.status === 'Active' ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
+                  </span>
+                  <span>{activeCert.status === 'Active' ? t('ได้รับการรับรอง (Active)', 'Active') : t('ใบรับรองหมดอายุ (Expired)', 'Expired')}</span>
+                </span>
+              </div>
+            </div>
 
- {/* Bottom Signature and Stamps Area */}
- <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-gray-150 relative">
- 
- {/* Left block: Registration codes */}
- <div className="text-left text-[9.5px] text-gray-700 dark:text-slate-400 font-medium font-sans space-y-1">
- <div>
- <span className="font-bold text-gray-700 dark:text-slate-200">CERTIFICATE NO: </span>
- <span className="font-mono">{activeCert.certificateNo}</span>
- </div>
- <div>
- <span className="font-bold text-gray-700 dark:text-slate-200">DATE OF CERTIFIED: </span>
- <span className="font-mono">{activeCert.issueDate}</span>
- </div>
- <div>
- <span className="font-bold text-gray-700 dark:text-slate-200">EXPIRY DATE OF LIFE: </span>
- <span className="font-mono text-red-805">{activeCert.expiryDate}</span>
- </div>
- <div>
- <span className="font-bold text-gray-700 dark:text-slate-200">STATUS: </span>
- <span className={`font-bold uppercase ${activeCert.status === 'Active' ? 'text-emerald-600' : 'text-red-650'}`}>
- {activeCert.status}
- </span>
- </div>
- </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <span className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider block mb-1">
+                  {t('วันที่อนุมัติ (Certified Date)', 'Certified Date')}
+                </span>
+                <p className="text-xs text-gray-800 dark:text-slate-350 font-mono">{activeCert.issueDate}</p>
+              </div>
+              <div>
+                <span className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider block mb-1">
+                  {t('วันที่หมดอายุ (Expiry Date)', 'Expiry Date')}
+                </span>
+                <p className="text-xs text-red-700 dark:text-red-400 font-mono font-bold">{activeCert.expiryDate}</p>
+              </div>
+            </div>
 
- {/* Middle: Secure QR Code for real-time validation */}
- <div className="flex flex-col items-center justify-center gap-1.5">
- <div className="bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] p-2 rounded-lg border border-red-800/20 shadow-md">
- <QrCode className="w-16 h-16 text-gray-900 dark:text-white stroke-1" />
- </div>
- <span className="text-[7.5px] font-mono text-gray-600 dark:text-slate-500 font-bold uppercase tracking-wider">
- ACFS / MASCI QR PASS
- </span>
- </div>
+            <div>
+              <span className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider block mb-1">
+                {t('ผู้ลงนามรับรอง (Authorized Signatory)', 'Authorized Signatory')}
+              </span>
+              <p className="text-xs text-gray-800 dark:text-slate-300 font-medium">
+                {activeCert.authorizedSignatory}
+              </p>
+            </div>
+          </div>
+        </div>
 
- {/* Right: Accredited Standard Logo & Rubber Seal */}
- <div className="flex items-center justify-center gap-4">
- <div className="bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] p-1.5 rounded border shadow-sm w-12 h-16 flex items-center justify-center">
- <img src={getStandardLogo(activeCert.category)} alt="Standard Logo" className="w-full h-full object-contain" />
- </div>
- <div className="border-4 border-red-800/80 border-dashed rounded-full p-1 w-16 h-16 flex flex-col items-center justify-center text-center rotate-[-8deg] bg-red-800/5 hidden md:flex">
- <span className="text-[5px] font-black text-red-800">ACCREDITED</span>
- <Award className="w-3.5 h-3.5 text-red-800 my-0.5" />
- <span className="text-[4px] font-bold text-red-800 tracking-tighter">QAIC REGISTRAR</span>
- </div>
- </div>
+        {/* Scope Area */}
+        <div className="bg-gray-50/50 dark:bg-slate-900/40 p-4 rounded-2xl border border-gray-100 dark:border-slate-800 font-sans text-left">
+          <span className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider block mb-1.5">
+            {t('ขอบข่ายการรับรองระบบ (Certified Scope)', 'Certified Scope of Operations')}
+          </span>
+          <p className="text-xs text-gray-700 dark:text-slate-200 italic leading-relaxed">
+            "{lang === 'TH' ? activeCert.scopeTH : activeCert.scopeEN}"
+          </p>
+        </div>
 
- </div>
+        {/* Footer Logos & Actions */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-150 dark:border-slate-800">
+          {/* Stamps/Logos */}
+          <div className="flex items-center gap-4">
+            <div className="bg-white/90 dark:bg-slate-950/60 p-1.5 rounded-lg border border-gray-150 dark:border-slate-800 shadow-sm w-9 h-12 flex items-center justify-center">
+              <img src={getStandardLogo(activeCert.category)} alt="Standard Logo" className="w-full h-full object-contain" />
+            </div>
+            <div className="bg-white/90 dark:bg-slate-950/60 p-1.5 rounded-lg border border-gray-150 dark:border-slate-800 shadow-sm w-12 h-12 flex items-center justify-center">
+              <QrCode className="w-full h-full text-gray-800 dark:text-white stroke-1" />
+            </div>
+          </div>
 
- {/* Print button triggers for physical audit copy */}
- <div className="pt-4 flex items-center justify-center gap-4 pointer-events-auto">
- <button
- onClick={() => {
- window.print();
- }}
- className="px-5 py-2.5 bg-red-800 hover:bg-red-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-lg shadow-red-800/10 cursor-pointer border-none"
- >
- <Printer className="w-4 h-4" />
- <span>{t('สั่งระบบพิมพ์ใบประกาศสัญญานี้', 'Print Official Certificate')}</span>
- </button>
- <button
- onClick={closeVerificationModal}
- className="px-5 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 dark:text-slate-200 rounded-xl text-xs font-bold cursor-pointer border-none"
- >
- {t('ปิดหน้าต่างตรวจสอบ', 'Close Inspect Panel')}
- </button>
- </div>
+          {/* Action Buttons */}
+          <div className="flex gap-2 w-full sm:w-auto">
+            <button
+              onClick={() => window.print()}
+              className="flex-1 sm:flex-initial px-5 py-2.5 bg-red-800 hover:bg-red-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer border-none shadow-md shadow-red-800/10"
+            >
+              <Printer className="w-4 h-4" />
+              <span>{t('พิมพ์ข้อมูลระบบ', 'Print Official Records')}</span>
+            </button>
+            <button
+              onClick={closeVerificationModal}
+              className="flex-1 sm:flex-initial px-5 py-2.5 bg-gray-200 dark:bg-slate-800 hover:bg-gray-300 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-200 rounded-xl text-xs font-bold cursor-pointer border-none"
+            >
+              {t('ปิดหน้าต่าง', 'Close')}
+            </button>
+          </div>
+        </div>
 
- </div>
- </div>
- ) : (
- /* Paper view using ตัวอย่างใบcer.png as background */
- <div className="text-center space-y-6">
- <div 
- className="relative w-full aspect-[1/1.414] bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] rounded-lg shadow-inner overflow-hidden border p-6 md:p-10 text-center flex flex-col justify-between"
- style={{ 
- backgroundImage: 'url("/ตัวอย่างใบcer.png")', 
- backgroundSize: '100% 100%', 
- backgroundPosition: 'center',
- backgroundRepeat: 'no-repeat'
- }}
- >
- <div className="h-full flex flex-col justify-between pt-[24%] pb-[5%]">
- {/* Empty placeholder to push down content */}
- <div></div>
+      </div>
+    </div>
+  )}
 
- {/* Corporate content absolute-aligned over blank template spots */}
- <div className="space-y-4 md:space-y-6">
- <div className="space-y-1 md:space-y-2">
- <span className="text-[8px] md:text-[10px] italic text-red-800/80 tracking-widest font-sans font-bold uppercase block">
- This is to certify that
- </span>
- <h4 className="text-xs md:text-lg font-bold text-gray-900 dark:text-white leading-snug px-6">
- {lang === 'TH' ? activeCert.companyNameTH : activeCert.companyNameEN}
- </h4>
- <p className="text-[9px] md:text-[11px] text-gray-650 font-sans font-medium px-6">
- {lang === 'TH' ? activeCert.companyNameEN : activeCert.companyNameTH}
- </p>
- <p className="text-[7.5px] md:text-[9px] text-gray-600 dark:text-slate-500 font-sans">
- {t('Location: ', 'Location: ')} {t(activeCert.provinceTH, activeCert.provinceEN)}, {activeCert.country}
- </p>
- </div>
 
- <div className="space-y-0.5 bg-red-900/5 py-1.5 px-3 rounded-lg border border-red-900/10 max-w-[240px] md:max-w-xs mx-auto">
- <span className="text-[7px] font-bold uppercase text-red-800/70 tracking-wider block">{t('ได้รับการรับรองมาตรฐานระบบงาน', 'Has been assessed and certified under')}</span>
- <div className="text-xs md:text-base font-black text-red-950 font-display">
- {activeCert.standard}
- </div>
- </div>
-
- <div className="space-y-0.5 max-w-[280px] md:max-w-sm mx-auto">
- <span className="text-[7px] md:text-[8.5px] font-bold uppercase text-gray-600 dark:text-slate-500 tracking-widest block">Scope of Certified Operations</span>
- <p className="text-[8px] md:text-[10px] text-gray-750 leading-relaxed font-sans italic px-6 line-clamp-3">
- "{lang === 'TH' ? activeCert.scopeTH : activeCert.scopeEN}"
- </p>
- </div>
- </div>
-
- {/* Bottom Validation Row */}
- <div className="grid grid-cols-3 items-end gap-2 pt-2 border-t border-gray-150/40 text-left">
- {/* Cert Codes */}
- <div className="text-[7px] md:text-[8px] text-gray-700 dark:text-slate-400 font-sans space-y-0.5 leading-tight">
- <div><span className="font-bold text-gray-700 dark:text-slate-200">CERT NO: </span><span className="font-mono">{activeCert.certificateNo}</span></div>
- <div><span className="font-bold text-gray-700 dark:text-slate-200">ISSUE: </span><span className="font-mono">{activeCert.issueDate}</span></div>
- <div><span className="font-bold text-gray-700 dark:text-slate-200">EXPIRY: </span><span className="font-mono text-red-800">{activeCert.expiryDate}</span></div>
- <div><span className="font-bold text-gray-700 dark:text-slate-200">STATUS: </span><span className="font-bold text-emerald-600">{activeCert.status}</span></div>
- </div>
-
- {/* QR Code */}
- <div className="flex flex-col items-center justify-center">
- <div className="bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] p-1 rounded border shadow-sm w-8 h-8 md:w-11 md:h-11 flex items-center justify-center">
- <QrCode className="w-full h-full text-gray-900 dark:text-white stroke-1" />
- </div>
- <span className="text-[5px] font-mono text-gray-600 dark:text-slate-500 mt-0.5 uppercase">VERIFIED QR</span>
- </div>
-
- {/* Standard Logo Badge */}
- <div className="flex flex-col items-center justify-center">
- <div className="bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] p-1 rounded border shadow-sm w-8 h-11 md:w-11 md:h-16 flex items-center justify-center">
- <img src={getStandardLogo(activeCert.category)} alt="Standard Logo" className="w-full h-full object-contain" />
- </div>
- <span className="text-[5px] font-mono text-gray-600 dark:text-slate-500 mt-0.5 uppercase">ACCREDITED</span>
- </div>
- </div>
- </div>
- </div>
-
- {/* Print button triggers for physical audit copy */}
- <div className="pt-2 flex items-center justify-center gap-4 pointer-events-auto">
- <button
- onClick={() => {
- window.print();
- }}
- className="px-5 py-2.5 bg-red-800 hover:bg-red-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-lg shadow-red-800/10 cursor-pointer border-none"
- >
- <Printer className="w-4 h-4" />
- <span>{t('สั่งระบบพิมพ์ใบประกาศสัญญานี้', 'Print Official Certificate')}</span>
- </button>
- <button
- onClick={closeVerificationModal}
- className="px-5 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 dark:text-slate-200 rounded-xl text-xs font-bold cursor-pointer border-none"
- >
- {t('ปิดหน้าต่างตรวจสอบ', 'Close Inspect Panel')}
- </button>
- </div>
- </div>
- )}
-
- </div>
- </div>
- )}
-
- {/* RENEWAL EMERGENCY ACTION DRAWERS / OVERLAY FORM */}
+  {/* RENEWAL EMERGENCY ACTION DRAWERS / OVERLAY FORM */}
  {renewalClient && (
  <div className="fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
  <div className="bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] rounded-3xl w-full max-w-lg p-6 md:p-8 border shadow-2xl relative animate-scaleIn">
