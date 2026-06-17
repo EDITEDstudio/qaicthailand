@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Search, 
   Calendar, 
@@ -17,9 +17,12 @@ import {
   Check,
   XCircle,
   ShieldCheck,
-  Award,
   Zap,
-  Globe
+  Globe,
+  Plus,
+  Trash2,
+  Edit3,
+  X
 } from 'lucide-react';
 import { UserSettings } from '../types';
 
@@ -44,7 +47,7 @@ interface NewsArticle {
   views: number;
 }
 
-const NEWS_ARTICLES: NewsArticle[] = [
+const DEFAULT_NEWS_ARTICLES: NewsArticle[] = [
   {
     id: 'news-01',
     titleTH: 'QAIC ขยายการรับรองระบบ ISO 9001 แก่กลุ่มสหกรณ์การเกษตรภาคเหนือ',
@@ -192,16 +195,65 @@ const NEWS_ARTICLES: NewsArticle[] = [
 ];
 
 export default function NewsSection({ settings }: NewsSectionProps) {
+  // Load initial state from LocalStorage
+  const [articles, setArticles] = useState<NewsArticle[]>(() => {
+    const saved = localStorage.getItem('qaic_news_articles');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse news articles from localStorage:', e);
+      }
+    }
+    return DEFAULT_NEWS_ARTICLES;
+  });
+
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('ALL');
   const [selectedArticle, setSelectedArticle] = useState<NewsArticle | null>(null);
   const [isCopied, setIsCopied] = useState(false);
+  
+  // Admin dashboard states
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingArticle, setEditingArticle] = useState<NewsArticle | null>(null);
+  
+  // Form input states
+  const [formTitleTH, setFormTitleTH] = useState('');
+  const [formTitleEN, setFormTitleEN] = useState('');
+  const [formSummaryTH, setFormSummaryTH] = useState('');
+  const [formSummaryEN, setFormSummaryEN] = useState('');
+  const [formContentTH, setFormContentTH] = useState('');
+  const [formContentEN, setFormContentEN] = useState('');
+  const [formCategory, setFormCategory] = useState<'PR' | 'CERTIFICATION' | 'TRAINING' | 'ISO UPDATE'>('PR');
+  const [formDateTH, setFormDateTH] = useState('');
+  const [formDateEN, setFormDateEN] = useState('');
+  const [formReadTimeTH, setFormReadTimeTH] = useState('3 นาที');
+  const [formReadTimeEN, setFormReadTimeEN] = useState('3 min read');
+  const [formImage, setFormImage] = useState('/news/news1.jpg');
+
+  // Sync to local storage
+  useEffect(() => {
+    localStorage.setItem('qaic_news_articles', JSON.stringify(articles));
+  }, [articles]);
+
+  // Handle URL parameter deep linking
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const articleId = params.get('article');
+    const tabParam = params.get('tab');
+    if (tabParam === 'news' && articleId) {
+      const article = articles.find(a => a.id === articleId);
+      if (article) {
+        setSelectedArticle(article);
+      }
+    }
+  }, [articles]);
 
   const t = (th: string, en: string) => settings.lang === 'TH' ? th : en;
-
   const categories = ['ALL', 'PR', 'CERTIFICATION', 'TRAINING', 'ISO UPDATE'];
 
-  const filteredArticles = NEWS_ARTICLES.filter(article => {
+  const filteredArticles = articles.filter(article => {
     const matchesSearch = 
       article.titleTH.toLowerCase().includes(searchQuery.toLowerCase()) ||
       article.titleEN.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -209,7 +261,6 @@ export default function NewsSection({ settings }: NewsSectionProps) {
       article.summaryEN.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesCategory = activeCategory === 'ALL' || article.category === activeCategory;
-
     return matchesSearch && matchesCategory;
   });
 
@@ -223,6 +274,22 @@ export default function NewsSection({ settings }: NewsSectionProps) {
     }
   };
 
+  const handleOpenArticle = (article: NewsArticle) => {
+    setSelectedArticle(article);
+    const params = new URLSearchParams(window.location.search);
+    params.set('tab', 'news');
+    params.set('article', article.id);
+    window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+  };
+
+  const handleCloseArticle = () => {
+    setSelectedArticle(null);
+    const params = new URLSearchParams(window.location.search);
+    params.set('tab', 'news');
+    params.delete('article');
+    window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+  };
+
   const handleShare = (article: NewsArticle) => {
     const shareUrl = `${window.location.origin}${window.location.pathname}?tab=news&article=${article.id}`;
     navigator.clipboard.writeText(shareUrl).then(() => {
@@ -231,8 +298,151 @@ export default function NewsSection({ settings }: NewsSectionProps) {
     });
   };
 
+  // Open Form for Creating or Editing
+  const openForm = (article: NewsArticle | null = null) => {
+    if (article) {
+      setEditingArticle(article);
+      setFormTitleTH(article.titleTH);
+      setFormTitleEN(article.titleEN);
+      setFormSummaryTH(article.summaryTH);
+      setFormSummaryEN(article.summaryEN);
+      setFormContentTH(article.contentTH);
+      setFormContentEN(article.contentEN);
+      setFormCategory(article.category);
+      setFormDateTH(article.date);
+      setFormDateEN(article.dateEN);
+      setFormReadTimeTH(article.readTimeTH);
+      setFormReadTimeEN(article.readTimeEN);
+      setFormImage(article.image);
+    } else {
+      setEditingArticle(null);
+      // Pre-fill with reasonable defaults
+      const today = new Date();
+      const monthsTH = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+      const monthsEN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const yearTH = today.getFullYear() + 543;
+      const yearEN = today.getFullYear();
+      
+      setFormTitleTH('');
+      setFormTitleEN('');
+      setFormSummaryTH('');
+      setFormSummaryEN('');
+      setFormContentTH('');
+      setFormContentEN('');
+      setFormCategory('PR');
+      setFormDateTH(`${today.getDate()} ${monthsTH[today.getMonth()]} ${yearTH}`);
+      setFormDateEN(`${monthsEN[today.getMonth()]} ${today.getDate()}, ${yearEN}`);
+      setFormReadTimeTH('3 นาที');
+      setFormReadTimeEN('3 min read');
+      setFormImage('/news/news1.jpg');
+    }
+    setIsFormOpen(true);
+  };
+
+  // Save/Submit Form data
+  const handleSaveArticle = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formTitleTH || !formTitleEN) {
+      alert(t('กรุณากรอกหัวข้อข่าวสาร', 'Please fill in the announcement title'));
+      return;
+    }
+
+    if (editingArticle) {
+      // Update article
+      setArticles(prev => prev.map(art => {
+        if (art.id === editingArticle.id) {
+          return {
+            ...art,
+            titleTH: formTitleTH,
+            titleEN: formTitleEN,
+            summaryTH: formSummaryTH,
+            summaryEN: formSummaryEN,
+            contentTH: formContentTH,
+            contentEN: formContentEN,
+            category: formCategory,
+            date: formDateTH,
+            dateEN: formDateEN,
+            readTimeTH: formReadTimeTH,
+            readTimeEN: formReadTimeEN,
+            image: formImage
+          };
+        }
+        return art;
+      }));
+    } else {
+      // Create new article
+      const newArticle: NewsArticle = {
+        id: `news-${Date.now()}`,
+        titleTH: formTitleTH,
+        titleEN: formTitleEN,
+        summaryTH: formSummaryTH,
+        summaryEN: formSummaryEN,
+        contentTH: formContentTH,
+        contentEN: formContentEN,
+        category: formCategory,
+        date: formDateTH,
+        dateEN: formDateEN,
+        readTimeTH: formReadTimeTH,
+        readTimeEN: formReadTimeEN,
+        image: formImage,
+        views: 0
+      };
+      setArticles(prev => [newArticle, ...prev]);
+    }
+    setIsFormOpen(false);
+    setEditingArticle(null);
+  };
+
+  // Delete article
+  const handleDeleteArticle = (id: string) => {
+    if (confirm(t('คุณแน่ใจหรือไม่ว่าต้องการลบข่าวสารประชาสัมพันธ์นี้?', 'Are you sure you want to delete this announcement?'))) {
+      setArticles(prev => prev.filter(art => art.id !== id));
+      if (selectedArticle && selectedArticle.id === id) {
+        handleCloseArticle();
+      }
+    }
+  };
+
+  // Restore Default News Mock Dataset
+  const handleRestoreDefaultData = () => {
+    if (confirm(t('คุณต้องการรีเซ็ตข้อมูลและใช้ข้อมูลตัวอย่างดั้งเดิมทั้ง 9 รายการหรือไม่?', 'Do you want to reset and restore the original 9 mock articles?'))) {
+      setArticles(DEFAULT_NEWS_ARTICLES);
+      setIsAdminMode(false);
+      handleCloseArticle();
+    }
+  };
+
   return (
     <div className="space-y-12 pb-20">
+      {/* Print stylesheet overlay */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @media print {
+          /* Hide everything outside of print modal */
+          body * {
+            visibility: hidden;
+            background: transparent !important;
+          }
+          #print-modal-content, #print-modal-content * {
+            visibility: visible;
+          }
+          #print-modal-content {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            max-height: none !important;
+            overflow: visible !important;
+            background: white !important;
+            color: black !important;
+            box-shadow: none !important;
+            border: none !important;
+          }
+          .no-print {
+            display: none !important;
+          }
+        }
+      `}} />
+
       {/* Header */}
       <div className="flex flex-col md:flex-row items-end justify-between gap-6 text-left">
         <div className="space-y-4 max-w-2xl">
@@ -280,23 +490,60 @@ export default function NewsSection({ settings }: NewsSectionProps) {
           </div>
         </div>
 
-        {/* Category selector */}
-        <div className="flex flex-wrap items-center gap-2">
-          {categories.map(cat => (
+        {/* Category selector & Admin Toggle */}
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-2">
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-5 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all cursor-pointer border ${
+                  activeCategory === cat 
+                    ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-600/20' 
+                    : 'bg-white/50 border-gray-200 text-gray-700 dark:bg-slate-900/40 dark:border-slate-800 dark:text-slate-300 dark:hover:text-white hover:bg-white'
+                }`}
+              >
+                {cat === 'ALL' ? t('ทั้งหมด', 'All Articles') : cat}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2">
+            {isAdminMode && (
+              <button
+                onClick={handleRestoreDefaultData}
+                className="px-4 py-2 bg-yellow-600/10 border border-yellow-500/20 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-600/25 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all cursor-pointer shadow-sm active:scale-95"
+              >
+                {t('รีเซ็ตข้อมูลข่าวสาร', 'Reset Mock News')}
+              </button>
+            )}
             <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-5 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all cursor-pointer border ${
-                activeCategory === cat 
-                  ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-600/20' 
-                  : 'bg-white/50 border-gray-200 text-gray-700 dark:bg-slate-900/40 dark:border-slate-800 dark:text-slate-300 dark:hover:text-white hover:bg-white'
+              onClick={() => setIsAdminMode(!isAdminMode)}
+              className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all cursor-pointer flex items-center gap-1.5 border ${
+                isAdminMode 
+                  ? 'bg-red-500/10 border-red-500/30 text-red-650 dark:text-red-400 font-extrabold shadow-sm' 
+                  : 'bg-white/50 border-gray-200 text-gray-600 dark:bg-slate-900/40 dark:border-slate-800 dark:text-slate-400 shadow-sm'
               }`}
             >
-              {cat === 'ALL' ? t('ทั้งหมด', 'All Articles') : cat}
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>{isAdminMode ? t('ออกจากโหมดผู้ตรวจ', 'Exit Admin Mode') : t('โหมดแอดมิน', 'Admin Mode')}</span>
             </button>
-          ))}
+          </div>
         </div>
       </div>
+
+      {/* Admin Action Row */}
+      {isAdminMode && (
+        <div className="flex justify-end p-4 bg-slate-900/5 dark:bg-white/5 border border-dashed border-gray-300 dark:border-slate-800 rounded-3xl no-print">
+          <button
+            onClick={() => openForm(null)}
+            className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-600/10 active:scale-95 transition-all cursor-pointer border-none"
+          >
+            <Plus className="w-4 h-4" />
+            <span>{t('เขียนข่าวประชาสัมพันธ์ใหม่', 'Add New Announcement')}</span>
+          </button>
+        </div>
+      )}
 
       {/* Grid of Articles */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -304,9 +551,35 @@ export default function NewsSection({ settings }: NewsSectionProps) {
           filteredArticles.map(article => (
             <div
               key={article.id}
-              onClick={() => setSelectedArticle(article)}
-              className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-[35px] border border-white/40 dark:border-slate-800 rounded-[2.5rem] overflow-hidden hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-900/5 transition-all group cursor-pointer flex flex-col justify-between"
+              onClick={() => handleOpenArticle(article)}
+              className="relative bg-white/40 dark:bg-slate-900/40 backdrop-blur-[35px] border border-white/40 dark:border-slate-800 rounded-[2.5rem] overflow-hidden hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-900/5 transition-all group cursor-pointer flex flex-col justify-between"
             >
+              {/* Admin overlays */}
+              {isAdminMode && (
+                <div className="absolute top-4 right-4 flex items-center gap-1.5 z-20 no-print">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openForm(article);
+                    }}
+                    className="p-2 bg-white/95 hover:bg-white dark:bg-slate-900/95 dark:hover:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-xl shadow-lg border-none cursor-pointer flex items-center justify-center active:scale-90 transition-all"
+                    title={t('แก้ไข', 'Edit')}
+                  >
+                    <Edit3 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteArticle(article.id);
+                    }}
+                    className="p-2 bg-white/95 hover:bg-white dark:bg-slate-900/95 dark:hover:bg-slate-800 text-red-650 dark:text-red-400 rounded-xl shadow-lg border-none cursor-pointer flex items-center justify-center active:scale-90 transition-all"
+                    title={t('ลบ', 'Delete')}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+
               <div className="relative h-48 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
                 {/* Visual Image with Fallback */}
                 <img 
@@ -370,7 +643,7 @@ export default function NewsSection({ settings }: NewsSectionProps) {
       {/* Article Detail Modal */}
       {selectedArticle && (
         <div className="fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="relative w-full max-w-3xl bg-white/95 backdrop-blur-[35px] border border-white/60 shadow-2xl dark:bg-slate-900/95 dark:border-slate-800 rounded-[2.5rem] overflow-hidden flex flex-col max-h-[90vh]">
+          <div id="print-modal-content" className="relative w-full max-w-3xl bg-white/95 backdrop-blur-[35px] border border-white/60 shadow-2xl dark:bg-slate-900/95 dark:border-slate-800 rounded-[2.5rem] overflow-hidden flex flex-col max-h-[90vh]">
             
             {/* Modal Header */}
             <div className="p-6 md:p-8 border-b border-gray-100 dark:border-slate-800 flex justify-between items-start">
@@ -390,13 +663,13 @@ export default function NewsSection({ settings }: NewsSectionProps) {
                     <Clock className="w-3.5 h-3.5" />
                     <span>{t(selectedArticle.readTimeTH, selectedArticle.readTimeEN)}</span>
                   </div>
-                  <div>•</div>
-                  <div>{selectedArticle.views} {t('ยอดเข้าชม', 'views')}</div>
+                  <div className="no-print">•</div>
+                  <div className="no-print">{selectedArticle.views} {t('ยอดเข้าชม', 'views')}</div>
                 </div>
               </div>
               <button
-                onClick={() => setSelectedArticle(null)}
-                className="p-2 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 rounded-full transition-colors cursor-pointer border-none"
+                onClick={handleCloseArticle}
+                className="p-2 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-300 rounded-full transition-colors cursor-pointer border-none no-print"
               >
                 <XCircle className="w-5 h-5" />
               </button>
@@ -418,28 +691,28 @@ export default function NewsSection({ settings }: NewsSectionProps) {
               </div>
 
               <div className="space-y-4">
-                <p className="font-bold text-gray-900 dark:text-white text-base">
+                <p className="font-bold text-gray-900 dark:text-white text-base leading-relaxed">
                   {t(selectedArticle.summaryTH, selectedArticle.summaryEN)}
                 </p>
-                <p className="text-gray-700 dark:text-slate-300 text-sm">
+                <p className="text-gray-700 dark:text-slate-300 text-sm whitespace-pre-line leading-relaxed">
                   {t(selectedArticle.contentTH, selectedArticle.contentEN)}
                 </p>
               </div>
             </div>
 
             {/* Modal Footer */}
-            <div className="p-6 md:p-8 border-t border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-900/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="p-6 md:p-8 border-t border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-900/40 flex flex-col sm:flex-row items-center justify-between gap-4 no-print">
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => handleShare(selectedArticle)}
-                  className="px-4 py-2 bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm"
+                  className="px-4 py-2 bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95 transition-all"
                 >
                   {isCopied ? <Check className="w-4 h-4 text-emerald-500" /> : <Share2 className="w-4 h-4 text-blue-500" />}
                   <span>{isCopied ? t('คัดลอกแล้ว', 'Link Copied') : t('แชร์ลิงก์ข่าว', 'Share')}</span>
                 </button>
                 <button
                   onClick={() => window.print()}
-                  className="px-4 py-2 bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm"
+                  className="px-4 py-2 bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95 transition-all"
                 >
                   <Printer className="w-4 h-4 text-red-500" />
                   <span>{t('พิมพ์ข่าวนี้', 'Print')}</span>
@@ -447,7 +720,7 @@ export default function NewsSection({ settings }: NewsSectionProps) {
               </div>
 
               <button
-                onClick={() => setSelectedArticle(null)}
+                onClick={handleCloseArticle}
                 className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold cursor-pointer border-none shadow-md"
               >
                 {t('ปิดหน้าต่าง', 'Close')}
@@ -457,6 +730,202 @@ export default function NewsSection({ settings }: NewsSectionProps) {
           </div>
         </div>
       )}
+
+      {/* CREATE & EDIT MODAL FORM */}
+      {isFormOpen && (
+        <div className="fixed inset-0 z-[120] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="w-full max-w-2xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl shadow-2xl flex flex-col max-h-[90vh]">
+            <div className="p-6 border-b border-gray-150 dark:border-slate-800 flex justify-between items-center bg-gray-50/50 dark:bg-slate-900/50 rounded-t-3xl">
+              <h3 className="text-lg font-display font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <Zap className="w-5 h-5 text-emerald-500 animate-pulse" />
+                <span>{editingArticle ? t('แก้ไขข้อมูลข่าวสาร', 'Edit Announcement') : t('สร้างข่าวประชาสัมพันธ์ใหม่', 'Add New Announcement')}</span>
+              </h3>
+              <button 
+                onClick={() => { setIsFormOpen(false); setEditingArticle(null); }}
+                className="p-1.5 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full border-none cursor-pointer text-gray-500"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveArticle} className="p-6 overflow-y-auto space-y-5 text-left flex-1 text-sm">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Category Selection */}
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold text-gray-700 dark:text-slate-350 uppercase tracking-wider">{t('หมวดหมู่ข่าวสาร', 'Category')}</label>
+                  <select
+                    value={formCategory}
+                    onChange={(e) => setFormCategory(e.target.value as any)}
+                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white"
+                  >
+                    <option value="PR">PR (ข่าวประชาสัมพันธ์)</option>
+                    <option value="CERTIFICATION">CERTIFICATION (การรับรองระบบ)</option>
+                    <option value="TRAINING">TRAINING (คอร์สฝึกอบรม)</option>
+                    <option value="ISO UPDATE">ISO UPDATE (อัปเดตมาตรฐาน)</option>
+                  </select>
+                </div>
+
+                {/* Image Dropdown Selector */}
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold text-gray-700 dark:text-slate-350 uppercase tracking-wider">{t('รูปภาพข่าวประกอบ', 'Announcement Image')}</label>
+                  <select
+                    value={formImage}
+                    onChange={(e) => setFormImage(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white"
+                  >
+                    <option value="/news/news1.jpg">{t('รูปที่ 1 - สหกรณ์การเกษตรภาคเหนือ', 'Image 1 - Northern Cooperative')}</option>
+                    <option value="/news/news2.jpg">{t('รูปที่ 2 - ตรวจสอบทุเรียนแช่แข็ง', 'Image 2 - Frozen Durian')}</option>
+                    <option value="/news/news3.jpg">{t('รูปที่ 3 - อบรม ISO 27001', 'Image 3 - ISO 27001 Training')}</option>
+                    <option value="/news/news4.jpg">{t('รูปที่ 4 - งานสัมมนาสิ่งแวดล้อม', 'Image 4 - Sustainability Seminar')}</option>
+                    <option value="/news/news5.jpg">{t('รูปที่ 5 - การตรวจระบบสิ่งแวดล้อม', 'Image 5 - ISO 14001 Audit')}</option>
+                    <option value="/news/news6.jpg">{t('รูปที่ 6 - งานรับใบรับรองอาหารปลอดภัย', 'Image 6 - Food Safety Award')}</option>
+                    <option value="/news/news7.jpg">{t('รูปที่ 7 - ห้องปฏิบัติการเครื่องมือแพทย์', 'Image 7 - Medical Device Lab')}</option>
+                    <option value="/news/news8.jpg">{t('รูปที่ 8 - งานสัมมนาความปลอดภัย', 'Image 8 - Safety Summit')}</option>
+                    <option value="/news/news9.jpg">{t('รูปที่ 9 - การสแกนเช็คใบรับรอง', 'Image 9 - QR Code Verification')}</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Title TH & EN */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-gray-700 dark:text-slate-350 uppercase tracking-wider">{t('หัวข้อข่าวสาร (ภาษาไทย)', 'Title (Thai)')}</label>
+                <input
+                  type="text"
+                  value={formTitleTH}
+                  onChange={(e) => setFormTitleTH(e.target.value)}
+                  placeholder={t('พิมพ์หัวข้อข่าวสารภาษาไทย...', 'Enter Thai title...')}
+                  className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-gray-700 dark:text-slate-350 uppercase tracking-wider">{t('หัวข้อข่าวสาร (ภาษาอังกฤษ)', 'Title (English)')}</label>
+                <input
+                  type="text"
+                  value={formTitleEN}
+                  onChange={(e) => setFormTitleEN(e.target.value)}
+                  placeholder={t('พิมพ์หัวข้อข่าวสารภาษาอังกฤษ...', 'Enter English title...')}
+                  className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white"
+                />
+              </div>
+
+              {/* Date TH & EN */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold text-gray-700 dark:text-slate-350 uppercase tracking-wider">{t('วันที่ (ภาษาไทย)', 'Date (Thai)')}</label>
+                  <input
+                    type="text"
+                    value={formDateTH}
+                    onChange={(e) => setFormDateTH(e.target.value)}
+                    placeholder="e.g. 17 มิ.ย. 2569"
+                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold text-gray-700 dark:text-slate-350 uppercase tracking-wider">{t('วันที่ (ภาษาอังกฤษ)', 'Date (English)')}</label>
+                  <input
+                    type="text"
+                    value={formDateEN}
+                    onChange={(e) => setFormDateEN(e.target.value)}
+                    placeholder="e.g. June 17, 2026"
+                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white"
+                  />
+                </div>
+              </div>
+
+              {/* Read Time TH & EN */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold text-gray-700 dark:text-slate-350 uppercase tracking-wider">{t('เวลาอ่าน (ภาษาไทย)', 'Read Time (Thai)')}</label>
+                  <input
+                    type="text"
+                    value={formReadTimeTH}
+                    onChange={(e) => setFormReadTimeTH(e.target.value)}
+                    placeholder="e.g. 3 นาที"
+                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold text-gray-700 dark:text-slate-350 uppercase tracking-wider">{t('เวลาอ่าน (ภาษาอังกฤษ)', 'Read Time (English)')}</label>
+                  <input
+                    type="text"
+                    value={formReadTimeEN}
+                    onChange={(e) => setFormReadTimeEN(e.target.value)}
+                    placeholder="e.g. 3 min read"
+                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white"
+                  />
+                </div>
+              </div>
+
+              {/* Summary TH & EN */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-gray-700 dark:text-slate-350 uppercase tracking-wider">{t('คำโปรยข่าวสั้น (ภาษาไทย)', 'Summary (Thai)')}</label>
+                <textarea
+                  value={formSummaryTH}
+                  onChange={(e) => setFormSummaryTH(e.target.value)}
+                  placeholder={t('พิมพ์บทคัดย่อ/คำโปรยสั้นๆ...', 'Enter Thai summary...')}
+                  rows={2}
+                  className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-gray-700 dark:text-slate-350 uppercase tracking-wider">{t('คำโปรยข่าวสั้น (ภาษาอังกฤษ)', 'Summary (English)')}</label>
+                <textarea
+                  value={formSummaryEN}
+                  onChange={(e) => setFormSummaryEN(e.target.value)}
+                  placeholder={t('พิมพ์บทคัดย่อ/คำโปรยสั้นๆภาษาอังกฤษ...', 'Enter English summary...')}
+                  rows={2}
+                  className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white"
+                />
+              </div>
+
+              {/* Full Content TH & EN */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-gray-700 dark:text-slate-350 uppercase tracking-wider">{t('เนื้อหาข่าวสารฉบับเต็ม (ภาษาไทย)', 'Full Content (Thai)')}</label>
+                <textarea
+                  value={formContentTH}
+                  onChange={(e) => setFormContentTH(e.target.value)}
+                  placeholder={t('พิมพ์รายละเอียดข่าวทั้งหมดในย่อหน้านี้...', 'Enter full Thai content...')}
+                  rows={5}
+                  className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white whitespace-pre-wrap"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-gray-700 dark:text-slate-350 uppercase tracking-wider">{t('เนื้อหาข่าวสารฉบับเต็ม (ภาษาอังกฤษ)', 'Full Content (English)')}</label>
+                <textarea
+                  value={formContentEN}
+                  onChange={(e) => setFormContentEN(e.target.value)}
+                  placeholder={t('พิมพ์รายละเอียดข่าวทั้งหมดภาษาอังกฤษ...', 'Enter full English content...')}
+                  rows={5}
+                  className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white whitespace-pre-wrap"
+                />
+              </div>
+
+              {/* Form buttons */}
+              <div className="pt-4 border-t border-gray-155 dark:border-slate-850 flex items-center justify-end gap-2 bg-gray-50/50 dark:bg-slate-900/50 p-4 -mx-6 -mb-6 rounded-b-3xl">
+                <button
+                  type="button"
+                  onClick={() => { setIsFormOpen(false); setEditingArticle(null); }}
+                  className="px-5 py-2.5 bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-slate-700 rounded-xl text-xs font-bold cursor-pointer"
+                >
+                  {t('ยกเลิก', 'Cancel')}
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold cursor-pointer border-none shadow-md shadow-blue-600/10"
+                >
+                  {t('บันทึกข้อมูล', 'Save')}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
