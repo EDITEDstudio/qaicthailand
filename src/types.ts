@@ -31,6 +31,16 @@ export interface ISOStandard {
   stepsEN: string[];
   baseCost: number;
   baseDays: number;
+  
+  // Detailed standard breakdown fields
+  whatIsItTH?: string;
+  whatIsItEN?: string;
+  benefitsDetailedTH?: string[];
+  benefitsDetailedEN?: string[];
+  principlesTH?: string[];
+  principlesEN?: string[];
+  keyPointsTH?: string[];
+  keyPointsEN?: string[];
 }
 
 export interface EmployeeNode {

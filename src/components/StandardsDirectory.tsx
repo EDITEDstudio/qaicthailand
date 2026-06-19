@@ -21,7 +21,8 @@ import {
   Lock,
   Truck,
   Car,
-  Settings
+  Settings,
+  Award
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -58,6 +59,17 @@ export default function StandardsDirectory({ settings }: StandardsDirectoryProps
   const t = <T extends string | string[]>(th: T, en: T): T => settings.lang === 'TH' ? th : en;
 
   const selectedStandard = ISO_STANDARDS.find(s => s.id === selectedStandardId);
+
+  const whatIsIt = selectedStandard ? (t(selectedStandard.whatIsItTH || '', selectedStandard.whatIsItEN || '') || t(selectedStandard.longDescTH, selectedStandard.longDescEN)) : '';
+  const benefitsDetailed = selectedStandard ? ((selectedStandard.benefitsDetailedTH && selectedStandard.benefitsDetailedEN) 
+    ? t(selectedStandard.benefitsDetailedTH, selectedStandard.benefitsDetailedEN)
+    : t(selectedStandard.benefitsTH, selectedStandard.benefitsEN)) : [];
+  const principlesDetailed = selectedStandard ? ((selectedStandard.principlesTH && selectedStandard.principlesEN)
+    ? t(selectedStandard.principlesTH, selectedStandard.principlesEN)
+    : t(selectedStandard.stepsTH, selectedStandard.stepsEN)) : [];
+  const keyPointsDetailed = selectedStandard ? ((selectedStandard.keyPointsTH && selectedStandard.keyPointsEN)
+    ? t(selectedStandard.keyPointsTH, selectedStandard.keyPointsEN)
+    : []) : [];
 
   return (
     <div className="space-y-8">
@@ -216,39 +228,80 @@ export default function StandardsDirectory({ settings }: StandardsDirectoryProps
                    <Zap className="w-4 h-4" />
                    <span>{selectedStandard.category}</span>
                 </div>
-                <h2 className="text-3xl md:text-4xl font-display font-bold text-white tracking-tight">
+                <h2 className="text-2xl md:text-3xl font-display font-bold text-white tracking-tight leading-tight">
                   {selectedStandard.code}
                 </h2>
+                <p className="text-sm md:text-base text-blue-100 font-sans mt-1 leading-snug">
+                  {t(selectedStandard.nameTH, selectedStandard.nameEN)}
+                </p>
               </div>
 
               <div className="flex-1 overflow-y-auto p-8 md:p-12 space-y-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                   <div className="space-y-6">
-                      <h3 className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest border-b border-blue-100 dark:border-blue-900/40 pb-2 flex items-center gap-2">
-                        <Info className="w-4 h-4" />
-                        {t('ภาพรวมมาตรฐาน', 'Standard Overview')}
-                      </h3>
-                      <p className="text-xl font-display font-bold text-gray-900 dark:text-white leading-tight">
-                        {t(selectedStandard.nameTH, selectedStandard.nameEN)}
-                      </p>
-                      <p className="text-sm text-gray-600 dark:text-slate-300 font-sans leading-relaxed">
-                        {t(selectedStandard.longDescTH, selectedStandard.longDescEN)}
-                      </p>
-                   </div>
-                   <div className="space-y-6">
-                      <h3 className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest border-b border-blue-100 dark:border-blue-900/40 pb-2 flex items-center gap-2">
-                        <ArrowRight className="w-4 h-4" />
-                        {t('ประโยชน์ที่จะได้รับ', 'Key Benefits')}
-                      </h3>
-                      <ul className="space-y-3">
-                        {t(selectedStandard.benefitsTH, selectedStandard.benefitsEN).map((benefit: string, i: number) => (
-                           <li key={i} className="flex gap-3 text-sm text-gray-705 dark:text-slate-200 font-sans">
-                              <ShieldCheck className="w-5 h-5 text-blue-500 flex-shrink-0" />
-                              <span>{benefit}</span>
-                           </li>
-                        ))}
-                      </ul>
-                   </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* Card 1: คืออะไร (What is it?) */}
+                  <div className="bg-blue-50/40 dark:bg-blue-950/10 border border-blue-100/50 dark:border-blue-900/30 p-6 md:p-8 rounded-[2rem] space-y-4 backdrop-blur-[10px] flex flex-col">
+                    <h3 className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest flex items-center gap-2 border-b border-blue-100/50 dark:border-blue-900/30 pb-2">
+                      <Info className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                      {t('1. คืออะไร', '1. What is it?')}
+                    </h3>
+                    <p className="text-sm text-gray-700 dark:text-slate-200 font-sans leading-relaxed flex-1">
+                      {whatIsIt}
+                    </p>
+                  </div>
+
+                  {/* Card 2: ประโยชน์แบบละเอียด (Detailed Benefits) */}
+                  <div className="bg-emerald-50/40 dark:bg-emerald-950/10 border border-emerald-100/50 dark:border-emerald-900/30 p-6 md:p-8 rounded-[2rem] space-y-4 backdrop-blur-[10px] flex flex-col">
+                    <h3 className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest flex items-center gap-2 border-b border-emerald-100/50 dark:border-emerald-900/30 pb-2">
+                      <ShieldCheck className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                      {t('2. ประโยชน์แบบละเอียด', '2. Detailed Benefits')}
+                    </h3>
+                    <ul className="space-y-3 text-sm text-gray-700 dark:text-slate-200 font-sans flex-1">
+                      {benefitsDetailed.map((benefit: string, i: number) => (
+                        <li key={i} className="flex gap-2.5 leading-relaxed">
+                          <span className="text-emerald-500 font-bold flex-shrink-0">•</span>
+                          <span>{benefit}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Card 3: หลักการนำไปใช้ (Implementation Principles) */}
+                  <div className="bg-purple-50/40 dark:bg-purple-950/10 border border-purple-100/50 dark:border-purple-900/30 p-6 md:p-8 rounded-[2rem] space-y-4 backdrop-blur-[10px] flex flex-col">
+                    <h3 className="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest flex items-center gap-2 border-b border-purple-100/50 dark:border-purple-900/30 pb-2">
+                      <Zap className="w-5 h-5 text-purple-500 flex-shrink-0" />
+                      {t('3. หลักการนำไปใช้', '3. Implementation Principles')}
+                    </h3>
+                    <ul className="space-y-3 text-sm text-gray-700 dark:text-slate-200 font-sans flex-1">
+                      {principlesDetailed.map((principle: string, i: number) => (
+                        <li key={i} className="flex gap-2.5 leading-relaxed">
+                          <span className="text-purple-500 font-bold flex-shrink-0">•</span>
+                          <span>{principle}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Card 4: สิ่งสำคัญ (Important Key Points) */}
+                  <div className="bg-amber-50/40 dark:bg-amber-950/10 border border-amber-100/50 dark:border-amber-900/30 p-6 md:p-8 rounded-[2rem] space-y-4 backdrop-blur-[10px] flex flex-col">
+                    <h3 className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest flex items-center gap-2 border-b border-amber-100/50 dark:border-amber-900/30 pb-2">
+                      <Award className="w-5 h-5 text-amber-500 flex-shrink-0" />
+                      {t('4. สิ่งสำคัญ', '4. Important Key Points')}
+                    </h3>
+                    <ul className="space-y-3 text-sm text-gray-700 dark:text-slate-200 font-sans flex-1">
+                      {keyPointsDetailed.length > 0 ? (
+                        keyPointsDetailed.map((point: string, i: number) => (
+                          <li key={i} className="flex gap-2.5 leading-relaxed">
+                            <span className="text-amber-500 font-bold flex-shrink-0">•</span>
+                            <span>{point}</span>
+                          </li>
+                        ))
+                      ) : (
+                        <li className="text-gray-500 dark:text-slate-400 italic">
+                          {t('ไม่มีข้อมูลหลักการพิเศษ', 'No special key points specified')}
+                        </li>
+                      )}
+                    </ul>
+                  </div>
                 </div>
 
                 <div className="bg-gray-50/90 dark:bg-slate-950/40 rounded-3xl p-8 space-y-6 border border-gray-150/70 dark:border-slate-850">

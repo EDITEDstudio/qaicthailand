@@ -43,7 +43,43 @@ export const ISO_STANDARDS: ISOStandard[] = [
       'Step 4: Continuous Surveillances (Annual audits)'
     ],
     baseCost: 32000,
-    baseDays: 5
+    baseDays: 5,
+    whatIsItTH: "มาตรฐานสากลสำหรับระบบบริหารงานคุณภาพ (QMS) ที่เป็นรากฐานสำคัญในการช่วยจัดระเบียบกระบวนการทำงานทุกแผนกขององค์กรให้มีประสิทธิภาพ โปร่งใส และตรวจสอบได้ในทุกขั้นตอน",
+    whatIsItEN: "The international standard for Quality Management Systems (QMS) designed to structure, align, and control organizational processes to ensure consistency and client satisfaction.",
+    benefitsDetailedTH: [
+      "เปลี่ยนวิธีทำงานที่เคยสับสนและขึ้นกับตัวบุคคล ให้เป็นระบบคู่มือการทำงานมาตรฐาน (SOP) ที่พนักงานใหม่เปิดอ่านแล้วเริ่มงานได้ทันที",
+      "ลดของเสียและความผิดพลาดจากกระบวนการทำงานลงได้กว่า 35% ส่งผลให้ควบคุมงบประมาณและต้นทุนได้อย่างมีนัยสำคัญ",
+      "ช่วยสร้างแต้มต่อและเป็นเกณฑ์บังคับในการเข้าประมูลรับงานราชการ รัฐวิสาหกิจ หรือโครงการจัดซื้อจัดจ้างขนาดใหญ่",
+      "ยกระดับภาพลักษณ์ความโปร่งใส ส่งผลให้คู่ค้าและนักลงทุนข้ามชาติตกลงร่วมทุนธุรกิจได้ง่ายขึ้น"
+    ],
+    benefitsDetailedEN: [
+      "Sop-driven operations that eliminate dependency on key individuals and streamline onboarding of new personnel",
+      "Cut down internal waste and workflow errors by over 35%, directly lowering operating expenses",
+      "Acquire mandatory qualification scores for public and private enterprise procurement tenders",
+      "Promote corporate governance and ease joint-venture audits with global trade entities"
+    ],
+    principlesTH: [
+      "การมุ่งเน้นที่ลูกค้า (Customer Focus) เพื่อส่งมอบผลิตภัณฑ์และบริการที่ตรงตามใจลูกค้าเสมอ",
+      "การบริหารงานแบบกระบวนการ (Process Approach) เชื่อมโยงทุกแผนกเป็นสายพานการทำงานแบบป้อนรับส่งต่ออย่างไม่มีสะดุด",
+      "การปรับปรุงระบบอย่างต่อเนื่อง (Continuous Improvement) ใช้กรอบการทำงานแบบ PDCA เสมอ",
+      "การตัดสินใจบนหลักฐานจริง (Evidence-based Decision Making) วิเคราะห์ด้วยข้อมูลและสถิติแทนการคาดเดา"
+    ],
+    principlesEN: [
+      "Customer Focus: Aligning service capabilities directly with client feedback and buyer expectations",
+      "Process Approach: Structuring departmental inputs and outputs as a seamless chain of activities",
+      "Continuous Improvement: Enforcing active cycles of Plan-Do-Check-Act across teams",
+      "Evidence-based Decisions: Relying strictly on performance logs and data analysis over guesswork"
+    ],
+    keyPointsTH: [
+      "การบริหารความเสี่ยงและโอกาสทางธุรกิจ (Risk-based Thinking) ตั้งแต่ระดับผู้บริหารระดับสูง",
+      "การมีส่วนร่วมของพนักงานทุกระดับ (People Engagement) ในการผลักดันเป้าหมายคุณภาพเดียวกัน",
+      "การกำหนดเป้าหมาย KPI ของแต่ละฝ่ายที่สอดคล้องกับนโยบายคุณภาพหลัก"
+    ],
+    keyPointsEN: [
+      "Proactive Risk-based Thinking embedded in executive planning and core operations",
+      "High level of employee engagement toward mutual quality targets",
+      "Quantifiable KPI metrics linked to the organizational quality policy statement"
+    ]
   },
   {
     id: 'iso-14001',
@@ -81,7 +117,41 @@ export const ISO_STANDARDS: ISOStandard[] = [
       'Step 4: Continuous eco-compliance and annual tracking'
     ],
     baseCost: 38000,
-    baseDays: 6
+    baseDays: 6,
+    whatIsItTH: "มาตรฐานระบบการจัดการสิ่งแวดล้อม (EMS) เพื่อควบคุมผลกระทบเชิงลบต่อระบบนิเวศ จัดระเบียบสารเคมี ของเสีย มลพิษทางอากาศ และรักษากฎหมายสิ่งแวดล้อมของประเทศอย่างยั่งยืน",
+    whatIsItEN: "The global Environmental Management System (EMS) standard helping companies limit pollution, manage waste pathways, and ensure continuous legal compliance.",
+    benefitsDetailedTH: [
+      "ประหยัดงบค่าไฟฟ้า ค่าน้ำ และต้นทุนเชื้อเพลิงในการผลิตลงได้กว่า 15-20% จากการวางแผนระบบประหยัดพลังงาน",
+      "ขจัดความเสี่ยงในการถูกหน่วยงานรัฐสั่งปรับ สั่งปิดโรงงาน หรือถูกชุมชนรอบข้างฟ้องร้องเนื่องจากควัน กลิ่น หรือน้ำเสียปนเปื้อน",
+      "เปิดโอกาสการเข้าร่วมกลุ่มอุตสาหกรรมสีเขียว (Green Industry) และผ่านเกณฑ์คัดเลือกคู่ค้าของกลุ่มอุตสาหกรรมยักษ์ใหญ่",
+      "เตรียมความพร้อมทางธุรกิจเพื่อรับมือกับมาตรการกำแพงภาษีคาร์บอนในการค้าระหว่างประเทศ"
+    ],
+    benefitsDetailedEN: [
+      "Cut factory utility consumption (electricity, water, fuels) by 15-20% through efficient usage mapping",
+      "Shield the factory from expensive environmental fines, community lawsuits, or forced shutdowns due to toxic releases",
+      "Attain Green Industry status to secure contracts with corporate buyers demanding green standards",
+      "Position your products favorably against global carbon taxation frameworks in export markets"
+    ],
+    principlesTH: [
+      "การระบุประเด็นปัญหาสิ่งแวดล้อม (Environmental Aspects) และความรุนแรงของผลกระทบต่อธรรมชาติ",
+      "การจัดเก็บและคัดแยกสารเคมีอันตรายและขยะอุตสาหกรรมตามประเภทอย่างปลอดภัย",
+      "การทบทวนและซักซ้อมแผนรับมือสถานการณ์ฉุกเฉิน เช่น เหตุสารเคมีรั่วไหล สารพิษกระจายตัว"
+    ],
+    principlesEN: [
+      "Assess and identify corporate Environmental Aspects and product-cycle environmental impacts",
+      "Enforce strict protocols for chemical safety storage and industrial waste partitioning",
+      "Coordinate realistic drills for response scenarios including toxic containment and spillages"
+    ],
+    keyPointsTH: [
+      "การประเมินวัฏจักรชีวิตผลิตภัณฑ์ (Life Cycle Perspective) ตั้งแต่ขั้นตอนผลิตไปจนถึงการย่อยสลาย",
+      "ความตระหนักรู้และการให้ความรู้เรื่องสิ่งแวดล้อมแก่พนักงานและผู้รับเหมาในหน้างานทุกคน",
+      "การลดปริมาณการปล่อยก๊าซเรือนกระจกเพื่อตอบรับแผน Carbon Neutrality ขององค์กร"
+    ],
+    keyPointsEN: [
+      "Life Cycle Perspective auditing from raw materials handling down to customer disposal routes",
+      "Consistent environmental protection training for all site personnel and logistics staff",
+      "Practical milestones set for carbon reductions and corporate recycling targets"
+    ]
   },
   {
     id: 'iso-45001',
@@ -119,7 +189,41 @@ export const ISO_STANDARDS: ISOStandard[] = [
       'Step 4: Continuous safety improvements and yearly checks'
     ],
     baseCost: 36000,
-    baseDays: 5
+    baseDays: 5,
+    whatIsItTH: "มาตรฐานระดับสูงสุดเพื่อความปลอดภัย สุขภาพ และสวัสดิภาพในการทำงาน มุ่งกำจัดความเสี่ยงจากการบาดเจ็บและสร้างสิ่งแวดล้อมการทำงานเชิงบวกแก่พนักงานทุกคน",
+    whatIsItEN: "The premier Occupational Health and Safety (OH&S) management standard targeting risk reduction, injury prevention, and building a safe workforce culture.",
+    benefitsDetailedTH: [
+      "ลดจำนวนอุบัติเหตุในพื้นที่ทำงานหรือไลน์การผลิตให้กลายเป็นศูนย์ สร้างความมั่นใจให้กำลังพลปฏิบัติงานได้อย่างเต็มศักยภาพ",
+      "ลดต้นทุนเบี้ยประกันภัยความเสียหายในโรงงาน และลดการจ่ายเงินทดแทนเหตุพนักงานบาดเจ็บลงได้มาก",
+      "ช่วยคุ้มครองตัวผู้บริหารจากการถูกดำเนินคดีอาญาเมื่อเกิดเหตุสุดวิสัย หากสามารถพิสูจน์ได้ว่าระบบความปลอดภัยเป็นไปตามมาตรฐานสากล",
+      "เพิ่มโอกาสในการรับงานอุตสาหกรรมปิโตรเคมี ก่อสร้าง ยานยนต์ และพลังงานที่เน้นเกณฑ์ความปลอดภัยสูงสุด"
+    ],
+    benefitsDetailedEN: [
+      "Sustain a zero-accident record in dangerous assembly lines and workspaces, keeping operational throughput stable",
+      "Reduce insurance premiums, workers compensation costs, and substitute labor expenses",
+      "Shield corporate board directors from severe personal liability under industrial safety laws during major accidents",
+      "Pass stringent pre-qualifications for heavy industry sectors including petrochemicals, mining, energy, and construction"
+    ],
+    principlesTH: [
+      "การระบุอันตรายและการวิเคราะห์ระบุระดับความเสี่ยงของทุกกิจกรรม (HIRA)",
+      "การเปิดให้ตัวแทนพนักงานและคนทำงานหน้างานจริงมีส่วนร่วมชี้แนะนโยบายความปลอดภัย",
+      "การกำจัดอันตรายโดยใช้ลำดับขั้นควบคุมความเสี่ยง เช่น การเปลี่ยนเครื่องจักรใหม่ หรือการติดตั้งแผงกั้น"
+    ],
+    principlesEN: [
+      "Systematic execution of Hazard Identification and Risk Assessment (HIRA) across sites",
+      "High worker participation and consultation from front-line operators regarding safety designs",
+      "Application of the Hierarchy of Controls to proactively eliminate or isolate hazards"
+    ],
+    keyPointsTH: [
+      "การวางเส้นทางหลบภัย อุปกรณ์ป้องกันภัยส่วนบุคคล (PPE) และระบบปฐมพยาบาลที่มีมาตรฐานชัดเจน",
+      "การสอบสวนหาสาเหตุอย่างจริงจังเมื่อมีเกือบเกิดอุบัติเหตุ (Near-Miss Incident) เพื่อป้องกันเหตุการณ์จริง",
+      "การควบคุมสภาพแวดล้อมงาน เช่น ตรวจวัดปริมาณฝุ่น ความเข้มของแสง และเสียงดังในพื้นที่ผลิต"
+    ],
+    keyPointsEN: [
+      "Validated emergency evacuation plans, appropriate PPE distribution, and first-aid kits maintenance",
+      "Meticulous analysis of Near-Miss events to prevent major accidents from occurring in the future",
+      "Ongoing audits of sound levels (decibels), lighting safety, and air quality across manufacturing floors"
+    ]
   },
   {
     id: 'haccp',
@@ -157,7 +261,41 @@ export const ISO_STANDARDS: ISOStandard[] = [
       'Step 4: Highly frequent surveillance audits to sustain food-grade status'
     ],
     baseCost: 28000,
-    baseDays: 4
+    baseDays: 4,
+    whatIsItTH: "มาตรฐานสุขอนามัยอาหารสากลที่วิเคราะห์ความเสี่ยงและกำหนดจุดควบคุมวิกฤต (Critical Control Point) เพื่อป้องกันอันตรายทางชีวภาพ เคมี และกายภาพ ปนเปื้อนในทุกกระบวนการผลิตอาหาร",
+    whatIsItEN: "The fundamental food safety standard that identifies, evaluates, and controls biological, chemical, and physical hazards in food processing using Critical Control Points.",
+    benefitsDetailedTH: [
+      "รับประกันความปลอดภัยสูงสุดต่อผู้บริโภค ป้องกันข่าวลือเรื่องอาหารเป็นพิษหรือปนเปื้อนซึ่งอาจทำลายชื่อเสียงแบรนด์อาหารของคุณ",
+      "ผ่านการตรวจประเมินรับใบอนุญาตสถานที่ผลิตอาหารของ อย. ประเทศไทยได้ง่ายขึ้นอย่างรวดเร็ว",
+      "ขยายช่องทางจัดจำหน่ายสินค้าอาหารเข้าสู่ระบบห้างโมเดิร์นเทรดชั้นนำ ซูเปอร์มาร์เก็ตพรีเมียม และตลาดต่างประเทศ",
+      "ช่วยสร้างระบบจัดการเศษชิ้นส่วนหรือสิ่งแปลกปลอมด้วยการตรวจสอบที่แม่นยำ ลดปริมาณของเสียที่ต้องทิ้งหลังแพ็กเกจจิ้ง"
+    ],
+    benefitsDetailedEN: [
+      "Guarantee absolute product safety, preventing costly lawsuits or public relations crises from contaminated food",
+      "Ensure compliant sanitary inspections from the FDA and public health authorities",
+      "Qualify for product displays in top-tier local supermarkets and major global retail chains",
+      "Build physical foreign-body containment barriers (magnets, metal detectors) to minimize product waste"
+    ],
+    principlesTH: [
+      "การวิเคราะห์หาอันตรายทั้งหมดที่เป็นไปได้ (Hazard Analysis) ในส่วนผสมและขั้นตอนการจัดเตรียม",
+      "การกำหนดจุดวิกฤตที่ต้องควบคุม (Critical Control Point - CCP) เช่น อุณหภูมิการต้ม ความชื้น หรือรังสี",
+      "การกำหนดเกณฑ์ควบคุมวิกฤต (Critical Limits) และตรวจสอบแบบเรียลไทม์ เช่น ควบคุมอุณหภูมิที่ 75 องศาเซลเซียสขึ้นไป"
+    ],
+    principlesEN: [
+      "Conduct in-depth Hazard Analysis for biological, chemical, and physical impurities",
+      "Determine process-level Critical Control Points (CCPs) such as heating, cooling, or pH adjustment",
+      "Define Critical Limits (e.g., minimum cooking temperature of 75°C) and monitor them continuously"
+    ],
+    keyPointsTH: [
+      "การจัดทำระบบตรวจสอบย้อนกลับ (Traceability) สำหรับวัตถุดิบและบรรจุภัณฑ์อาหารทุกล็อต",
+      "สุขอนามัยส่วนบุคคลของพนักงานและการป้องกันการปนเปื้อนข้ามของสารก่อภูมิแพ้ (Allergen)",
+      "มาตรการล้างทำความสะอาดเครื่องมือและกำจัดสัตว์พาหะนำโรคอย่างรัดกุม"
+    ],
+    keyPointsEN: [
+      "Documented batch traceability to track ingredients back to raw farm batches",
+      "Strict employee personal hygiene rules and allergen cross-contact prevention programs",
+      "Sustained CIP (Cleaning-in-place) logs and active pest controls"
+    ]
   },
   {
     id: 'iso-22000',
@@ -195,7 +333,41 @@ export const ISO_STANDARDS: ISOStandard[] = [
       'Step 4: Periodic annual standard upkeep and testing validation'
     ],
     baseCost: 45000,
-    baseDays: 6
+    baseDays: 6,
+    whatIsItTH: "ระบบจัดการความปลอดภัยของอาหารระดับสูงสุดที่บูรณาการระบบคุณภาพภาพรวม (ISO 9001) และความปลอดภัยอาหารเฉพาะทาง (HACCP) เข้าด้วยกันอย่างเป็นหนึ่งเดียว",
+    whatIsItEN: "The state-of-the-art Food Safety Management System (FSMS) standard aligning corporate quality management systems directly with food safety controls.",
+    benefitsDetailedTH: [
+      "รับการยอมรับทั่วโลกในเวทีอาหารส่งออกสากล สามารถร่วมเป็นคู่ค้ากับซัพพลายเชนอาหารของแบรนด์ข้ามชาติและสายการบินต่าง ๆ",
+      "ลดเวลาและค่าใช้จ่ายของเอกสารระบบงานลง เนื่องจากปรับปรุงระบบด้วยโครงสร้าง ISO แบบ High-Level Structure ร่วมกัน",
+      "สร้างความเชื่อมั่นอย่างยั่งยืนตลอดห่วงโซ่การขนส่งสินค้าอาหารสดและเครื่องดื่มข้ามประเทศ",
+      "มีระบบการจัดการวิกฤตทางอาหารและการเรียกคืนสินค้าฉุกเฉินที่รวดเร็วและมีประสิทธิภาพสูง"
+    ],
+    benefitsDetailedEN: [
+      "Attain top-tier compliance status accepted by global food manufacturers, airlines, and exporters",
+      "Merge administrative compliance paperwork into one system utilizing the High-Level Structure",
+      "Assure complete food safety integration through long international logistics and cargo handling",
+      "Sustain validated business continuity and product recall frameworks to manage supply threats"
+    ],
+    principlesTH: [
+      "การสื่อสารข้อมูลความปลอดภัยอาหารอย่างมีประสิทธิภาพระหว่างผู้ผลิต คู่ค้าขนส่ง และผู้ซื้อ",
+      "การสร้างระบบโครงสร้างการบริหารงานที่ชัดเจนในระดับนโยบายองค์กร",
+      "การนำระบบโปรแกรมพื้นฐานด้านสุขลักษณะความปลอดภัย (PRPs) มาวิเคราะห์ความสมบูรณ์ก่อนเริ่มสายการผลิต"
+    ],
+    principlesEN: [
+      "Interactive communication on food safety profiles between farmers, shippers, and retailers",
+      "Systematic integration of food safety controls into the corporate governance registry",
+      "Prerequisite Programs (PRPs) setup and audit to prepare the environment for safe production"
+    ],
+    keyPointsTH: [
+      "การป้องกันการปนเปื้อนโดยเจตนาและการปกป้องอาหารจากภัยคุกคาม (Food Defense / Food Fraud)",
+      "การทดสอบความน่าเชื่อถือของการสอบกลับย้อนกลับ (Traceability test) ทั้งวัตถุดิบและบรรจุภัณฑ์",
+      "การตรวจสอบสภาพแวดล้อมทางกายภาพอย่างเข้มงวด เช่น ระบบกรองอากาศ ความชื้น และสุขอนามัยในคลังสินค้า"
+    ],
+    keyPointsEN: [
+      "Proactive Food Defense and Food Fraud risk assessments to prevent tampering",
+      "Rigorous and frequent recall and mock traceability tests",
+      "Sustained verification of warehouse environmental criteria, air quality, and clean water supplies"
+    ]
   },
   {
     id: 'iso-27001',
@@ -223,7 +395,7 @@ export const ISO_STANDARDS: ISOStandard[] = [
     stepsTH: [
       'ขั้นตอนที่ 1: ตรวจประเมิน Statement of Applicability (SoA)',
       'ขั้นตอนที่ 2: สแกนแผนกความปลอดภัยระบบไอที ทดสอบแผนฉุกเฉินสำรวจหน้างานจริง',
-      'ขั้นตอน_ที่ 3: อนุมัติใบประกาศสากล ISO 27001',
+      'ขั้นตอนที่ 3: อนุมัติใบประกาศสากล ISO 27001',
       'ขั้นตอนที่ 4: ตรวจรันระบบรักษาความปลอดภัย ติดตามระบบประจำปี'
     ],
     stepsEN: [
@@ -233,7 +405,41 @@ export const ISO_STANDARDS: ISOStandard[] = [
       'Step 4: Continuous system defense evaluation and annual auditing'
     ],
     baseCost: 55000,
-    baseDays: 7
+    baseDays: 7,
+    whatIsItTH: "มาตรฐานสากลด้านความมั่นคงปลอดภัยสารสนเทศ (ISMS) ครอบคลุมการรักษาความลับ ความถูกต้อง และความพร้อมใช้งานของข้อมูลองค์กร ทั้งในรูปแบบดิจิทัลและเอกสาร",
+    whatIsItEN: "The leading global standard for Information Security Management Systems (ISMS) establishing controls to safeguard data assets from cyber attacks, system failures, and digital espionage.",
+    benefitsDetailedTH: [
+      "ป้องกันการโจมตีจากแฮกเกอร์ มัลแวร์เรียกค่าไถ่ (Ransomware) และข้อมูลลูกค้ารั่วไหลที่สร้างความเสียหายด้านงบประมาณมหาศาล",
+      "สอดคล้องตามพ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล (PDPA) ของประเทศไทย ป้องกันโทษปรับและความรับผิดชอบของบริษัท",
+      "สร้างความเชื่อมั่นอย่างมีระดับเพื่อรับบริการงานระดับองค์กรกับกลุ่มสถาบันการเงิน ธนาคาร หรือโปรเจกต์ไอทีขนาดใหญ่",
+      "มีแผนความต่อเนื่องทางธุรกิจ (BCP) และแผนกู้คืนระบบหลังภัยพิบัติ (Disaster Recovery) ที่พร้อมใช้งานได้จริงเมื่อระบบล่ม"
+    ],
+    benefitsDetailedEN: [
+      "Eliminate cyber vulnerabilities and prevent ransomware exploitation or damaging database leaks",
+      "Fully align and satisfy all Thai PDPA guidelines and international privacy acts",
+      "Acquire premier status as a certified vendor eligible for government, FinTech, and banking cloud systems bidding",
+      "Establish functional IT disaster recovery plans and minimize downtime during hardware outages"
+    ],
+    principlesTH: [
+      "การรักษาความลับ (Confidentiality) จำกัดสิทธิ์ให้ผู้มีอำนาจเท่านั้นที่เข้าถึงข้อมูลได้",
+      "การรักษาความถูกต้อง (Integrity) ป้องกันไม่ให้ข้อมูลถูกแก้ไขดัดแปลงอย่างไม่ถูกต้อง",
+      "ความพร้อมใช้งาน (Availability) รับประกันความเสถียรของระบบเพื่อให้เรียกใช้งานข้อมูลได้ทุกเมื่อที่ต้องการ"
+    ],
+    principlesEN: [
+      "Confidentiality: Ensuring that data is accessible only to those with authorized credentials",
+      "Integrity: Safeguarding data from unauthorized modifications and malicious editing",
+      "Availability: Keeping IT resources and servers active and running whenever required by customers"
+    ],
+    keyPointsTH: [
+      "การระบุความเสี่ยงและจัดหมวดหมู่สินทรัพย์ไอที รวมถึงระบุผู้ดูแลรับผิดชอบอย่างโปร่งใส",
+      "การเข้ารหัสข้อมูลที่อ่อนไหว (Data Encryption) ทั้งขณะบันทึกเก็บและส่งต่อผ่านเครือข่าย",
+      "การอบรมทัศนคติความปลอดภัยไซเบอร์แก่พนักงานทุกคน (Cybersecurity Awareness) เพื่อลดความเสี่ยงโดน Phishing"
+    ],
+    keyPointsEN: [
+      "Meticulous cataloging and vulnerability mapping of all digital hardware and software assets",
+      "Enforce end-to-end data encryption for files in storage and during internet transit",
+      "Mandatory staff security training (phishing tests, passkey safety) to reduce human vulnerabilities"
+    ]
   },
   {
     id: 'gdp',
@@ -271,7 +477,41 @@ export const ISO_STANDARDS: ISOStandard[] = [
       'Step 4: Annual surveillance verification audits'
     ],
     baseCost: 30000,
-    baseDays: 4
+    baseDays: 4,
+    whatIsItTH: "มาตรฐานหลักเกณฑ์การกระจายยาและเครื่องมือแพทย์ (Good Distribution Practice) เพื่อรับรองว่าเวชภัณฑ์ได้รับการจัดเก็บและขนส่งด้วยระบบควบคุมสภาวะที่ปลอดภัยตลอดเส้นทางจนถึงปลายทาง",
+    whatIsItEN: "Good Distribution Practice (GDP) establishes quality and security standards for the transport, storage, and logistics of pharmaceuticals, vaccines, and medical devices.",
+    benefitsDetailedTH: [
+      "รักษาความคงตัวและประสิทธิภาพของยา ผลิตภัณฑ์ชีววัตถุ และวัคซีน ป้องกันผลเสียต่อผู้ป่วยเนื่องจากยาเสื่อมสภาพ",
+      "ได้รับสิทธิ์เป็นตัวแทนจัดจำหน่ายและนำเข้ายาอย่างเป็นทางการจากบริษัทยาข้ามชาติชั้นนำของโลก",
+      "สอดคล้องตามระเบียบข้อบังคับของกระทรวงสาธารณสุขและเกณฑ์องค์การอนามัยโลก (WHO GDP)",
+      "ป้องกันการปลอมปน การสูญหาย หรือการปะปนของยาปลอมเข้าสู่ระบบกระจายเวชภัณฑ์"
+    ],
+    benefitsDetailedEN: [
+      "Sustain vaccine potency and pharmaceutical potency by eliminating temperature drops during transport",
+      "Qualify for exclusive import and representation contracts with international drug makers",
+      "Meet all requirements defined by the Ministry of Public Health and WHO guidelines",
+      "Build verification controls to stop counterfeit, expired, or diverted drugs entering customer pipelines"
+    ],
+    principlesTH: [
+      "การจัดทำแผนผังอุณหภูมิคลังสินค้า (Temperature Mapping) เพื่อค้นหาจุดร้อน-เย็นที่อาจเป็นอันตรายต่อยา",
+      "การตรวจสอบและสอบเทียบเครื่องบันทึกอุณหภูมิ (Data Logger) ในตู้แช่และพาหนะจัดส่ง",
+      "ระบบการทำความสะอาดพื้นที่จัดเก็บยาและการควบคุมฝุ่นละอองอย่างถูกลักษณะ"
+    ],
+    principlesEN: [
+      "Execute systematic Temperature Mapping across all medical warehouse racking zones",
+      "Deploy calibrated temperature logging instrumentation (Data Loggers) inside cold-chain vehicles",
+      "Strict sanitation rules, ventilation, and dust prevention controls in medicine storage areas"
+    ],
+    keyPointsTH: [
+      "การควบคุมระบบสินค้าหมดอายุก่อนให้ออกก่อน (FEFO - First Expired, First Out) อย่างเคร่งครัด",
+      "ขั้นตอนการเรียกเก็บยาและผลิตภัณฑ์คืน (Product Recall) กรณีพบความบกพร่องของล็อตผลิต",
+      "การฝึกอบรมบุคลากรขับขี่รถขนส่งเกี่ยวกับการควบคุมอุณหภูมิตู้ทำความเย็น"
+    ],
+    keyPointsEN: [
+      "Strict FEFO (First-Expired, First-Out) stock rotation controls",
+      "Fast and structured callback procedures to isolate defective batches during a recall event",
+      "Consistent training of logistics drivers regarding cold-chain warning signs and backup procedures"
+    ]
   },
   {
     id: 'iso-13485',
@@ -309,7 +549,41 @@ export const ISO_STANDARDS: ISOStandard[] = [
       'Step 4: Annual Surveillance Audits'
     ],
     baseCost: 48000,
-    baseDays: 6
+    baseDays: 6,
+    whatIsItTH: "มาตรฐานการจัดการคุณภาพเฉพาะทางสำหรับอุตสาหกรรมเครื่องมือแพทย์และเวชภัณฑ์ ครอบคลุมการออกแบบ พัฒนา ผลิต และจัดจำหน่ายอุปกรณ์ทางการแพทย์อย่างปลอดภัย",
+    whatIsItEN: "The international Quality Management System standard specific to the medical devices sector, ensuring compliance with strict healthcare requirements.",
+    benefitsDetailedTH: [
+      "รับรองว่าการผลิตเครื่องมือแพทย์มีความปลอดภัยต่อคนไข้สูงสุด ลดปัญหาชิ้นส่วนเสียหายที่อาจทำให้เกิดวิกฤตความปลอดภัยโรงพยาบาล",
+      "ช่วยเตรียมความพร้อมและตอบสนองต่อหลักเกณฑ์การยื่นคำขอขึ้นทะเบียนสถานที่ผลิตเครื่องมือแพทย์ของ อย.",
+      "เพิ่มขีดความสามารถการค้าสู่ตลาดส่งออกทั่วโลก ทั้งยุโรป (CE Mark) และอเมริกาที่ต้องใช้ใบรับรองมาตรฐานนี้",
+      "ลดอัตราสินค้าบกพร่องและลดค่าความเสียหายทางคลินิก (Clinical liabilities) ในกรณีเกิดข้อบกพร่องของผลิตภัณฑ์"
+    ],
+    benefitsDetailedEN: [
+      "Ensure maximum patient safety by preventing device failures, shielding your company from clinical crises",
+      "Sustain compliance benchmarks for swift registration approvals with domestic FDA groups",
+      "Meet technical prerequisites to export protective gear, diagnostic tools, and surgical implants globally",
+      "Diminish product recalls and reduce product liability claims through validated manufacturing controls"
+    ],
+    principlesTH: [
+      "การควบคุมสภาวะสิ่งแวดล้อมที่สะอาดปราศจากฝุ่นและเชื้อโรค (Cleanroom & Bioburden Controls)",
+      "การจัดการความเสี่ยงตลอดกระบวนการพัฒนาผลิตภัณฑ์ (ตามเกณฑ์ประเมิน ISO 14971)",
+      "ระบบการสืบย้อนและการติดตามสินค้าหลังออกสู่ตลาด (Post-market Surveillance)"
+    ],
+    principlesEN: [
+      "Rigorous Cleanroom, ventilation, and bioburden controls in manufacturing zones",
+      "Mandatory integration of ISO 14971 risk management throughout the product lifecycle",
+      "Establish detailed customer feedback loops and Post-market Surveillance systems"
+    ],
+    keyPointsTH: [
+      "การประเมินและการตรวจสอบผลความสมบูรณ์ของขั้นตอนการฆ่าเชื้อ (Sterilization Validation)",
+      "การติดฉลากระบุรหัสประจำตัวสินค้าแบบเฉพาะ (UDI - Unique Device Identification)",
+      "การสอบเทียบและบำรุงรักษาเครื่องมือวิเคราะห์ผลผลิตอย่างเคร่งครัด"
+    ],
+    keyPointsEN: [
+      "Validation of sterilization packaging barrier integrity and shelf life",
+      "Rigorous identification of components using Unique Device Identification (UDI) tracking codes",
+      "Strict calibration routines for testing instrumentation and scientific measuring devices"
+    ]
   },
   {
     id: 'brcgs',
@@ -347,7 +621,41 @@ export const ISO_STANDARDS: ISOStandard[] = [
       'Step 4: Annual Surveillance Audits'
     ],
     baseCost: 52000,
-    baseDays: 5
+    baseDays: 5,
+    whatIsItTH: "มาตรฐานระดับสูงสุดทางอาหารที่จัดตั้งโดยสมาคมผู้ค้าปลีกแห่งประเทศอังกฤษ (BRCGS) เพื่อรับรองความปลอดภัย คุณภาพกระบวนการ และกฎระเบียบของโรงงานผลิตอาหารอย่างเข้มข้น",
+    whatIsItEN: "The globally recognized Food Safety Standard under GFSI oversight, widely demanded by European and North American retailers to assure food quality.",
+    benefitsDetailedTH: [
+      "เป็นใบเปิดทางสำหรับการนำเข้าและจัดจำหน่ายอาหารแปรรูปไปยังแบรนด์ห้างซูเปอร์มาร์เก็ตชั้นนำทั่วโลก",
+      "ลดภาระการเข้าตรวจประเมินจากลูกค้าแต่ละรายซ้ำซ้อน เนื่องจากได้รับการยอมรับเทียบเท่ามาตรฐานระดับสูงแล้ว",
+      "กระตุ้นและวัดผลวัฒนธรรมความปลอดภัยทางอาหาร (Food Safety Culture) ให้เกิดเป็นทัศนคติการปฏิบัติจริงของพนักงาน",
+      "ลดการสูญเสียทางการผลิตจากสิ่งปนเปื้อน เช่น เศษโลหะ แก้ว หรือพลาสติก ด้วยเครื่องมือกรองแยกที่ได้รับการสอบทาน"
+    ],
+    benefitsDetailedEN: [
+      "Qualify as an approved supplier for leading international supermarkets and hypermarkets",
+      "Avoid duplicate customer quality audit visits, saving time and management resources",
+      "Establish a certified Food Safety Culture across all corporate and factory operations",
+      "Prevent expensive batch dumping due to physical contamination (glass, plastic, metal shards)"
+    ],
+    principlesTH: [
+      "การจัดทำระบบความปลอดภัยอาหารที่มีการควบคุมความสะอาดระดับสูงสุด (GMP/Codex)",
+      "การวางโครงสร้างและสภาพแวดล้อมโรงงานเพื่อแยกโซนสะอาด-สกปรกที่ถูกสุขลักษณะ",
+      "การควบคุมการปนเปื้อนทางกายภาพ (Foreign Body Control) ด้วยเครื่องเอ็กซ์เรย์และเครื่องตรวจโลหะ"
+    ],
+    principlesEN: [
+      "Combine active HACCP plans with meticulous sanitation standards across production zones",
+      "Zoning designs to divide wet/dry and high-risk/low-risk food-handling sectors",
+      "Strict metal detection and physical foreign body control policies"
+    ],
+    keyPointsTH: [
+      "การจัดการสารก่อภูมิแพ้ (Allergen Control) เพื่อป้องกันอันตรายและคัดกรองข้ามผลิตภัณฑ์",
+      "การจัดทำประเมินและมาตรการป้องกันการปลอมแปลงในห่วงโซ่อาหาร (VACCP & TACCP)",
+      "ระบบสุขาภิบาลล้างทำความสะอาดเครื่องจักรและการตรวจสอบสารตกค้าง (ATP Swab) สม่ำเสมอ"
+    ],
+    keyPointsEN: [
+      "Rigorous allergen management to avoid cross-contact during product runs",
+      "Enforce food defense policies (TACCP) and food fraud vulnerability studies (VACCP)",
+      "Comprehensive verification of cleaning schedules (CIP) using ATP swab testing"
+    ]
   },
   {
     id: 'iso-50001',
@@ -385,7 +693,41 @@ export const ISO_STANDARDS: ISOStandard[] = [
       'Step 4: Annual Surveillance of Energy Gains'
     ],
     baseCost: 42000,
-    baseDays: 6
+    baseDays: 6,
+    whatIsItTH: "มาตรฐานระบบการจัดการพลังงาน (Energy Management System - EnMS) เพื่อช่วยให้องค์กรกำหนดเกณฑ์การใช้พลังงาน วางเป้าหมายการประหยัดพลังงาน และใช้อย่างมีประสิทธิภาพสูงสุด",
+    whatIsItEN: "The international Energy Management System (EnMS) standard providing a systematic framework to continuously improve energy performance, efficiency, and consumption profiles.",
+    benefitsDetailedTH: [
+      "ลดต้นทุนการใช้จ่ายด้านพลังงานไฟฟ้า เชื้อเพลิง และก๊าซในระบบอุตสาหกรรมลงอย่างเป็นรูปธรรม 10-25%",
+      "ช่วยสร้างตัวชี้วัดประสิทธิภาพด้านพลังงาน (EnPIs) ที่ชัดเจน ตรวจวัดและทบทวนความคุ้มค่าของเครื่องจักรได้จริง",
+      "มีส่วนร่วมโดยตรงในการลดการปล่อยก๊าซเรือนกระจก สอดรับนโยบายด้านคาร์บอนต่ำ (Net Zero Emissions)",
+      "สร้างความเชื่อมั่นให้แก่นักลงทุนในฐานะองค์กรที่เป็นมิตรต่อสิ่งแวดล้อมตามเกณฑ์ ESG"
+    ],
+    benefitsDetailedEN: [
+      "Cut down energy bills (electricity, oil, gas) by 10-25% through optimized utilization designs",
+      "Establish scientific Energy Performance Indicators (EnPIs) to assess machine efficiency",
+      "Directly support climate protection objectives by minimizing corporate greenhouse gas emissions",
+      "Upgrade corporate ESG ratings to satisfy green investment requirements"
+    ],
+    principlesTH: [
+      "การสำรวจทบทวนพลังงาน (Energy Review) เพื่อค้นหาเครื่องจักรหรือแผนกที่เป็นจุดใช้พลังงานหลัก (SEUs)",
+      "การจัดทำค่าฐานการใช้พลังงาน (Energy Baseline - EnB) เพื่อใช้เป็นจุดอ้างอิงเปรียบเทียบผลประหยัด",
+      "การออกแบบกระบวนการผลิตและการจัดซื้ออุปกรณ์ที่มุ่งเน้นประสิทธิภาพการประหยัดพลังงานระดับสูง"
+    ],
+    principlesEN: [
+      "Perform an Energy Review to isolate Significant Energy Users (SEUs) in facilities",
+      "Establish an Energy Baseline (EnB) reference point to verify future performance improvements",
+      "Integrate high-efficiency criteria in buying protocols and project designs"
+    ],
+    keyPointsTH: [
+      "การบำรุงรักษาเชิงป้องกันเครื่องจักรขนาดใหญ่ (บอยเลอร์, คอมเพรสเซอร์ลม, ระบบความเย็น)",
+      "การสร้างวัฒนธรรมช่วยประหยัดพลังงานและการให้รางวัลพนักงานที่สร้างสรรค์นวัตกรรมประหยัดไฟ",
+      "การวัดผลและทบทวนความคุ้มค่าของการประหยัดพลังงานอย่างสม่ำเสมอโดยผู้เชี่ยวชาญ"
+    ],
+    keyPointsEN: [
+      "Continuous preventative maintenance of high-consumption utilities (compressors, boilers, chillers)",
+      "Establish staff energy-saving rewards and educate teams on daily conservation actions",
+      "Frequent verification audits of target energy reductions"
+    ]
   },
   {
     id: 'iatf-16949',
@@ -423,7 +765,41 @@ export const ISO_STANDARDS: ISOStandard[] = [
       'Step 4: Regular Surveillance Audits'
     ],
     baseCost: 65000,
-    baseDays: 8
+    baseDays: 8,
+    whatIsItTH: "มาตรฐานระบบการจัดการคุณภาพสำหรับห่วงโซ่อุปทานอุตสาหกรรมยานยนต์ ควบคุมการผลิตชิ้นส่วนยานพาหนะให้ได้สเปก ไร้ข้อบกพร่อง และลดของเสียในห่วงโซ่อุปทาน",
+    whatIsItEN: "The international Quality Management System standard specific to the automotive supply chain, developed by the International Automotive Task Force (IATF).",
+    benefitsDetailedTH: [
+      "เป็นใบเปิดทางและเกณฑ์บังคับสำหรับการก้าวเข้าสู่การเป็นคู่ค้ากับโรงงานประกอบรถยนต์และชิ้นส่วนชั้นนำของโลก (OEMs)",
+      "ลดของเสียและความแปรปรวนในสายการผลิตชิ้นส่วนลงอย่างมากด้วยการประยุกต์ใช้เครื่องมือสถิติยานยนต์",
+      "ลดข้อร้องเรียนจากลูกค้าและการเคลมชิ้นงานชำรุดเสียหายหลังการประกอบรถยนต์สำเร็จ",
+      "แสดงถึงขีดความสามารถการควบคุมกระบวนการขั้นสูงสุดและนวัตกรรมการผลิตชิ้นส่วนที่ได้รับการรับรองระดับสากล"
+    ],
+    benefitsDetailedEN: [
+      "Access global automotive supply chains and fulfill bidding criteria for car manufacturers (OEMs)",
+      "Decrease process variance and eliminate waste using specialized automotive statistical methodologies",
+      "Significantly reduce warranty claims, component rejections, and commercial penalties from carmakers",
+      "Prove world-class engineering capability and strict compliance with global auto manufacturing rules"
+    ],
+    principlesTH: [
+      "การป้องกันข้อบกพร่องตั้งแต่ขั้นตอนการออกแบบผลิตภัณฑ์ด้วย FMEA",
+      "การควบคุมการแปรปรวนของกระบวนการผลิตด้วยเครื่องมือสถิติ (Statistical Process Control - SPC)",
+      "การประเมินและการยอมรับระบบการอนุมัติชิ้นส่วนสำหรับผู้ซื้อ (Production Part Approval Process - PPAP)"
+    ],
+    principlesEN: [
+      "Failure prevention instead of finding defects, using FMEA tools in the engineering design phase",
+      "Apply Statistical Process Control (SPC) to monitor and adjust critical operations",
+      "Verify parts manufacturing readiness through the Production Part Approval Process (PPAP)"
+    ],
+    keyPointsTH: [
+      "การประยุกต์ใช้เครื่องมือยานยนต์ 5 ชิ้น (APQP, FMEA, MSA, SPC, PPAP) ในการทำระบบ",
+      "การปฏิบัติตามข้อกำหนดเฉพาะของลูกค้าแต่ละราย (Customer Specific Requirements - CSRs) อย่างเข้มงวด",
+      "ระบบการวิเคราะห์ระบบการวัด (Measurement Systems Analysis - MSA) เพื่อความแม่นยำของอุปกรณ์วัด"
+    ],
+    keyPointsEN: [
+      "Expertise and validation of the 5 Automotive Core Tools (APQP, FMEA, MSA, SPC, PPAP)",
+      "Rigorous alignment with Customer Specific Requirements (CSRs) defined by individual OEMs",
+      "Validated Measurement Systems Analysis (MSA) to check the precision of instrumentation tools"
+    ]
   },
   {
     id: 'tas',
@@ -461,11 +837,44 @@ export const ISO_STANDARDS: ISOStandard[] = [
       'Step 4: Continuous Performance Tracking'
     ],
     baseCost: 15000,
-    baseDays: 3
+    baseDays: 3,
+    whatIsItTH: "มาตรฐานสินค้าเกษตรและอาหารของประเทศไทย (มกษ.) เพื่อควบคุมคุณภาพ ความปลอดภัย และคุณลักษณะของสินค้าเกษตรให้เหมาะสมและไร้สารตกค้างทางเคมี",
+    whatIsItEN: "The Thai Agricultural Standard (TAS or มกษ.) established by the Ministry of Agriculture and Cooperatives to regulate food crops, packaging, and farm compliance.",
+    benefitsDetailedTH: [
+      "สร้างความเชื่อมั่นสูงสุดแก่ผู้บริโภคในประเทศด้วยสัญลักษณ์รับรองความปลอดภัยทางเกษตร Q-Mark",
+      "ขยายช่องทางนำเสนอสินค้าผัก ผลไม้ และผลผลิตทางการเกษตรเข้าจำหน่ายในห้างค้าปลีกชั้นนำและซูเปอร์มาร์เก็ต",
+      "ได้รับการสนับสนุนสิทธิพิเศษในการจัดซื้อปุ๋ยชีวภาพ อุปกรณ์ฟาร์ม และการฝึกอบรมจากกระทรวงเกษตรฯ",
+      "ลดการปนเปื้อนของยาฆ่าแมลง สารเคมีตกค้าง และเชื้อโรคพืชในกระบวนการเพาะปลูก"
+    ],
+    benefitsDetailedEN: [
+      "Assert organic safety and chemical-free status using the official government Q-Mark stamp",
+      "Streamline sorting, cleaning, and delivering of fresh food harvests to leading supermarket chains",
+      "Qualify for government farming grants, technical training, and agricultural exhibitions",
+      "Lower pesticide residues and eliminate biological pathogens in crops through managed agricultural practices"
+    ],
+    principlesTH: [
+      "การควบคุมระบบการปฏิบัติทางการเกษตรที่ดี (GAP - Good Agricultural Practice) ในแปลงเพาะปลูก",
+      "การตรวจสอบปริมาณสารเคมีตกค้างและสารปนเปื้อนที่เป็นอันตรายต่อร่างกายมนุษย์",
+      "การทำความสะอาดผลผลิตและการเก็บบรรจุสินค้าเกษตรในบรรจุภัณฑ์ที่ปลอดภัย"
+    ],
+    principlesEN: [
+      "Implement and maintain Good Agricultural Practice (GAP) standards across crops and farming fields",
+      "Perform periodic chemical residue, pesticide, and heavy metals testing of harvests",
+      "Sustain sanitation standards during sorting, packaging, and cold storage of farm produce"
+    ],
+    keyPointsTH: [
+      "การควบคุมระบบดินและน้ำที่ใช้ในฟาร์มไม่ให้มีการเจือปนของสารพิษจากภายนอก",
+      "การเก็บบันทึกประวัติการใส่ปุ๋ยและการฉีดพ่นสารชีวภัณฑ์อย่างโปร่งใสสามารถตรวจสอบย้อนหลังได้",
+      "การรักษาความสดและความสมบูรณ์ของสินค้าเกษตรด้วยการจัดเก็บควบคุมความเย็นอย่างเหมาะสม"
+    ],
+    keyPointsEN: [
+      "Audit of farm soils and water supplies to block chemical run-off and heavy metals",
+      "Detailed logs detailing organic fertilizer types, bio-agents, and harvest dates",
+      "Deploy proper temperature and ventilation setups to preserve harvest shelf life"
+    ]
   }
 ];
 
-// Interactive Organizational Chart Data with complete structure
 export const ORGANIZATION_MEMBERS: EmployeeNode[] = [
   {
     id: 'emp-1',
