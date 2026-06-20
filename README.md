@@ -6,6 +6,8 @@
 
 This contains everything you need to run your app locally.
 
+![CI](https://github.com/EDITEDstudio/qaicthailand/actions/workflows/ci.yml/badge.svg)
+
 View your app in AI Studio: https://ai.studio/apps/28b972ac-cc8b-447c-ba10-ef7080fd6a15
 
 ## Run Locally
@@ -18,3 +20,7 @@ View your app in AI Studio: https://ai.studio/apps/28b972ac-cc8b-447c-ba10-ef708
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
+
+## License
+
+This project is available under the MIT License — see the [LICENSE](LICENSE) file for details.
