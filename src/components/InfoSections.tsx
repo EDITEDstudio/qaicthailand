@@ -169,7 +169,7 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
  return (
  <div
  key={std.id}
- className="group relative bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] p-6 rounded-[2rem] border hover:border-blue-200 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 flex flex-col justify-between h-full"
+ className="group relative bg-white/45 dark:bg-slate-900/40 backdrop-blur-[35px] border border-slate-200/50 dark:border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)] dark:shadow-none p-6 rounded-[2rem] hover:border-blue-500/40 hover:shadow-2xl hover:shadow-blue-500/5 transition-all duration-300 flex flex-col justify-between h-full"
  >
  <div>
  <div className="mb-6 flex items-center justify-between">

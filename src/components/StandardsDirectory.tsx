@@ -316,7 +316,7 @@ export default function StandardsDirectory({ settings, isAdminMode = false }: St
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.05 }}
-                className="group relative bg-white/40 dark:bg-slate-900/40 backdrop-blur-[35px] shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.15)] border border-gray-150/40 dark:border-white/10 p-6 rounded-[2rem] hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 flex flex-col h-full"
+                className="group relative bg-white/45 dark:bg-slate-900/40 backdrop-blur-[35px] shadow-[0_8px_30px_rgba(0,0,0,0.02)] dark:shadow-none border border-slate-200/50 dark:border-white/10 p-6 rounded-[2rem] hover:border-blue-500/40 hover:shadow-2xl hover:shadow-blue-500/5 transition-all duration-300 flex flex-col h-full"
               >
                 <div className="mb-6 flex items-center justify-between">
                   <div className="p-3 bg-blue-50/80 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 rounded-2xl group-hover:bg-blue-600 group-hover:text-white dark:group-hover:text-white transition-colors duration-300">
@@ -354,7 +354,7 @@ export default function StandardsDirectory({ settings, isAdminMode = false }: St
               key={std.id}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-4 p-4 bg-white/40 dark:bg-slate-900/40 backdrop-blur-[35px] border border-gray-150/40 dark:border-white/10 rounded-2xl hover:border-blue-200 transition-all group"
+              className="flex items-center gap-4 p-4 bg-white/45 dark:bg-slate-900/40 backdrop-blur-[35px] border border-slate-200/50 dark:border-white/10 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:border-blue-500/40 hover:shadow-[0_10px_30px_rgba(59,130,246,0.06)] transition-all group"
             >
               <div className="p-2 bg-blue-50/80 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 rounded-xl">
                 <Icon className="w-5 h-5" />
