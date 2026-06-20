@@ -22,9 +22,13 @@ import {
   Plus,
   Trash2,
   Edit3,
-  X
+  X,
+  Upload,
+  Link,
+  Image as ImageIcon
 } from 'lucide-react';
 import { UserSettings } from '../types';
+import { formatGoogleDriveUrl, compressAndConvertImage } from '../lib/imageHelper';
 
 interface NewsSectionProps {
   settings: UserSettings;
@@ -236,6 +240,9 @@ export default function NewsSection({ settings, isAdminMode: isAdminModeProp = f
   const [formReadTimeTH, setFormReadTimeTH] = useState('3 นาที');
   const [formReadTimeEN, setFormReadTimeEN] = useState('3 min read');
   const [formImage, setFormImage] = useState('/news/news1.jpg');
+  const [imageSourceTab, setImageSourceTab] = useState<'gallery' | 'upload' | 'url'>('gallery');
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [isCompressing, setIsCompressing] = useState(false);
 
   // Sync to local storage
   useEffect(() => {
@@ -305,6 +312,8 @@ export default function NewsSection({ settings, isAdminMode: isAdminModeProp = f
 
   // Open Form for Creating or Editing
   const openForm = (article: NewsArticle | null = null) => {
+    setUploadError(null);
+    setIsCompressing(false);
     if (article) {
       setEditingArticle(article);
       setFormTitleTH(article.titleTH);
@@ -319,6 +328,15 @@ export default function NewsSection({ settings, isAdminMode: isAdminModeProp = f
       setFormReadTimeTH(article.readTimeTH);
       setFormReadTimeEN(article.readTimeEN);
       setFormImage(article.image);
+      
+      // Determine appropriate image sourcing tab
+      if (article.image.startsWith('data:image/')) {
+        setImageSourceTab('upload');
+      } else if (article.image.startsWith('http') || article.image.includes('drive.google.com') || article.image.includes('googleusercontent.com')) {
+        setImageSourceTab('url');
+      } else {
+        setImageSourceTab('gallery');
+      }
     } else {
       setEditingArticle(null);
       // Pre-fill with reasonable defaults
@@ -340,6 +358,7 @@ export default function NewsSection({ settings, isAdminMode: isAdminModeProp = f
       setFormReadTimeTH('3 นาที');
       setFormReadTimeEN('3 min read');
       setFormImage('/news/news1.jpg');
+      setImageSourceTab('gallery');
     }
     setIsFormOpen(true);
   };
@@ -772,24 +791,160 @@ export default function NewsSection({ settings, isAdminMode: isAdminModeProp = f
                   </select>
                 </div>
 
-                {/* Image Dropdown Selector */}
-                <div className="space-y-2">
-                  <label className="block text-xs font-bold text-gray-700 dark:text-slate-350 uppercase tracking-wider">{t('รูปภาพข่าวประกอบ', 'Announcement Image')}</label>
-                  <select
-                    value={formImage}
-                    onChange={(e) => setFormImage(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white"
-                  >
-                    <option value="/news/news1.jpg">{t('รูปที่ 1 - สหกรณ์การเกษตรภาคเหนือ', 'Image 1 - Northern Cooperative')}</option>
-                    <option value="/news/news2.jpg">{t('รูปที่ 2 - ตรวจสอบทุเรียนแช่แข็ง', 'Image 2 - Frozen Durian')}</option>
-                    <option value="/news/news3.jpg">{t('รูปที่ 3 - อบรม ISO 27001', 'Image 3 - ISO 27001 Training')}</option>
-                    <option value="/news/news4.jpg">{t('รูปที่ 4 - งานสัมมนาสิ่งแวดล้อม', 'Image 4 - Sustainability Seminar')}</option>
-                    <option value="/news/news5.jpg">{t('รูปที่ 5 - การตรวจระบบสิ่งแวดล้อม', 'Image 5 - ISO 14001 Audit')}</option>
-                    <option value="/news/news6.jpg">{t('รูปที่ 6 - งานรับใบรับรองอาหารปลอดภัย', 'Image 6 - Food Safety Award')}</option>
-                    <option value="/news/news7.jpg">{t('รูปที่ 7 - ห้องปฏิบัติการเครื่องมือแพทย์', 'Image 7 - Medical Device Lab')}</option>
-                    <option value="/news/news8.jpg">{t('รูปที่ 8 - งานสัมมนาความปลอดภัย', 'Image 8 - Safety Summit')}</option>
-                    <option value="/news/news9.jpg">{t('รูปที่ 9 - การสแกนเช็คใบรับรอง', 'Image 9 - QR Code Verification')}</option>
-                  </select>
+                {/* Image Dropdown / Upload Selector */}
+                <div className="space-y-3 col-span-1 md:col-span-2">
+                  <label className="block text-xs font-bold text-gray-700 dark:text-slate-355 uppercase tracking-wider">
+                    {t('รูปภาพข่าวประกอบ', 'Announcement Image')}
+                  </label>
+                  
+                  {/* Tab Selector */}
+                  <div className="flex gap-1.5 p-1 bg-gray-100 dark:bg-slate-800 rounded-xl w-fit">
+                    <button
+                      type="button"
+                      onClick={() => setImageSourceTab('gallery')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 border-none cursor-pointer transition-all ${
+                        imageSourceTab === 'gallery'
+                          ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                          : 'text-gray-500 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-200 bg-transparent'
+                      }`}
+                    >
+                      <ImageIcon className="w-3.5 h-3.5" />
+                      <span>{t('แกลเลอรีหลัก', 'Gallery')}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setImageSourceTab('upload')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 border-none cursor-pointer transition-all ${
+                        imageSourceTab === 'upload'
+                          ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                          : 'text-gray-500 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-200 bg-transparent'
+                      }`}
+                    >
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>{t('อัปโหลดไฟล์', 'Upload')}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setImageSourceTab('url')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 border-none cursor-pointer transition-all ${
+                        imageSourceTab === 'url'
+                          ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                          : 'text-gray-500 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-200 bg-transparent'
+                      }`}
+                    >
+                      <Link className="w-3.5 h-3.5" />
+                      <span>{t('ลิงก์ / Google Drive', 'Link / Drive')}</span>
+                    </button>
+                  </div>
+
+                  {/* Tab Contents */}
+                  <div className="bg-gray-50/50 dark:bg-slate-900/50 border border-gray-150 dark:border-slate-800 rounded-2xl p-4 space-y-3">
+                    {imageSourceTab === 'gallery' && (
+                      <select
+                        value={formImage.startsWith('data:') || formImage.startsWith('http') ? '/news/news1.jpg' : formImage}
+                        onChange={(e) => setFormImage(e.target.value)}
+                        className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white"
+                      >
+                        <option value="/news/news1.jpg">{t('รูปที่ 1 - สหกรณ์การเกษตรภาคเหนือ', 'Image 1 - Northern Cooperative')}</option>
+                        <option value="/news/news2.jpg">{t('รูปที่ 2 - ตรวจสอบทุเรียนแช่แข็ง', 'Image 2 - Frozen Durian')}</option>
+                        <option value="/news/news3.jpg">{t('รูปที่ 3 - อบรม ISO 27001', 'Image 3 - ISO 27001 Training')}</option>
+                        <option value="/news/news4.jpg">{t('รูปที่ 4 - งานสัมมนาสิ่งแวดล้อม', 'Image 4 - Sustainability Seminar')}</option>
+                        <option value="/news/news5.jpg">{t('รูปที่ 5 - การตรวจระบบสิ่งแวดล้อม', 'Image 5 - ISO 14001 Audit')}</option>
+                        <option value="/news/news6.jpg">{t('รูปที่ 6 - งานรับใบรับรองอาหารปลอดภัย', 'Image 6 - Food Safety Award')}</option>
+                        <option value="/news/news7.jpg">{t('รูปที่ 7 - ห้องปฏิบัติการเครื่องมือแพทย์', 'Image 7 - Medical Device Lab')}</option>
+                        <option value="/news/news8.jpg">{t('รูปที่ 8 - งานสัมมนาความปลอดภัย', 'Image 8 - Safety Summit')}</option>
+                        <option value="/news/news9.jpg">{t('รูปที่ 9 - การสแกนเช็คใบรับรอง', 'Image 9 - QR Code Verification')}</option>
+                      </select>
+                    )}
+
+                    {imageSourceTab === 'upload' && (
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-3">
+                          <label className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold cursor-pointer transition-all active:scale-95 shadow-md shadow-blue-600/10 border-none">
+                            <Upload className="w-4 h-4" />
+                            <span>{t('เลือกรูปภาพจากเครื่อง', 'Choose Local File')}</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                setUploadError(null);
+                                setIsCompressing(true);
+                                try {
+                                  const compressed = await compressAndConvertImage(file);
+                                  setFormImage(compressed);
+                                } catch (err: any) {
+                                  setUploadError(err.message || 'Failed to process image');
+                                } finally {
+                                  setIsCompressing(false);
+                                }
+                              }}
+                            />
+                          </label>
+                          {isCompressing && (
+                            <span className="text-xs text-blue-500 animate-pulse font-sans">
+                              {t('กำลังย่อขนาดรูปภาพ...', 'Compressing image...')}
+                            </span>
+                          )}
+                        </div>
+                        {uploadError && (
+                          <p className="text-xs text-red-500 font-sans">{uploadError}</p>
+                        )}
+                        {formImage.startsWith('data:image/') ? (
+                          <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold font-sans flex items-center gap-1">
+                            <Check className="w-3.5 h-3.5" />
+                            <span>{t('โหลดภาพจากเครื่องเรียบร้อย (บีบอัดแล้ว)', 'Local image loaded successfully (compressed)')}</span>
+                          </p>
+                        ) : (
+                          <p className="text-xs text-gray-500 font-sans">
+                            {t('กรุณาเลือกไฟล์ภาพ (ระบบจะย่อขนาดให้อยู่ในสัดส่วนที่เหมาะสมโดยอัตโนมัติ)', 'Please select an image file (auto-resizes to fit standard specs)')}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {imageSourceTab === 'url' && (
+                      <div className="space-y-2">
+                        <input
+                          type="text"
+                          placeholder={t('วางลิงก์รูปภาพทั่วไป หรือลิงก์ Google Drive...', 'Paste image link or Google Drive link...')}
+                          value={formImage.startsWith('data:') ? '' : formImage}
+                          onChange={(e) => {
+                            const formatted = formatGoogleDriveUrl(e.target.value);
+                            setFormImage(formatted);
+                          }}
+                          className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white"
+                        />
+                        <p className="text-[10px] text-gray-500 dark:text-slate-400 font-sans leading-relaxed">
+                          💡 {t(
+                            'รองรับลิงก์ Google Drive ที่แชร์เป็นสาธารณะ ระบบจะแปลงเป็น Direct Link สำหรับแสดงผลในหน้าเว็บให้โดยอัตโนมัติ',
+                            'Supports public Google Drive share links. The system automatically converts them into direct hotlink URLs for previewing.'
+                          )}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Preview of active selected image */}
+                    {formImage && (
+                      <div className="mt-3 flex items-center gap-4 p-2 bg-white dark:bg-slate-800 rounded-xl border border-gray-200/60 dark:border-slate-700/60">
+                        <img
+                          src={formImage}
+                          alt="Preview"
+                          className="w-14 h-14 object-cover rounded-lg border border-gray-200 dark:border-slate-700"
+                          onError={(e) => {
+                            // Fallback if URL is invalid
+                            (e.target as HTMLImageElement).src = '/news/news1.jpg';
+                          }}
+                        />
+                        <div className="text-left flex-1 min-w-0">
+                          <p className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">{t('แสดงตัวอย่างภาพ', 'Image Preview')}</p>
+                          <p className="text-xs text-gray-800 dark:text-slate-200 truncate font-sans">{formImage}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
