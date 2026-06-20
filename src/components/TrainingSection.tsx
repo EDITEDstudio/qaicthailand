@@ -40,6 +40,7 @@ import { UserSettings } from '../types';
 interface TrainingSectionProps {
  settings: UserSettings;
  onContactClick: () => void;
+ isAdminMode?: boolean;
 }
 
 interface Course {
@@ -815,7 +816,7 @@ const SERIES_ICONS: { [key: string]: any } = {
 
 const GOOGLE_FORM_URL = 'https://forms.gle/p9HoHAFfKBM2EdYj7';
 
-export default function TrainingSection({ settings, onContactClick }: TrainingSectionProps) {
+export default function TrainingSection({ settings, onContactClick, isAdminMode = false }: TrainingSectionProps) {
  const [searchQuery, setSearchQuery] = useState('');
  const [activeFilter, setActiveFilter] = useState('All');
  const [activeSeries, setActiveSeries] = useState('All');
@@ -1290,20 +1291,22 @@ export default function TrainingSection({ settings, onContactClick }: TrainingSe
                   {formatLongDate(selectedDate)}
                 </p>
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setNewCourseId('');
-                  setNewLocationTH('');
-                  setNewLocationEN('');
-                  setNewTime('09:00 - 16:00');
-                  setNewDate(selectedDate);
-                  setIsAdding(true);
-                }}
-                className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[10px] font-bold cursor-pointer border-none shadow-sm"
-              >
-                + {t('เพิ่มอบรม', 'Add Event')}
-              </button>
+              {isAdminMode && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNewCourseId('');
+                    setNewLocationTH('');
+                    setNewLocationEN('');
+                    setNewTime('09:00 - 16:00');
+                    setNewDate(selectedDate);
+                    setIsAdding(true);
+                  }}
+                  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[10px] font-bold cursor-pointer border-none shadow-sm"
+                >
+                  + {t('เพิ่มอบรม', 'Add Event')}
+                </button>
+              )}
             </div>
 
             {/* Event List */}
@@ -1336,22 +1339,24 @@ export default function TrainingSection({ settings, onContactClick }: TrainingSe
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-1 self-center opacity-85 lg:opacity-0 lg:group-hover/item:opacity-100 transition-opacity">
-                        <button
-                          type="button"
-                          onClick={() => handleStartEdit(ev)}
-                          className="p-1.5 bg-gray-100 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg text-gray-600 dark:text-slate-350 cursor-pointer border-none bg-transparent"
-                        >
-                          <Edit3 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteEvent(ev.id)}
-                          className="p-1.5 bg-gray-100 hover:bg-red-50 hover:text-red-600 dark:bg-slate-700 dark:hover:bg-slate-650 rounded-lg text-gray-600 dark:text-slate-300 cursor-pointer border-none bg-transparent"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
+                      {isAdminMode && (
+                        <div className="flex items-center gap-1 self-center opacity-85 lg:opacity-0 lg:group-hover/item:opacity-100 transition-opacity">
+                          <button
+                            type="button"
+                            onClick={() => handleStartEdit(ev)}
+                            className="p-1.5 bg-gray-100 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg text-gray-600 dark:text-slate-350 cursor-pointer border-none bg-transparent"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteEvent(ev.id)}
+                            className="p-1.5 bg-gray-100 hover:bg-red-50 hover:text-red-600 dark:bg-slate-700 dark:hover:bg-slate-650 rounded-lg text-gray-600 dark:text-slate-300 cursor-pointer border-none bg-transparent"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      )}
                     </div>
                   );
                 })

@@ -78,13 +78,14 @@ export default function AuthModal({ isOpen, onClose, settings, initialMode = 'lo
  } catch (err: any) {
  if (err.code === 'auth/operation-not-allowed' || err.code === 'auth/configuration-not-allowed') {
  console.warn("Firebase email auth disabled, falling back to local demo mock mode");
- const mockUser = {
- uid: 'mock-' + email.split('@')[0],
- email: email,
- displayName: displayName || email.split('@')[0],
- isMock: true,
- photoURL: null
- };
+  const mockUser = {
+    uid: 'mock-' + email.split('@')[0],
+    email: email,
+    displayName: displayName || email.split('@')[0],
+    isMock: true,
+    photoURL: null,
+    role: email === 'admin@qaic-thailand.com' ? 'admin' : 'user'
+  };
  if (onMockLogin) {
  onMockLogin(mockUser);
  }
@@ -104,13 +105,14 @@ export default function AuthModal({ isOpen, onClose, settings, initialMode = 'lo
  const handleQuickDemoLogin = (role: 'customer' | 'admin') => {
  setError(null);
  setLoading(true);
- const mockUser = {
- uid: role === 'admin' ? 'mock-admin-999' : 'mock-customer-111',
- email: role === 'admin' ? 'admin@qaic-thailand.com' : 'demo@qaic-thailand.com',
- displayName: role === 'admin' ? 'QAIC Auditor Admin' : 'QAIC Demo Customer',
- isMock: true,
- photoURL: null
- };
+  const mockUser = {
+    uid: role === 'admin' ? 'mock-admin-999' : 'mock-customer-111',
+    email: role === 'admin' ? 'admin@qaic-thailand.com' : 'demo@qaic-thailand.com',
+    displayName: role === 'admin' ? 'QAIC Auditor Admin' : 'QAIC Demo Customer',
+    isMock: true,
+    photoURL: null,
+    role: role
+  };
  
  if (onMockLogin) {
  onMockLogin(mockUser);
@@ -267,25 +269,36 @@ export default function AuthModal({ isOpen, onClose, settings, initialMode = 'lo
  </div>
  </div>
 
- <div className="grid grid-cols-2 gap-3">
- <button 
- type="button"
- onClick={handleGoogleSignIn}
- disabled={loading}
- className="w-full py-3.5 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] border hover: text-gray-700 dark:text-slate-200 rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
- >
- <Chrome className="w-4 h-4 text-blue-600" />
- <span>Google</span>
- </button>
- <button 
- type="button"
- onClick={() => handleQuickDemoLogin('customer')}
- disabled={loading}
- className="w-full py-3.5 bg-blue-50 border border-blue-100 hover:bg-blue-100 text-blue-700 rounded-2xl text-xs font-bold transition-all flex items-center justify-center active:scale-[0.98]"
- >
- <span>{t('บัญชีทดสอบ', 'Demo Login')}</span>
- </button>
- </div>
+  <div className="space-y-3">
+    <button 
+      type="button"
+      onClick={handleGoogleSignIn}
+      disabled={loading}
+      className="w-full py-3.5 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] hover:bg-white/60 dark:hover:bg-slate-800/60 text-gray-700 dark:text-slate-200 rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer"
+    >
+      <Chrome className="w-4 h-4 text-blue-600" />
+      <span>{t('เข้าสู่ระบบด้วย Google', 'Continue with Google')}</span>
+    </button>
+    
+    <div className="grid grid-cols-2 gap-3">
+      <button 
+        type="button"
+        onClick={() => handleQuickDemoLogin('customer')}
+        disabled={loading}
+        className="w-full py-3 bg-blue-50 border border-blue-100 hover:bg-blue-100 dark:bg-blue-950/20 dark:border-blue-900/30 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-2xl text-xs font-bold transition-all flex items-center justify-center active:scale-[0.98] cursor-pointer"
+      >
+        <span>{t('ลูกค้าทดสอบ', 'Demo Customer')}</span>
+      </button>
+      <button 
+        type="button"
+        onClick={() => handleQuickDemoLogin('admin')}
+        disabled={loading}
+        className="w-full py-3 bg-purple-50 border border-purple-100 hover:bg-purple-100 dark:bg-purple-950/20 dark:border-purple-900/30 dark:hover:bg-purple-900/30 text-purple-700 dark:text-purple-400 rounded-2xl text-xs font-bold transition-all flex items-center justify-center active:scale-[0.98] cursor-pointer"
+      >
+        <span>{t('แอดมินทดสอบ', 'Demo Admin')}</span>
+      </button>
+    </div>
+  </div>
 
  <p className="text-center text-xs text-gray-700 dark:text-slate-400 pt-4">
  {mode === 'login' ? t('ยังไม่มีบัญชี?', "Don't have an account?") : t('มีบัญชีอยู่แล้ว?', 'Already have an account?')}

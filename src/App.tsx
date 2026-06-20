@@ -17,8 +17,9 @@ import InfoSections from './components/InfoSections';
 import ProposalForm from './components/ProposalForm';
 import AuthModal from './components/auth/AuthModal';
 import NewsSection from './components/NewsSection';
-import { auth } from './lib/firebase';
+import { auth, db } from './lib/firebase';
 import { onAuthStateChanged, User, signOut } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 import { 
  ShieldCheck, 
  MapPin, 
@@ -58,50 +59,85 @@ export default function App() {
  const [scrolled, setScrolled] = useState(false);
  const [isDarkMode, setIsDarkMode] = useState(false);
 
- // Auth State
- const [user, setUser] = useState<User | null>(null);
- const [authModal, setAuthModal] = useState<{isOpen: boolean, mode: 'login' | 'register'}>({
- isOpen: false,
- mode: 'login'
- });
- const [userMenuOpen, setUserMenuOpen] = useState(false);
+  // Auth State
+  const [user, setUser] = useState<User | null>(null);
+  const [authModal, setAuthModal] = useState<{isOpen: boolean, mode: 'login' | 'register'}>({
+    isOpen: false,
+    mode: 'login'
+  });
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [isAdminModeActive, setIsAdminModeActive] = useState(false);
 
- useEffect(() => {
- const handleScroll = () => setScrolled(window.scrollY > 20);
- window.addEventListener('scroll', handleScroll);
+  // Fetch user role from Firestore if user changes
+  useEffect(() => {
+    if (!user) {
+      setIsAdminModeActive(false);
+      return;
+    }
+    
+    // For mock users, they already have a role property
+    if ((user as any).isMock) {
+      if ((user as any).role !== 'admin') {
+        setIsAdminModeActive(false);
+      }
+      return;
+    }
 
- // Parse URL parameter to support direct tab routing
- const params = new URLSearchParams(window.location.search);
- const tabParam = params.get('tab');
- if (tabParam && ['assess', 'standards', 'training', 'verify', 'org', 'profile', 'quote', 'news'].includes(tabParam)) {
- setActiveTab(tabParam as any);
- }
+    const fetchUserRole = async () => {
+      try {
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setUser((prev: any) => prev ? { ...prev, role: userData.role || 'user' } : null);
+          if (userData.role !== 'admin') {
+            setIsAdminModeActive(false);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching user role from Firestore:', error);
+      }
+    };
+    fetchUserRole();
+  }, [user?.uid]);
 
- const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
- setUser((prevUser: any) => {
- if (prevUser && prevUser.isMock) return prevUser;
- return currentUser;
- });
- });
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
 
- return () => {
- window.removeEventListener('scroll', handleScroll);
- unsubscribe();
- };
- }, []);
+    // Parse URL parameter to support direct tab routing
+    const params = new URLSearchParams(window.location.search);
+    const tabParam = params.get('tab');
+    if (tabParam && ['assess', 'standards', 'training', 'verify', 'org', 'profile', 'quote', 'news'].includes(tabParam)) {
+      setActiveTab(tabParam as any);
+    }
 
- const handleLogout = async () => {
- try {
- if (user && user.isMock) {
- setUser(null);
- } else {
- await signOut(auth);
- }
- setUserMenuOpen(false);
- } catch (error) {
- console.error('Logout error:', error);
- }
- };
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser((prevUser: any) => {
+        if (prevUser && prevUser.isMock) return prevUser;
+        return currentUser;
+      });
+    });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      unsubscribe();
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      if (user && user.isMock) {
+        setUser(null);
+      } else {
+        await signOut(auth);
+      }
+      setIsAdminModeActive(false);
+      setUserMenuOpen(false);
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
  const changeLang = (lang: Language) => setSettings(s => ({ ...s, lang }));
 
@@ -248,11 +284,11 @@ export default function App() {
  </div>
  <div className="text-left hidden md:block">
  <p className="text-[10px] font-bold text-gray-900 dark:text-white leading-tight truncate max-w-[100px]">
- {user.displayName || user.email?.split('@')[0]}
- </p>
- <p className="text-[8px] text-gray-600 dark:text-slate-500 font-bold uppercase tracking-widest">
- Member
- </p>
+  {user.displayName || user.email?.split('@')[0]}
+  </p>
+  <p className="text-[8px] text-gray-650 dark:text-slate-500 font-bold uppercase tracking-widest">
+    {(user as any).role === 'admin' ? t('ผู้ดูแลระบบ', 'Admin') : t('สมาชิก', 'Member')}
+  </p>
  </div>
  <ChevronDown className={`w-3.5 h-3.5 text-gray-600 dark:text-slate-500 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
  </button>
@@ -265,16 +301,37 @@ export default function App() {
  exit={{ opacity: 0, y: 10, scale: 0.95 }}
  className="absolute right-0 mt-2 w-48 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] border rounded-2xl shadow-xl shadow-gray-900/5 p-2 z-[60]"
  >
- <div className="p-3 border-b border-gray-50 mb-1">
- <p className="text-xs font-bold text-gray-900 dark:text-white truncate">{user.email}</p>
- </div>
- <button 
- onClick={handleLogout}
- className="w-full flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-xl text-xs font-bold transition-all cursor-pointer"
- >
- <LogOut className="w-4 h-4" />
- <span>{t('ออกจากระบบ', 'Log Out')}</span>
- </button>
+  <div className="p-3 border-b border-gray-50 dark:border-slate-800 mb-1">
+    <p className="text-xs font-bold text-gray-900 dark:text-white truncate">{user.email}</p>
+  </div>
+  
+  {(user as any).role === 'admin' && (
+    <div className="flex items-center justify-between px-3 py-2 border-b border-gray-50 dark:border-slate-800 mb-1">
+      <span className="text-[9px] uppercase font-bold tracking-widest text-purple-600 dark:text-purple-400">
+        {t('โหมดแอดมิน', 'Admin Mode')}
+      </span>
+      <button
+        onClick={() => setIsAdminModeActive(!isAdminModeActive)}
+        className={`w-9 h-5.5 rounded-full p-0.5 transition-colors duration-200 focus:outline-none relative flex items-center cursor-pointer ${
+          isAdminModeActive ? 'bg-purple-600' : 'bg-gray-200 dark:bg-slate-800'
+        }`}
+      >
+        <div
+          className={`w-4 h-4 rounded-full bg-white shadow-sm transform duration-200 ${
+            isAdminModeActive ? 'translate-x-4' : 'translate-x-0'
+          }`}
+        />
+      </button>
+    </div>
+  )}
+
+  <button 
+    onClick={handleLogout}
+    className="w-full flex items-center gap-3 px-3 py-2 text-red-650 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-xl text-xs font-bold transition-all cursor-pointer"
+  >
+    <LogOut className="w-4 h-4" />
+    <span>{t('ออกจากระบบ', 'Log Out')}</span>
+  </button>
  </motion.div>
  )}
  </AnimatePresence>
@@ -570,7 +627,7 @@ export default function App() {
  exit={{ opacity: 0, scale: 1.02 }}
  transition={{ duration: 0.3 }}
  >
- <StandardsDirectory settings={settings} />
+ <StandardsDirectory settings={settings} isAdminMode={isAdminModeActive} />
  </motion.div>
  )}
  {activeTab === 'training' && (
@@ -584,6 +641,7 @@ export default function App() {
  <TrainingSection 
  settings={settings} 
  onContactClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
+ isAdminMode={isAdminModeActive}
  />
  </motion.div>
  )}
@@ -644,7 +702,7 @@ export default function App() {
  exit={{ opacity: 0, scale: 1.02 }}
  transition={{ duration: 0.3 }}
  >
- <NewsSection settings={settings} />
+ <NewsSection settings={settings} isAdminMode={isAdminModeActive} />
  </motion.div>
  )}
  {activeTab === 'org' && (

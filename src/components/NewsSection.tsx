@@ -28,6 +28,7 @@ import { UserSettings } from '../types';
 
 interface NewsSectionProps {
   settings: UserSettings;
+  isAdminMode?: boolean;
 }
 
 interface NewsArticle {
@@ -194,7 +195,7 @@ const DEFAULT_NEWS_ARTICLES: NewsArticle[] = [
   }
 ];
 
-export default function NewsSection({ settings }: NewsSectionProps) {
+export default function NewsSection({ settings, isAdminMode: isAdminModeProp = false }: NewsSectionProps) {
   // Load initial state from LocalStorage
   const [articles, setArticles] = useState<NewsArticle[]>(() => {
     const saved = localStorage.getItem('qaic_news_articles');
@@ -214,9 +215,13 @@ export default function NewsSection({ settings }: NewsSectionProps) {
   const [isCopied, setIsCopied] = useState(false);
   
   // Admin dashboard states
-  const [isAdminMode, setIsAdminMode] = useState(false);
+  const [isAdminMode, setIsAdminMode] = useState(isAdminModeProp);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingArticle, setEditingArticle] = useState<NewsArticle | null>(null);
+
+  useEffect(() => {
+    setIsAdminMode(isAdminModeProp);
+  }, [isAdminModeProp]);
   
   // Form input states
   const [formTitleTH, setFormTitleTH] = useState('');
@@ -517,17 +522,19 @@ export default function NewsSection({ settings }: NewsSectionProps) {
                 {t('รีเซ็ตข้อมูลข่าวสาร', 'Reset Mock News')}
               </button>
             )}
-            <button
-              onClick={() => setIsAdminMode(!isAdminMode)}
-              className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all cursor-pointer flex items-center gap-1.5 border ${
-                isAdminMode 
-                  ? 'bg-red-500/10 border-red-500/30 text-red-650 dark:text-red-400 font-extrabold shadow-sm' 
-                  : 'bg-white/50 border-gray-200 text-gray-600 dark:bg-slate-900/40 dark:border-slate-800 dark:text-slate-400 shadow-sm'
-              }`}
-            >
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>{isAdminMode ? t('ออกจากโหมดผู้ตรวจ', 'Exit Admin Mode') : t('โหมดแอดมิน', 'Admin Mode')}</span>
-            </button>
+            {isAdminModeProp && (
+              <button
+                onClick={() => setIsAdminMode(!isAdminMode)}
+                className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all cursor-pointer flex items-center gap-1.5 border ${
+                  isAdminMode 
+                    ? 'bg-red-500/10 border-red-500/30 text-red-650 dark:text-red-400 font-extrabold shadow-sm' 
+                    : 'bg-white/50 border-gray-200 text-gray-600 dark:bg-slate-900/40 dark:border-slate-800 dark:text-slate-400 shadow-sm'
+                }`}
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>{isAdminMode ? t('ออกจากโหมดผู้ตรวจ', 'Exit Admin Mode') : t('โหมดแอดมิน', 'Admin Mode')}</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
