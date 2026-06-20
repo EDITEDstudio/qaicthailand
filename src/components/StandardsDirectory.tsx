@@ -571,15 +571,9 @@ export default function StandardsDirectory({ settings, isAdminMode = false }: St
       </AnimatePresence>
 
       {/* Form Modal */}
-      <AnimatePresence>
-        {isFormOpen && (
-          <div className="fixed inset-0 z-[120] flex items-center justify-center p-6 bg-slate-950/80 backdrop-blur-md">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white/95 backdrop-blur-[35px] border border-white/60 shadow-2xl dark:bg-slate-900/95 dark:border-slate-800 w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] overflow-hidden flex flex-col"
-            >
+      {isFormOpen && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-6 bg-slate-950/80 backdrop-blur-md">
+          <div className="bg-white/95 backdrop-blur-[35px] border border-white/60 shadow-2xl dark:bg-slate-900/95 dark:border-slate-800 w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] overflow-hidden flex flex-col">
               <div className="p-6 md:p-8 border-b border-gray-150 dark:border-slate-800 flex justify-between items-center bg-blue-800 text-white">
                 <h3 className="text-xl font-display font-bold">
                   {editingStandard ? t('แก้ไขข้อมูลมาตรฐาน', 'Edit Standard Information') : t('เพิ่มมาตรฐานสากลใหม่', 'Add New International Standard')}
@@ -842,10 +836,9 @@ export default function StandardsDirectory({ settings, isAdminMode = false }: St
                   </button>
                 </div>
               </form>
-            </motion.div>
           </div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </div>
   );
 }
