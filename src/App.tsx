@@ -473,7 +473,7 @@ export default function App() {
  >
  <span className="text-lg leading-none">{isDarkMode ? '☀️' : '🌙'}</span>
  </button>
- <a href="https://www.facebook.com/profile.php?id=100064866769135" target="_blank" rel="noopener noreferrer" className="p-3 bg-gray-50 text-gray-600 dark:text-slate-500 rounded-2xl hover:text-blue-600 transition-colors">
+ <a href="https://www.facebook.com/qaicthailand.company" target="_blank" rel="noopener noreferrer" className="p-3 bg-gray-50 text-gray-600 dark:text-slate-500 rounded-2xl hover:text-blue-600 transition-colors">
  <Facebook className="w-6 h-6" />
  </a>
  <a href="#" className="p-3 bg-gray-50 text-gray-600 dark:text-slate-500 rounded-2xl hover:text-blue-600 transition-colors relative group">
@@ -753,7 +753,7 @@ export default function App() {
  </p>
  <div className="flex gap-4">
  {[
- { Icon: Facebook, href: 'https://www.facebook.com/profile.php?id=100064866769135' },
+ { Icon: Facebook, href: 'https://www.facebook.com/qaicthailand.company' },
  { Icon: MessageCircle, href: '#', label: 'LINE' },
  { Icon: Linkedin, href: '#' },
  { Icon: Globe, href: '#' }
@@ -784,7 +784,7 @@ export default function App() {
  </li>
  <li className="flex items-center gap-2">
  <Facebook className="w-3.5 h-3.5 text-blue-600" />
- <a href="https://www.facebook.com/profile.php?id=100064866769135" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors">Facebook: QAIC Thailand</a>
+ <a href="https://www.facebook.com/qaicthailand.company" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors">Facebook: QAIC Thailand</a>
  </li>
  <li className="flex items-center gap-2">
  <MessageCircle className="w-3.5 h-3.5 text-blue-600" />
