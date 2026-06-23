@@ -21,20 +21,202 @@ import {
  Shield,
  Activity,
  UserCheck,
- TrendingUp
+ TrendingUp,
+ Plus,
+ Trash2,
+ Edit3,
+ X,
+ Search,
+ Filter
 } from 'lucide-react';
 import { UserSettings } from '../types';
 
-interface AboutSectionProps {
- settings: UserSettings;
+interface Auditor {
+  id: string;
+  name: string;
+  level: string;
+  role: string;
+  phone: string;
+  email: string;
+  status: 'ACTIVE' | 'INACTIVE';
 }
 
-export default function AboutSection({ settings }: AboutSectionProps) {
+const DEFAULT_AUDITORS: Auditor[] = [
+  { id: '#AUD-2', name: 'Admin QAIC', level: 'Auditor', role: 'Super Admin', phone: '0989911545', email: 'admin@gmail.com', status: 'ACTIVE' },
+  { id: '#AUD-101', name: 'กรรณิการ์ หมื่นหาวงศ์', level: 'Auditor', role: 'Staff', phone: '0817252390', email: 'kannikapakky@gmail.com', status: 'ACTIVE' },
+  { id: '#AUD-46', name: 'กัญญาณัฐ ประเสริฐสุข', level: 'Lead Auditor', role: 'Auditor', phone: '0843335072', email: 'kanyanat@qaicthailand.com', status: 'ACTIVE' },
+  { id: '#AUD-14', name: 'กันต์ธร เก่งพล', level: 'Lead Auditor', role: 'Auditor', phone: '0816401232', email: 'kanthon@yahoo.com', status: 'ACTIVE' },
+  { id: '#AUD-39', name: 'คชภัค วงศ์สินภร', level: 'Lead Auditor', role: 'Auditor', phone: '0846928012', email: 'kachapak@qaicthialand.com', status: 'ACTIVE' },
+  { id: '#AUD-50', name: 'ฉัตรชัย จรัสฉิมพลีกุล', level: 'Lead Auditor', role: 'Auditor', phone: '0898104882', email: 'chatchai14@gmail.com', status: 'ACTIVE' },
+  { id: '#AUD-54', name: 'ชญาดา เอี่ยมตะโก', level: 'Auditor', role: 'Staff', phone: '081-9087565', email: 'chayada.ple@hotmail.com', status: 'ACTIVE' },
+  { id: '#AUD-98', name: 'ชยธร เกตุกลัด', level: 'Auditor', role: 'Auditor', phone: '0863058507', email: 'chayatorn.fluke@gmail.com', status: 'ACTIVE' },
+  { id: '#AUD-79', name: 'ชาริณี กีรติโชติ', level: 'Lead Auditor', role: 'Auditor', phone: '087-3903553', email: '-', status: 'ACTIVE' },
+  { id: '#AUD-71', name: 'ณภาไร พรมศักดิ์', level: 'Lead Auditor', role: 'Auditor', phone: '090-2534200', email: 'naparai.np@gmail.com', status: 'ACTIVE' },
+  { id: '#AUD-20', name: 'ณัฐฐินันท์ เลี่ยนกัตวา', level: 'Lead Auditor', role: 'Auditor', phone: '0814222546', email: 'nutthinanl@gmail.com', status: 'ACTIVE' },
+  { id: '#AUD-66', name: 'ณัฐปพล วงศ์วานิช', level: 'Lead Auditor', role: 'Auditor', phone: '064-9893264', email: 'fork5115@hotmail.com', status: 'ACTIVE' },
+  { id: '#AUD-86', name: 'ณิชชาภัทร เนตรรัตน์', level: 'Lead Auditor', role: 'Auditor', phone: '0855492397', email: 'Parichat.sopack@gmail.com', status: 'ACTIVE' },
+  { id: '#AUD-89', name: 'ดรุณี กรนุ่ม', level: 'Lead Auditor', role: 'Auditor', phone: '0654416942', email: 'darunee.korn@gmail.com', status: 'ACTIVE' },
+  { id: '#AUD-4', name: 'ตรัย อาจหาญ', level: 'Lead Auditor', role: 'Auditor', phone: '0863318455', email: 'qa_manager@qaicthailand.com', status: 'ACTIVE' },
+  { id: '#AUD-33', name: 'ตรัย อาจหาญ', level: 'Lead Auditor', role: 'Super Admin', phone: '0863318455', email: 'trai9999@gmail.com', status: 'ACTIVE' },
+  { id: '#AUD-82', name: 'ทวีศักดิ์ ศรีภูสิตโต', level: 'Lead Auditor', role: 'Auditor', phone: '081 8873576', email: 'iso9001 iso14000', status: 'ACTIVE' },
+  { id: '#AUD-21', name: 'ธรรมศักดิ์ พัฒนพ่วง', level: 'Lead Auditor', role: 'Auditor', phone: '080-5832383', email: '-', status: 'ACTIVE' },
+  { id: '#AUD-80', name: 'นพกร อุตสาหนันท์', level: 'Lead Auditor', role: 'Auditor', phone: '081-822-3622', email: '-', status: 'ACTIVE' },
+  { id: '#AUD-11', name: 'นพวรรณ แพงวิเศษ', level: 'Lead Auditor', role: 'Auditor', phone: '0816293807', email: 'noppawanby@yahoo.com', status: 'ACTIVE' },
+  { id: '#AUD-67', name: 'ปกรณ์ แสนจิตต์', level: 'Lead Auditor', role: 'Auditor', phone: '0877640301', email: 'pakorn.qaic@gmail.com', status: 'ACTIVE' },
+  { id: '#AUD-75', name: 'ปนัดดา เสนาสุธรรม', level: 'Auditor', role: 'Staff', phone: '0824892426', email: 'panadda.juum@gmail.com', status: 'ACTIVE' },
+  { id: '#AUD-84', name: 'ประชา บุญล้อม', level: 'Lead Auditor', role: 'Auditor', phone: '081-8994669', email: 'linemi17@gmail.com', status: 'ACTIVE' },
+  { id: '#AUD-87', name: 'ปิยวรรณ อยู่ดี', level: 'Auditor', role: 'Auditor', phone: '0819500933', email: 'piyawan58@gmail.com', status: 'ACTIVE' },
+  { id: '#AUD-51', name: 'ภูวิศณุ์ โพธิ์สุข', level: 'Lead Auditor', role: 'Auditor', phone: '0812801135', email: '-', status: 'ACTIVE' },
+  { id: '#AUD-96', name: 'รวิชญ์ จิราภรณ์', level: 'Lead Auditor', role: 'Auditor', phone: '064-361-8486', email: 'ravitj8924@gmail.com', status: 'ACTIVE' },
+  { id: '#AUD-100', name: 'ละมัยภรณ์ สุดวิลัย', level: 'Auditor', role: 'Staff', phone: '0855486225 / 0935158105', email: 'qaicthailand@gmail.com', status: 'ACTIVE' },
+  { id: '#AUD-78', name: 'วิวัฒน์ ตีระวนิชพงศ์', level: 'Lead Auditor', role: 'Auditor', phone: '085-4857756', email: 'wiwatmail@gmail.com', status: 'ACTIVE' },
+  { id: '#AUD-95', name: 'ศราวุฒิ เอกบุตร', level: 'Auditor', role: 'Staff', phone: '0829938547', email: 'sarutthakak@gmail.com', status: 'ACTIVE' },
+  { id: '#AUD-74', name: 'ศศิโสม โฉมเฉลา', level: 'Lead Auditor', role: 'Auditor', phone: '0808311684', email: 'faiisasisom@gmail.com', status: 'ACTIVE' },
+  { id: '#AUD-45', name: 'สมเกียรติ เต็งศิริ', level: 'Lead Auditor', role: 'Auditor', phone: '065-6356355', email: '-', status: 'ACTIVE' },
+  { id: '#AUD-58', name: 'สุพัตรา สุขสันติกาล', level: 'Lead Auditor', role: 'Auditor', phone: '0827056675', email: '-', status: 'ACTIVE' },
+  { id: '#AUD-49', name: 'สุวิมล ฤทธิ์แสนตอ', level: 'Lead Auditor', role: 'Auditor', phone: '0858294246', email: 'suwimol@qaicthailand.com', status: 'ACTIVE' },
+  { id: '#AUD-13', name: 'เจษฏา ฤทธิ์กล้า', level: 'Lead Auditor', role: 'Auditor', phone: '0859110881', email: 'jassada.r@gmail.cm', status: 'ACTIVE' },
+  { id: '#AUD-12', name: 'โสภณ ทัศนบรรจง', level: 'Lead Auditor', role: 'Auditor', phone: '0868028520', email: 'jae_sophon@hotmail.com', status: 'ACTIVE' },
+  { id: '#AUD-62', name: 'ณิชชาภัทร เนตรรัตน์', level: 'Lead Auditor', role: 'Auditor', phone: '0855492397', email: 'Parichat.sopack@gmail.com', status: 'INACTIVE' }
+];
+
+interface AboutSectionProps {
+ settings: UserSettings;
+ isAdminMode?: boolean;
+}
+
+export default function AboutSection({ settings, isAdminMode = false }: AboutSectionProps) {
  const lang = settings.lang;
  const t = (th: string, en: string) => lang === 'TH' ? th : en;
 
  // Initialize theme based on user settings
  const [localTheme, setLocalTheme] = useState<'light' | 'dark'>('light');
+  
+  // Auditor registry states
+  const [auditors, setAuditors] = useState<Auditor[]>(() => {
+    const saved = localStorage.getItem('qaic_auditors');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse auditors:', e);
+      }
+    }
+    return DEFAULT_AUDITORS;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('qaic_auditors', JSON.stringify(auditors));
+  }, [auditors]);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('ALL');
+  const [levelFilter, setLevelFilter] = useState('ALL');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const filteredAuditors = auditors.filter(aud => {
+    const term = searchTerm.toLowerCase();
+    const matchesSearch = aud.id.toLowerCase().includes(term) || 
+                          aud.name.toLowerCase().includes(term) ||
+                          aud.phone.includes(term) ||
+                          aud.email.toLowerCase().includes(term);
+                          
+    const matchesStatus = statusFilter === 'ALL' || aud.status === statusFilter;
+    const matchesLevel = levelFilter === 'ALL' || aud.level === levelFilter;
+    
+    return matchesSearch && matchesStatus && matchesLevel;
+  });
+
+  const totalPages = Math.ceil(filteredAuditors.length / itemsPerPage);
+  
+  const paginatedAuditors = filteredAuditors.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingAuditor, setEditingAuditor] = useState<Auditor | null>(null);
+  
+  const [formId, setFormId] = useState('');
+  const [formName, setFormName] = useState('');
+  const [formLevel, setFormLevel] = useState('Auditor');
+  const [formRole, setFormRole] = useState('Auditor');
+  const [formPhone, setFormPhone] = useState('');
+  const [formEmail, setFormEmail] = useState('');
+  const [formStatus, setFormStatus] = useState<'ACTIVE' | 'INACTIVE'>('ACTIVE');
+
+  const openAuditorForm = (aud: Auditor | null = null) => {
+    if (aud) {
+      setEditingAuditor(aud);
+      setFormId(aud.id);
+      setFormName(aud.name);
+      setFormLevel(aud.level);
+      setFormRole(aud.role);
+      setFormPhone(aud.phone);
+      setFormEmail(aud.email);
+      setFormStatus(aud.status);
+    } else {
+      setEditingAuditor(null);
+      setFormId('');
+      setFormName('');
+      setFormLevel('Auditor');
+      setFormRole('Auditor');
+      setFormPhone('');
+      setFormEmail('');
+      setFormStatus('ACTIVE');
+    }
+    setIsFormOpen(true);
+  };
+
+  const handleSaveAuditor = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formId || !formName) {
+      alert(t('กรุณากรอกรหัสและชื่อผู้ตรวจประเมิน', 'Please fill in the Auditor ID and Name'));
+      return;
+    }
+
+    if (editingAuditor) {
+      setAuditors(prev => prev.map(aud => {
+        if (aud.id === editingAuditor.id) {
+          return {
+            ...aud,
+            name: formName,
+            level: formLevel,
+            role: formRole,
+            phone: formPhone,
+            email: formEmail,
+            status: formStatus
+          };
+        }
+        return aud;
+      }));
+    } else {
+      if (auditors.some(aud => aud.id.toLowerCase() === formId.toLowerCase())) {
+        alert(t('รหัสผู้ตรวจนี้มีอยู่ในระบบแล้ว', 'This Auditor ID already exists'));
+        return;
+      }
+      const newAuditor: Auditor = {
+        id: formId,
+        name: formName,
+        level: formLevel,
+        role: formRole,
+        phone: formPhone,
+        email: formEmail,
+        status: formStatus
+      };
+      setAuditors(prev => [...prev, newAuditor]);
+    }
+    setIsFormOpen(false);
+    setEditingAuditor(null);
+  };
+
+  const handleDeleteAuditor = (id: string) => {
+    if (confirm(t('คุณต้องการลบผู้ตรวจประเมินนี้ใช่หรือไม่?', 'Are you sure you want to delete this auditor?'))) {
+      setAuditors(prev => prev.filter(aud => aud.id !== id));
+    }
+  };
+
  useEffect(() => {
  if (settings.theme === 'cyber') {
  setLocalTheme('dark');
@@ -491,17 +673,358 @@ export default function AboutSection({ settings }: AboutSectionProps) {
  </div>
  <div className="space-y-6">
  {impartialityPolicies.map((policy, i) => (
- <div key={i} className="flex gap-4">
- <ShieldCheck className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
- <p className={`text-sm leading-relaxed font-sans text-gray-800 dark:text-white`}>{policy}</p>
- </div>
+ <p key={i} className={`text-sm leading-relaxed font-sans text-gray-800 dark:text-white`}>{policy}</p>
  ))}
  </div>
  </div>
  </div>
  </section>
 
- </div>
+  {/* Auditor Directory Table Section */}
+  <section className="space-y-6 px-4 md:px-8 mt-16 scroll-mt-20">
+    <div className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-[35px] border border-slate-200/50 dark:border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.02)] dark:shadow-none p-6 md:p-10 rounded-[2.5rem] relative overflow-hidden">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-gray-150/40 dark:border-slate-800 pb-6">
+        <div className="text-left">
+          <h3 className="text-xl font-display font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <UserCheck className="w-5.5 h-5.5 text-blue-600 dark:text-blue-400" />
+            <span>{t('รายชื่อผู้ตรวจประเมิน', 'Auditor Directory')}</span>
+          </h3>
+          <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
+            {t('ทำเนียบผู้ตรวจประเมินของ คิวเอไอซี ประเทศไทย ที่ได้รับการขึ้นทะเบียนอย่างเป็นทางการ', 'Official registry of registered auditors for QAIC Thailand.')}
+          </p>
+        </div>
+        
+        {isAdminMode && (
+          <div className="flex gap-2 w-full sm:w-auto">
+            <button
+              onClick={() => {
+                if (confirm(t('คุณต้องการรีเซ็ตรายชื่อผู้ตรวจเป็นค่าเริ่มต้นหรือไม่?', 'Do you want to reset the auditor directory to default?'))) {
+                  setAuditors(DEFAULT_AUDITORS);
+                  localStorage.setItem('qaic_auditors', JSON.stringify(DEFAULT_AUDITORS));
+                }
+              }}
+              className="px-4 py-2 border border-yellow-500/25 bg-yellow-600/10 text-yellow-750 dark:text-yellow-400 rounded-xl text-xs font-bold uppercase hover:bg-yellow-600/25 transition-all cursor-pointer shadow-sm active:scale-95"
+            >
+              {t('รีเซ็ตรายชื่อ', 'Reset Registry')}
+            </button>
+            <button
+              onClick={() => openAuditorForm(null)}
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md shadow-emerald-600/10 border-none active:scale-95"
+            >
+              <Plus className="w-4 h-4" />
+              <span>{t('เพิ่มผู้ตรวจ', 'Add Auditor')}</span>
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Filters bar */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+        {/* Search */}
+        <div className="relative col-span-1 md:col-span-2">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+          <input
+            type="text"
+            placeholder={t('ค้นหาจากชื่อ, Auditor ID หรือเบอร์โทร...', 'Search by Name, ID, or Phone...')}
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-950/40 border border-gray-150/60 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-gray-900 dark:text-white"
+          />
+        </div>
+        
+        {/* Level Filter */}
+        <div>
+          <select
+            value={levelFilter}
+            onChange={(e) => {
+              setLevelFilter(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-950/40 border border-gray-150/60 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-gray-900 dark:text-white"
+          >
+            <option value="ALL">{t('ระดับทั้งหมด', 'All Levels')}</option>
+            <option value="Auditor">{t('Auditor', 'Auditor')}</option>
+            <option value="Lead Auditor">{t('Lead Auditor', 'Lead Auditor')}</option>
+          </select>
+        </div>
+
+        {/* Status Filter */}
+        <div>
+          <select
+            value={statusFilter}
+            onChange={(e) => {
+              setStatusFilter(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-950/40 border border-gray-150/60 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-gray-900 dark:text-white"
+          >
+            <option value="ALL">{t('สถานะทั้งหมด', 'All Statuses')}</option>
+            <option value="ACTIVE">{t('ACTIVE (ปฎิบัติงาน)', 'Active')}</option>
+            <option value="INACTIVE">{t('INACTIVE (ไม่ได้ปฎิบัติงาน)', 'Inactive')}</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Table grid */}
+      <div className="overflow-x-auto mt-6 rounded-2xl border border-gray-150/40 dark:border-slate-800 bg-white/20 dark:bg-slate-950/20">
+        <table className="w-full text-left border-collapse text-xs font-sans text-gray-800 dark:text-slate-200">
+          <thead>
+            <tr className="bg-gray-50/65 dark:bg-slate-900/60 text-gray-700 dark:text-slate-350 font-bold uppercase tracking-wider border-b border-gray-150/40 dark:border-slate-800">
+              <th className="py-3 px-4 w-12 text-center">{t('ลำดับ', 'No.')}</th>
+              <th className="py-3 px-4 w-28">{t('Auditor ID', 'Auditor ID')}</th>
+              <th className="py-3 px-4">{t('Auditor Profile', 'Auditor Profile')}</th>
+              <th className="py-3 px-4 w-36">{t('Level / Role', 'Level / Role')}</th>
+              <th className="py-3 px-4">{t('Contact Details', 'Contact Details')}</th>
+              <th className="py-3 px-4 w-24 text-center">{t('Status', 'Status')}</th>
+              {isAdminMode && <th className="py-3 px-4 w-24 text-center">{t('จัดการ', 'Actions')}</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedAuditors.length > 0 ? (
+              paginatedAuditors.map((aud, index) => {
+                const globalIndex = (currentPage - 1) * itemsPerPage + index + 1;
+                return (
+                  <tr 
+                    key={aud.id + '-' + index} 
+                    className="border-b border-gray-150/20 dark:border-slate-800/40 hover:bg-gray-50/40 dark:hover:bg-slate-900/30 transition-colors"
+                  >
+                    <td className="py-3 px-4 text-center font-bold text-gray-500">{globalIndex}</td>
+                    <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-450">{aud.id}</td>
+                    <td className="py-3 px-4 font-semibold text-gray-900 dark:text-white text-left">{aud.name}</td>
+                    <td className="py-3 px-4 text-left">
+                      <div className="space-y-0.5">
+                        <span className={`inline-flex px-2 py-0.5 rounded-full text-[9px] font-bold ${
+                          aud.level === 'Lead Auditor' 
+                            ? 'bg-purple-50 text-purple-600 dark:bg-purple-950/20 dark:text-purple-400 border border-purple-100/30'
+                            : 'bg-blue-50 text-blue-600 dark:bg-blue-950/20 dark:text-blue-400 border border-blue-100/30'
+                        }`}>
+                          {aud.level}
+                        </span>
+                        <p className="text-[10px] text-gray-505 dark:text-slate-400 font-medium">{aud.role}</p>
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 text-left">
+                      <div className="space-y-0.5 text-gray-750 dark:text-slate-300 font-sans">
+                        <p className="font-semibold">{aud.phone}</p>
+                        {aud.email && aud.email !== '-' && (
+                          <p className="text-[10px] text-gray-500 dark:text-slate-400 truncate max-w-[170px]">{aud.email}</p>
+                        )}
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 text-center">
+                      <span className={`inline-flex px-2.5 py-1 rounded-full text-[9px] font-bold ${
+                        aud.status === 'ACTIVE'
+                          ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                          : 'bg-red-500/10 text-red-650 dark:text-red-400 border border-red-500/20'
+                      }`}>
+                        {aud.status}
+                      </span>
+                    </td>
+                    {isAdminMode && (
+                      <td className="py-3 px-4 text-center">
+                        <div className="flex items-center justify-center gap-1.5">
+                          <button
+                            onClick={() => openAuditorForm(aud)}
+                            className="p-1.5 bg-blue-50 hover:bg-blue-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-blue-600 dark:text-blue-400 rounded-lg transition-all border-none cursor-pointer"
+                            title={t('แก้ไข', 'Edit')}
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteAuditor(aud.id)}
+                            className="p-1.5 bg-red-50 hover:bg-red-100 dark:bg-slate-850 dark:hover:bg-red-950/20 text-red-600 dark:text-red-450 rounded-lg transition-all border-none cursor-pointer"
+                            title={t('ลบ', 'Delete')}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                );
+              })
+            ) : (
+              <tr>
+                <td colSpan={isAdminMode ? 7 : 6} className="py-10 text-center text-gray-500 dark:text-slate-400 font-sans">
+                  {t('ไม่พบข้อมูลผู้ตรวจประเมินตามตัวกรอง', 'No auditors found matching the filter criteria.')}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination controls */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between gap-4 mt-6 bg-gray-50/50 dark:bg-slate-950/20 p-4 rounded-2xl border border-gray-150/40 dark:border-slate-850">
+          <span className="text-[10px] font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider font-sans">
+            {t(
+              `แสดงหน้า ${currentPage} จากทั้งหมด ${totalPages} หน้า (จำนวนผู้ตรวจ ${filteredAuditors.length} คน)`,
+              `Showing page ${currentPage} of ${totalPages} (${filteredAuditors.length} auditors)`
+            )}
+          </span>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-3.5 py-2 bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-200 border border-gray-200 dark:border-slate-700 disabled:opacity-50 disabled:pointer-events-none rounded-xl text-xs font-bold cursor-pointer transition-all active:scale-95 border-none"
+            >
+              {t('ก่อนหน้า', 'Previous')}
+            </button>
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="px-3.5 py-2 bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-200 border border-gray-200 dark:border-slate-700 disabled:opacity-50 disabled:pointer-events-none rounded-xl text-xs font-bold cursor-pointer transition-all active:scale-95 border-none"
+            >
+              {t('ถัดไป', 'Next')}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  </section>
+
+  {/* AUDITOR ADD/EDIT FORM MODAL */}
+  {isFormOpen && (
+    <div className="fixed inset-0 z-[120] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+      <div className="w-full max-w-lg bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl shadow-2xl flex flex-col">
+        <div className="p-6 border-b border-gray-150 dark:border-slate-800 flex justify-between items-center bg-gray-50/50 dark:bg-slate-900/50 rounded-t-3xl text-left">
+          <h3 className="text-base font-display font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <UserCheck className="w-5 h-5 text-emerald-500 animate-pulse" />
+            <span>{editingAuditor ? t('แก้ไขข้อมูลผู้ตรวจประเมิน', 'Edit Auditor Details') : t('เพิ่มผู้ตรวจประเมินใหม่', 'Add New Auditor')}</span>
+          </h3>
+          <button 
+            onClick={() => setIsFormOpen(false)}
+            className="p-1.5 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full border-none cursor-pointer text-gray-500"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSaveAuditor} className="p-6 space-y-4 text-left font-sans text-xs">
+          <div className="grid grid-cols-2 gap-4">
+            {/* Auditor ID */}
+            <div className="space-y-1.5">
+              <label className="block text-[10px] font-bold text-gray-650 dark:text-slate-400 uppercase tracking-wider">{t('Auditor ID', 'Auditor ID')}</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. #AUD-102"
+                value={formId}
+                onChange={(e) => setFormId(e.target.value)}
+                disabled={!!editingAuditor}
+                className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white disabled:opacity-50 font-sans"
+              />
+            </div>
+
+            {/* Status */}
+            <div className="space-y-1.5">
+              <label className="block text-[10px] font-bold text-gray-655 dark:text-slate-400 uppercase tracking-wider">{t('สถานะการปฎิบัติงาน', 'Status')}</label>
+              <select
+                value={formStatus}
+                onChange={(e) => setFormStatus(e.target.value as any)}
+                className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-855 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white font-sans"
+              >
+                <option value="ACTIVE">ACTIVE (ปฎิบัติงาน)</option>
+                <option value="INACTIVE">INACTIVE (ไม่ได้ปฎิบัติงาน)</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Full Name */}
+          <div className="space-y-1.5">
+            <label className="block text-[10px] font-bold text-gray-650 dark:text-slate-400 uppercase tracking-wider">{t('ชื่อ-นามสกุล', 'Full Name')}</label>
+            <input
+              type="text"
+              required
+              placeholder={t('พิมพ์ชื่อ-นามสกุลผู้ตรวจ...', 'Enter auditor full name...')}
+              value={formName}
+              onChange={(e) => setFormName(e.target.value)}
+              className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white font-sans"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            {/* Level */}
+            <div className="space-y-1.5">
+              <label className="block text-[10px] font-bold text-gray-650 dark:text-slate-400 uppercase tracking-wider">{t('ระดับ (Level)', 'Level')}</label>
+              <select
+                value={formLevel}
+                onChange={(e) => setFormLevel(e.target.value)}
+                className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white font-sans"
+              >
+                <option value="Auditor">Auditor</option>
+                <option value="Lead Auditor">Lead Auditor</option>
+              </select>
+            </div>
+
+            {/* Role */}
+            <div className="space-y-1.5">
+              <label className="block text-[10px] font-bold text-gray-650 dark:text-slate-400 uppercase tracking-wider">{t('ตำแหน่งงาน (Role)', 'Role')}</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. Auditor, Staff, Super Admin"
+                value={formRole}
+                onChange={(e) => setFormRole(e.target.value)}
+                className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-855 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white font-sans"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            {/* Phone */}
+            <div className="space-y-1.5">
+              <label className="block text-[10px] font-bold text-gray-650 dark:text-slate-400 uppercase tracking-wider">{t('เบอร์โทรศัพท์', 'Phone Number')}</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. 081-XXXXXXX"
+                value={formPhone}
+                onChange={(e) => setFormPhone(e.target.value)}
+                className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-850 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white font-sans"
+              />
+            </div>
+
+            {/* Email */}
+            <div className="space-y-1.5">
+              <label className="block text-[10px] font-bold text-gray-655 dark:text-slate-400 uppercase tracking-wider">{t('อีเมล', 'Email')}</label>
+              <input
+                type="text"
+                placeholder="e.g. auditor@gmail.com"
+                value={formEmail}
+                onChange={(e) => setFormEmail(e.target.value)}
+                className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-955 border border-gray-200 dark:border-slate-855 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm dark:text-white font-sans"
+              />
+            </div>
+          </div>
+
+          {/* Form buttons */}
+          <div className="pt-4 border-t border-gray-150 dark:border-slate-850 flex items-center justify-end gap-2 bg-gray-50/50 dark:bg-slate-900/50 p-4 -mx-6 -mb-6 rounded-b-3xl">
+            <button
+              type="button"
+              onClick={() => setIsFormOpen(false)}
+              className="px-5 py-2.5 bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-350 border border-gray-200 dark:border-slate-700 rounded-xl text-xs font-bold cursor-pointer"
+            >
+              {t('ยกเลิก', 'Cancel')}
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold cursor-pointer border-none shadow-md shadow-blue-600/10"
+            >
+              {t('บันทึกข้อมูล', 'Save')}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )}
+
+  </div>
  );
 }
 

@@ -680,7 +680,7 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  </div>
  <div>
  <h4 className="text-base font-bold text-gray-900 dark:text-white mb-1">{t('ระบบบริหารงานที่ได้รับการรับรอง', 'Certified Quality System')}</h4>
- <p className="text-xs text-gray-700 dark:text-slate-400 line-clamp-2 italic">"{lang === 'TH' ? cert.scopeTH : cert.scopeEN}"</p>
+ <p className="text-xs text-gray-700 dark:text-slate-400 line-clamp-2 italic">"{settings.lang === 'TH' ? cert.scopeTH : cert.scopeEN}"</p>
  </div>
  </div>
 

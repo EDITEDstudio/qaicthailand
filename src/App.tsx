@@ -616,7 +616,7 @@ export default function App() {
  exit={{ opacity: 0, scale: 1.02 }}
  transition={{ duration: 0.3 }}
  >
- <InfoSections settings={settings} onTabChange={setActiveTab} isDarkMode={isDarkMode} />
+ <InfoSections settings={settings} onTabChange={setActiveTab} />
  </motion.div>
  )}
  {activeTab === 'standards' && (
@@ -706,14 +706,14 @@ export default function App() {
  </motion.div>
  )}
  {activeTab === 'org' && (
- <motion.div 
+<motion.div 
  key="org"
  initial={{ opacity: 0, scale: 0.98 }}
  animate={{ opacity: 1, scale: 1 }}
  exit={{ opacity: 0, scale: 1.02 }}
  transition={{ duration: 0.3 }}
  >
- <AboutSection settings={settings} />
+ <AboutSection settings={settings} isAdminMode={isAdminModeActive} />
  </motion.div>
  )}
  </AnimatePresence>

@@ -120,7 +120,7 @@ export default function OrgChart({ settings }: OrgChartProps) {
  className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
  selectedDept === dept
  ? 'bg-blue-600 text-white shadow-sm'
- : ' bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] hover:bg-gray-100 text-gray-800 dark:text-slate-300 border-transparent''
+ : ' bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] hover:bg-gray-100 text-gray-800 dark:text-slate-300 border-transparent'
  }`}
  >
  {lang === 'TH'
