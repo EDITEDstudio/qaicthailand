@@ -199,8 +199,8 @@ export default function App() {
  </div>
 
  {/* Desktop Nav */}
- <div className="hidden xl:flex items-center gap-3 xl:gap-5">
- <div className="flex items-center gap-3 xl:gap-5 mr-2 xl:mr-3">
+ <div className="hidden xl:flex items-center gap-2 xl:gap-3">
+ <div className="flex items-center gap-2 xl:gap-3 mr-1 xl:mr-1.5">
  <button onClick={() => setActiveTab('assess')} className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap ${activeTab === 'assess' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}>
  {t('หน้าแรก', 'Home')}
  </button>
