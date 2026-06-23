@@ -190,12 +190,12 @@ export default function App() {
  alt="QAIC Thailand Logo" 
  className={`h-12 w-auto transition-all duration-300 ${scrolled ? 'scale-90' : 'scale-100'}`}
  />
- <div className="hidden sm:block">
- <h1 className="font-display font-bold text-lg tracking-tight leading-none text-gray-900 dark:text-white">
- QAIC Thailand
- </h1>
- <p className="text-[10px] text-gray-600 dark:text-slate-400 font-sans tracking-widest uppercase mt-0.5">Global Certifications</p>
- </div>
+  <div className="hidden sm:flex flex-col justify-center">
+  <h1 className="font-display font-bold text-base lg:text-lg tracking-tight leading-tight text-gray-900 dark:text-white whitespace-nowrap">
+  QAIC Thailand
+  </h1>
+  <p className="text-[9px] lg:text-[10px] text-gray-600 dark:text-slate-400 font-sans tracking-widest uppercase mt-0.5 whitespace-nowrap">Global Certifications</p>
+  </div>
  </div>
 
  {/* Desktop Nav */}
