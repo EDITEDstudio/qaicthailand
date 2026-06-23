@@ -32,6 +32,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { ISO_STANDARDS } from '../constants';
 import DiagnosticQuiz from './DiagnosticQuiz';
+import BusinessSectors from './BusinessSectors';
 
 interface InfoSectionsProps {
  settings: UserSettings;
@@ -397,6 +398,12 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
  ))}
  </div>
  </section>
+
+ <hr className="border-gray-150/30 dark:border-slate-850/50 my-16 border-t" />
+
+ <BusinessSectors settings={settings} />
+
+ <hr className="border-gray-150/30 dark:border-slate-850/50 my-16 border-t" />
 
  {/* Pricing & FAQ Split */}
  <div className="grid lg:grid-cols-2 gap-12">
