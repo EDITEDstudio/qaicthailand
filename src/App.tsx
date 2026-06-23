@@ -17,6 +17,7 @@ import InfoSections from './components/InfoSections';
 import ProposalForm from './components/ProposalForm';
 import AuthModal from './components/auth/AuthModal';
 import NewsSection from './components/NewsSection';
+import DownloadsSection from './components/DownloadsSection';
 import { auth, db } from './lib/firebase';
 import { onAuthStateChanged, User, signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
@@ -53,7 +54,7 @@ export default function App() {
  primaryColor: '#2563eb' // Blue 600
  });
 
- const [activeTab, setActiveTab] = useState<'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote' | 'news'>('assess');
+ const [activeTab, setActiveTab] = useState<'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote' | 'news' | 'downloads'>('assess');
  const [isAiOpen, setIsAiOpen] = useState(false);
  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
  const [scrolled, setScrolled] = useState(false);
@@ -108,7 +109,7 @@ export default function App() {
     // Parse URL parameter to support direct tab routing
     const params = new URLSearchParams(window.location.search);
     const tabParam = params.get('tab');
-    if (tabParam && ['assess', 'standards', 'training', 'verify', 'org', 'profile', 'quote', 'news'].includes(tabParam)) {
+    if (tabParam && ['assess', 'standards', 'training', 'verify', 'org', 'profile', 'quote', 'news', 'downloads'].includes(tabParam)) {
       setActiveTab(tabParam as any);
     }
 
@@ -236,6 +237,12 @@ export default function App() {
  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
  </span>
+ </button>
+ <button 
+ onClick={() => setActiveTab('downloads')} 
+ className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap ${activeTab === 'downloads' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}
+ >
+ {t('ดาวน์โหลดแบบฟอร์ม', 'Downloads')}
  </button>
  <button onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })} className="text-[10px] text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap">
  {t('ติดต่อ', 'Contact')}
@@ -409,6 +416,12 @@ export default function App() {
  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
  </span>
+ </button>
+ <button 
+ onClick={() => { setActiveTab('downloads'); setMobileMenuOpen(false); }}
+ className={`text-left text-3xl font-display font-bold transition-colors cursor-pointer ${activeTab === 'downloads' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-900 dark:text-white/40 dark:text-slate-500 hover:text-gray-900 dark:text-white dark:hover:text-white'}`}
+ >
+ {t('ดาวน์โหลดแบบฟอร์ม', 'Downloads')}
  </button>
  <button 
  onClick={() => { setActiveTab('org'); setMobileMenuOpen(false); }}
@@ -701,7 +714,7 @@ export default function App() {
  </motion.div>
  )}
  {activeTab === 'org' && (
-<motion.div 
+ <motion.div 
  key="org"
  initial={{ opacity: 0, scale: 0.98 }}
  animate={{ opacity: 1, scale: 1 }}
@@ -709,6 +722,17 @@ export default function App() {
  transition={{ duration: 0.3 }}
  >
  <AboutSection settings={settings} isAdminMode={isAdminModeActive} />
+ </motion.div>
+ )}
+ {activeTab === 'downloads' && (
+ <motion.div 
+ key="downloads"
+ initial={{ opacity: 0, scale: 0.98 }}
+ animate={{ opacity: 1, scale: 1 }}
+ exit={{ opacity: 0, scale: 1.02 }}
+ transition={{ duration: 0.3 }}
+ >
+ <DownloadsSection settings={settings} />
  </motion.div>
  )}
  </AnimatePresence>

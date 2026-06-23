@@ -39,7 +39,7 @@ import { NewsArticle, DEFAULT_NEWS_ARTICLES } from './NewsSection';
 
 interface InfoSectionsProps {
   settings: UserSettings;
-  onTabChange: (tab: 'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote' | 'news') => void;
+  onTabChange: (tab: 'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote' | 'news' | 'downloads') => void;
 }
 
 const CATEGORY_ICONS: { [key: string]: any } = {
@@ -512,7 +512,7 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
 
 interface NewsHighlightProps {
   settings: UserSettings;
-  onTabChange: (tab: 'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote' | 'news') => void;
+  onTabChange: (tab: 'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote' | 'news' | 'downloads') => void;
 }
 
 function NewsHighlight({ settings, onTabChange }: NewsHighlightProps) {
