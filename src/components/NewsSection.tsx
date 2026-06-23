@@ -35,7 +35,7 @@ interface NewsSectionProps {
   isAdminMode?: boolean;
 }
 
-interface NewsArticle {
+export interface NewsArticle {
   id: string;
   titleTH: string;
   titleEN: string;
@@ -52,7 +52,7 @@ interface NewsArticle {
   views: number;
 }
 
-const DEFAULT_NEWS_ARTICLES: NewsArticle[] = [
+export const DEFAULT_NEWS_ARTICLES: NewsArticle[] = [
   {
     id: 'news-01',
     titleTH: 'QAIC ขยายการรับรองระบบ ISO 9001 แก่กลุ่มสหกรณ์การเกษตรภาคเหนือ',

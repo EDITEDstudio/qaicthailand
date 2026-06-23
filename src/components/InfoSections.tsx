@@ -27,16 +27,19 @@ import {
  Utensils,
  Lock,
  Truck,
- Settings
+ Settings,
+ Calendar,
+ Newspaper
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ISO_STANDARDS } from '../constants';
 import DiagnosticQuiz from './DiagnosticQuiz';
 import BusinessSectors from './BusinessSectors';
+import { NewsArticle, DEFAULT_NEWS_ARTICLES } from './NewsSection';
 
 interface InfoSectionsProps {
- settings: UserSettings;
- onTabChange: (tab: 'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote') => void;
+  settings: UserSettings;
+  onTabChange: (tab: 'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote' | 'news') => void;
 }
 
 const CATEGORY_ICONS: { [key: string]: any } = {
@@ -405,6 +408,10 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
 
  <hr className="border-gray-150/30 dark:border-slate-850/50 my-16 border-t" />
 
+ <NewsHighlight settings={settings} onTabChange={onTabChange} />
+
+ <hr className="border-gray-150/30 dark:border-slate-850/50 my-16 border-t" />
+
  {/* Pricing & FAQ Split */}
  <div className="grid lg:grid-cols-2 gap-12">
  {/* Pricing Card */}
@@ -501,4 +508,159 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
  </div>
  </div>
  );
+}
+
+interface NewsHighlightProps {
+  settings: UserSettings;
+  onTabChange: (tab: 'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote' | 'news') => void;
+}
+
+function NewsHighlight({ settings, onTabChange }: NewsHighlightProps) {
+  const lang = settings.lang;
+  const t = (th: string, en: string) => lang === 'TH' ? th : en;
+
+  const [articles] = React.useState<NewsArticle[]>(() => {
+    const saved = localStorage.getItem('qaic_news_articles');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      } catch (e) {
+        console.error('Failed to parse news articles from localStorage:', e);
+      }
+    }
+    return DEFAULT_NEWS_ARTICLES;
+  });
+
+  const latestArticles = articles.slice(0, 3);
+
+  const getBadgeColor = (category: string) => {
+    switch (category) {
+      case 'PR': return 'bg-blue-500/10 text-blue-650 dark:text-blue-400 border border-blue-200/40 dark:border-blue-900/30';
+      case 'CERTIFICATION': return 'bg-emerald-500/10 text-emerald-650 dark:text-emerald-400 border border-emerald-200/40 dark:border-emerald-900/30';
+      case 'TRAINING': return 'bg-purple-500/10 text-purple-650 dark:text-purple-400 border border-purple-200/40 dark:border-purple-900/30';
+      case 'ISO UPDATE': return 'bg-amber-500/10 text-amber-650 dark:text-amber-400 border border-amber-200/40 dark:border-amber-900/30';
+      default: return 'bg-gray-500/10 text-gray-650 dark:text-gray-400 border border-gray-200/40';
+    }
+  };
+
+  const handleNewsClick = (articleId: string) => {
+    onTabChange('news');
+    const params = new URLSearchParams(window.location.search);
+    params.set('tab', 'news');
+    params.set('article', articleId);
+    window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+    // Smooth scroll to top of viewport
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <section className="space-y-12">
+      {/* Section Header */}
+      <div className="text-center space-y-4 max-w-3xl mx-auto px-4">
+        <motion.h4 
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-red-500 font-display font-extrabold uppercase tracking-[0.25em] text-xs md:text-sm"
+        >
+          {t('ข่าวสารและกิจกรรม', 'LATEST NEWS & ACTIVITIES')}
+        </motion.h4>
+        
+        <motion.h2 
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.1 }}
+          className="text-3xl md:text-4xl font-display font-bold leading-tight tracking-tight text-gray-900 dark:text-white"
+        >
+          {t('อัปเดตข่าวประชาสัมพันธ์ล่าสุด', 'Stay Updated with QAIC Thailand')}
+        </motion.h2>
+        
+        <motion.p 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+          className="text-sm md:text-base text-gray-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed"
+        >
+          {t('เกาะติดข่าวสารการรับรองมาตรฐาน กิจกรรมเพื่อสังคม อัปเดตข้อกำหนด ISO และตารางการฝึกอบรมจากผู้เชี่ยวชาญ', 'Keep up with our latest certifications, corporate activities, ISO updates, and specialized professional training updates.')}
+        </motion.p>
+      </div>
+
+      {/* Grid of latest 3 articles */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 px-4 md:px-8">
+        {latestArticles.map((article, index) => (
+          <motion.div
+            key={article.id}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.1 }}
+            onClick={() => handleNewsClick(article.id)}
+            className="group bg-white/40 dark:bg-slate-900/40 backdrop-blur-[35px] border border-slate-200/50 dark:border-white/10 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.15)] rounded-3xl overflow-hidden hover:scale-[1.02] hover:bg-white/60 dark:hover:bg-slate-900/60 transition-all duration-300 shadow-lg cursor-pointer flex flex-col h-full"
+          >
+            {/* Cover Image */}
+            <div className="h-48 w-full overflow-hidden relative border-b border-slate-200/30 dark:border-slate-800/30 bg-gray-100 dark:bg-slate-950/40">
+              <img 
+                src={article.image} 
+                alt={lang === 'TH' ? article.titleTH : article.titleEN}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+              />
+            </div>
+            
+            {/* Body */}
+            <div className="p-6 flex flex-col justify-between flex-grow">
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-4">
+                  <span className={`px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider ${getBadgeColor(article.category)}`}>
+                    {article.category}
+                  </span>
+                  <div className="flex items-center gap-1 text-[10px] text-gray-700 dark:text-slate-400 font-medium font-sans">
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>{lang === 'TH' ? article.readTimeTH : article.readTimeEN}</span>
+                  </div>
+                </div>
+                
+                <h3 className="text-sm md:text-base font-display font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-blue-650 dark:group-hover:text-blue-400 transition-colors leading-snug">
+                  {lang === 'TH' ? article.titleTH : article.titleEN}
+                </h3>
+                
+                <p className="text-[11px] md:text-xs text-gray-500 dark:text-slate-400 line-clamp-3 leading-relaxed font-sans mb-4">
+                  {lang === 'TH' ? article.summaryTH : article.summaryEN}
+                </p>
+              </div>
+
+              {/* Bottom Row */}
+              <div className="flex items-center justify-between border-t border-gray-100 dark:border-slate-800/50 pt-4 mt-auto">
+                <span className="text-[10px] text-gray-750 dark:text-slate-500 font-semibold font-sans">
+                  {lang === 'TH' ? article.date : article.dateEN}
+                </span>
+                
+                <div className="flex items-center gap-1 text-[10px] md:text-xs font-bold text-blue-650 dark:text-blue-400 uppercase tracking-wider select-none">
+                  <span>{t('อ่านข่าวเพิ่มเติม', 'Read More')}</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* View All Button */}
+      <div className="text-center pt-2">
+        <button
+          onClick={() => {
+            onTabChange('news');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className="px-6 py-3 border border-blue-500/35 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 hover:border-transparent text-blue-650 dark:text-blue-400 text-xs font-bold rounded-xl tracking-wider uppercase transition-all duration-200 cursor-pointer shadow-sm bg-transparent active:scale-95"
+        >
+          {t('ดูข่าวสารทั้งหมด', 'View All News & PR')}
+        </button>
+      </div>
+    </section>
+  );
 }
