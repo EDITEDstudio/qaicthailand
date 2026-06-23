@@ -199,8 +199,8 @@ export default function App() {
  </div>
 
  {/* Desktop Nav */}
- <div className="hidden lg:flex items-center gap-3 xl:gap-6">
- <div className="flex items-center gap-3 xl:gap-6 mr-2 xl:mr-4">
+ <div className="hidden xl:flex items-center gap-3 xl:gap-5">
+ <div className="flex items-center gap-3 xl:gap-5 mr-2 xl:mr-3">
  <button onClick={() => setActiveTab('assess')} className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap ${activeTab === 'assess' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-600 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400'}`}>
  {t('หน้าแรก', 'Home')}
  </button>
@@ -357,7 +357,7 @@ export default function App() {
  </div>
  </div>
 
- <button className="lg:hidden p-2 text-gray-800 dark:text-slate-300" onClick={() => setMobileMenuOpen(true)}>
+ <button className="xl:hidden p-2 text-gray-800 dark:text-slate-300" onClick={() => setMobileMenuOpen(true)}>
  <Menu className="w-6 h-6" />
  </button>
  </div>
