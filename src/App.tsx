@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { UserSettings, Language } from './types';
-import ThemeCustomizer from './components/ThemeCustomizer';
+
 import CertificateVerification from './components/CertificateVerification';
 import GeminiConsultant from './components/GeminiConsultant';
 import OrgChart from './components/OrgChart';
@@ -262,11 +262,6 @@ export default function App() {
  >
  <span className="text-sm leading-none">{isDarkMode ? '☀️' : '🌙'}</span>
  </button>
-
- <ThemeCustomizer 
- settings={settings} 
- onChange={setSettings} 
- />
 
  <div className="flex items-center gap-3">
  {user ? (
