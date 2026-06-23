@@ -94,7 +94,7 @@ export default function AboutSection({ settings, isAdminMode = false }: AboutSec
   
   // Auditor registry states
   const [auditors, setAuditors] = useState<Auditor[]>(() => {
-    const saved = localStorage.getItem('qaic_auditors');
+    const saved = localStorage.getItem('qaic_auditors_v2');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -106,7 +106,7 @@ export default function AboutSection({ settings, isAdminMode = false }: AboutSec
   });
 
   useEffect(() => {
-    localStorage.setItem('qaic_auditors', JSON.stringify(auditors));
+    localStorage.setItem('qaic_auditors_v2', JSON.stringify(auditors));
   }, [auditors]);
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -701,7 +701,7 @@ export default function AboutSection({ settings, isAdminMode = false }: AboutSec
               onClick={() => {
                 if (confirm(t('คุณต้องการรีเซ็ตรายชื่อผู้ตรวจเป็นค่าเริ่มต้นหรือไม่?', 'Do you want to reset the auditor directory to default?'))) {
                   setAuditors(DEFAULT_AUDITORS);
-                  localStorage.setItem('qaic_auditors', JSON.stringify(DEFAULT_AUDITORS));
+                  localStorage.setItem('qaic_auditors_v2', JSON.stringify(DEFAULT_AUDITORS));
                 }
               }}
               className="px-4 py-2 border border-yellow-500/25 bg-yellow-600/10 text-yellow-750 dark:text-yellow-400 rounded-xl text-xs font-bold uppercase hover:bg-yellow-600/25 transition-all cursor-pointer shadow-sm active:scale-95"
