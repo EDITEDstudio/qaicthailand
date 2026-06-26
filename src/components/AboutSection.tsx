@@ -18,6 +18,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { UserSettings } from '../types';
+import OrgChart from './OrgChart';
 
 interface AboutSectionProps {
  settings: UserSettings;
@@ -186,6 +187,11 @@ export default function AboutSection({ settings, isAdminMode = false }: AboutSec
  </div>
  </div>
  </div>
+ </section>
+
+ {/* Org Chart Section */}
+ <section className="relative z-10 px-0 md:px-2">
+   <OrgChart settings={settings} />
  </section>
 
  {/* Quality Policy Quote */}

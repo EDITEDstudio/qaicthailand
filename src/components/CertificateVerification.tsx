@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { UserSettings } from '../types';
+import { ENRICHED_CLIENTS } from '../data/clientsData';
 import {
  Search,
  CheckCircle2,
@@ -18,6 +19,8 @@ import {
  QrCode,
  Printer,
  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
  RefreshCw,
  MapPin,
  Building2,
@@ -53,229 +56,17 @@ interface ClientCertificate {
  authorizedSignatory: string;
 }
 
-// Complete localized database of certified clients & Thailand Agricultural Standard (มกษ.) focus
-const ENRICHED_CLIENTS: ClientCertificate[] = [
- {
- certificateNo: 'QAIC-TAS-904601',
- companyNameTH: 'สหกรณ์การเกษตรหลังสวน จำกัด',
- companyNameEN: 'Chumphon Agricultural Cooperative Ltd.',
- standard: 'มกษ. 9046-2560',
- scopeTH: 'การรวบรวม การคัดแยกเกรด ปอกเปลือก และบรรจุแช่เยือกแข็งทุเรียนหมอนทอง (IQF) เพื่อการส่งออก',
- scopeEN: 'Procurement, grading, peeling, and individual quick freezing (IQF) packaging of Monthong Durian for global export.',
- issueDate: '2024-05-12',
- expiryDate: '2027-05-11',
- status: 'Active',
- country: 'Thailand',
- provinceTH: 'ชุมพร',
- provinceEN: 'Chumphon',
- category: 'TAS',
- authorizedSignatory: 'ดร. อนิรุทธ์ รัตนพิมล (CEO)'
- },
- {
- certificateNo: 'QAIC-TAS-440312',
- companyNameTH: 'วิสาหกิจชุมชนแปรรูปข้าวอินทรีย์พญาเม็งราย',
- companyNameEN: 'Phaya Mengrai Organic Rice Community Enterprise',
- standard: 'มกษ. 4403-2564',
- scopeTH: 'การขัดสีข้าวเปลือกออร์แกนิค คัดแยกสิ่งเจือปน บรรจุถุงสูญญากาศ ข้าวหอมมะลิ 105 และข้าวไรซ์เบอร์รี่',
- scopeEN: 'Organic paddy milling, impurity sorting, and vacuum packaging of Jasmine Rice 105 and Riceberry.',
- issueDate: '2024-02-15',
- expiryDate: '2027-02-14',
- status: 'Active',
- country: 'Thailand',
- provinceTH: 'เชียงราย',
- provinceEN: 'Chiang Rai',
- category: 'TAS',
- authorizedSignatory: 'ดร. อนิรุทธ์ รัตนพิมล (CEO)'
- },
- {
- certificateNo: 'QAIC-TAS-640145',
- companyNameTH: 'สหกรณ์โคนมปากช่อง จำกัด',
- companyNameEN: 'Pakchong Dairy Cooperative Ltd.',
- standard: 'มกษ. 6401-2558',
- scopeTH: 'การรับและรวบรวมน้ำนมดิบ การคัดกรองควบคุมอุณหภูมิ และจัดเก็บในถังบรรจุสะอาดกระจายป้อนโรงงานพาสเจอร์ไรส์',
- scopeEN: 'Raw milk collection, density & thermal testing, storage in chilled sanitary tanks, and bulk distribution.',
- issueDate: '2023-08-20',
- expiryDate: '2026-08-19',
- status: 'Active',
- country: 'Thailand',
- provinceTH: 'นครราชสีมา',
- provinceEN: 'Nakhon Ratchasima',
- category: 'TAS',
- authorizedSignatory: 'ดร. อนิรุทธ์ รัตนพิมล (CEO)'
- },
- {
- certificateNo: 'QAIC-TAS-902367',
- companyNameTH: 'วิสาหกิจประมงชายฝั่งปากพนังแปรรูปสัตว์น้ำ',
- companyNameEN: 'Pak Phanang Coastal Fishery Enterprise',
- standard: 'มกษ. 9023-2550',
- scopeTH: 'การแช่แข็งกุ้งกุลาดำสด เนื้อปลากะพงหั่นชิ้น และบรรจุภัณฑ์อาหารทะเลถนอมอาหารแปรรูปส่งออก',
- scopeEN: 'Freezing of fresh black tiger prawns, pre-cut sea bass fillet, and vacuum seal preservation for Pacific markets.',
- issueDate: '2023-11-05',
- expiryDate: '2026-11-04',
- status: 'Active',
- country: 'Thailand',
- provinceTH: 'นครศรีธรรมราช',
- provinceEN: 'Nakhon Si Thammarat',
- category: 'TAS',
- authorizedSignatory: 'ดร. อนิรุทธ์ รัตนพิมล (CEO)'
- },
- {
- certificateNo: 'QAIC-TH-9001-2045',
- companyNameTH: 'บริษัท อาหารไทยก้าวหน้า จำกัด (มหาชน)',
- companyNameEN: 'Thai Progressive Foods Public Company Limited',
- standard: 'ISO 9001:2015',
- scopeTH: 'การจัดหา จัดเตรียม บรรจุ และกระจายผลิตภัณฑ์อาหารทะเลแช่แข็งและอาหารแปรรูปสำเร็จรูป',
- scopeEN: 'Procurement, preparation, packaging, and distribution of frozen seafood and ready-to-eat processed meals.',
- issueDate: '2023-04-12',
- expiryDate: '2026-04-11',
- status: 'Active',
- country: 'Thailand',
- provinceTH: 'ฉะเชิงเทรา',
- provinceEN: 'Chachoengsao',
- category: 'ISO 9001',
- authorizedSignatory: 'ดร. อนิรุทธ์ รัตนพิมล (CEO)'
- },
- {
- certificateNo: 'QAIC-TH-14125',
- companyNameTH: 'บริษัท พลังงานบริสุทธิ์ไทยแลนด์ จำกัด',
- companyNameEN: 'Clean Energy Thailand Co., Ltd.',
- standard: 'ISO 14001:2015',
- scopeTH: 'การออกแบบ ติดตั้ง และการบำรุงรักษาโรงผลิตไฟฟ้าจากแผงโซลาร์พลังงานแสงอาทิตย์บนหลังคาอาคารอุตสาหกรรม',
- scopeEN: 'Design, installation, and maintenance of rooftop solar panel power generating facilities for industrial use.',
- issueDate: '2024-01-08',
- expiryDate: '2027-01-07',
- status: 'Active',
- country: 'Thailand',
- provinceTH: 'ชลบุรี',
- provinceEN: 'Chonburi',
- category: 'ISO 14001',
- authorizedSignatory: 'ดร. อนิรุทธ์ รัตนพิมล (CEO)'
- },
- {
- certificateNo: 'QAIC-TH-27001-99',
- companyNameTH: 'บริษัท เทคโซลูชันส์ดีเวลลอปเมนท์ จำกัด',
- companyNameEN: 'TechSolutions Development Co., Ltd.',
- standard: 'ISO 27001:2022',
- scopeTH: 'การทำงานของระบบคลาวด์ข้อมูล การบริการโครงสร้างไอที และซอฟต์แวร์ประมวลการประมูลภาษี',
- scopeEN: 'The operations of data cloud hosting backend, IT infrastructure services, and tax-bidding software processing.',
- issueDate: '2025-05-10',
- expiryDate: '2028-05-09',
- status: 'Active',
- country: 'Thailand',
- provinceTH: 'กรุงเทพมหานคร',
- provinceEN: 'Bangkok',
- category: 'ISO 27001',
- authorizedSignatory: 'คุณภรณี วัฒนพงศ์สกุล (Technical Director)'
- },
- {
- certificateNo: 'QAIC-TH-FOOD-HACCP',
- companyNameTH: 'ห้างหุ้นส่วนจำกัด ครัวจอมทองเฮลธ์แคร์',
- companyNameEN: 'Jomthong Healthcare Kitchen LP',
- standard: 'HACCP & GHPs (Codex)',
- scopeTH: 'การปรุงอาหาร โรงครัวจัดเตรียมอาหาร และกระจายสู่ห้องผู้ป่วยหนักในเขตภาคกลางประเทศไทย',
- scopeEN: 'The cooking, kitchen-preparation, and secure distribution of patients meals to intensive care units in Central Thailand.',
- issueDate: '2023-11-20',
- expiryDate: '2026-11-19',
- status: 'Active',
- country: 'Thailand',
- provinceTH: 'สมุทรสาคร',
- provinceEN: 'Samut Sakhon',
- category: 'HACCP/GHP',
- authorizedSignatory: 'ดร. อนิรุทธ์ รัตนพิมล (CEO)'
- },
- {
- certificateNo: 'QAIC-TH-GDP-1025',
- companyNameTH: 'บริษัท เมดิคอลอินสตรูเมนท์ซัพพลายส์ จำกัด',
- companyNameEN: 'Medical Instruments Supplies Co., Ltd.',
- standard: 'GDP (Good Distribution Practice)',
- scopeTH: 'การจัดเก็บ คลังสินค้าสินค้าควบคุมอุณหภูมิ และขนส่งเข็มฉีดยา นวัตกรรมอวัยวะเทียมสลายในร่างกาย ยารักษาโรคชีววัตถุ',
- scopeEN: 'The temperature-controlled warehousing and shipping of surgical needles, bioresorbable implants, and biotherapeutics.',
- issueDate: '2024-06-15',
- expiryDate: '2027-06-14',
- status: 'Active',
- country: 'Thailand',
- provinceTH: 'นนทบุรี',
- provinceEN: 'Nonthaburi',
- category: 'GDP',
- authorizedSignatory: 'คุณภรณี วัฒนพงศ์สกุล (Technical Director)'
- },
- // Expired Items for Renewal Action Test
- {
- certificateNo: 'QAIC-TAS-904688',
- companyNameTH: 'กลุ่มสวนผลไม้แปลงใหญ่พัทลุง (แปรรูปมังคุดและทุเรียน)',
- companyNameEN: 'Phatthalung Fruit Orchard Growers Group',
- standard: 'มกษ. 9046-2560',
- scopeTH: 'การรวบรวม คัดขนาดเกรด ทุเรียนสดบรรจุกล่อง และส่งมอบตู้คอนเทนเนอร์ควบคุมอุณหภูมิเพื่อการส่งออกต่างประเทศ',
- scopeEN: 'Collection, sorting, fresh durian carton packaging, and delivery via temperature controlled containers for overseas export.',
- issueDate: '2021-03-10',
- expiryDate: '2024-03-09',
- status: 'Expired',
- country: 'Thailand',
- provinceTH: 'พัทลุง',
- provinceEN: 'Phatthalung',
- category: 'TAS',
- authorizedSignatory: 'ดร. อนิรุทธ์ รัตนพิมล (CEO)'
- },
- {
- certificateNo: 'QAIC-TAS-440311',
- companyNameTH: 'โรงสีข้าวรวมน้ำใจพัฒนาทุ่งกุลา',
- companyNameEN: 'Thung Kula Joint Rice Mill Cooperative',
- standard: 'มกษ. 4403-2564',
- scopeTH: 'โรงรับซื้อข้าวเปลือก ตรวจสิ่งเจือปน ขัดข้าวขาวหอมมะลิร้อยเอ็ด และบรรจุถุงส่งจำหน่ายโมเดิร์นเทรด',
- scopeEN: 'Paddy purchase center, quality screening, milling of premium jasmine rice, and retail-grade vacuum packing.',
- issueDate: '2021-05-15',
- expiryDate: '2024-05-14',
- status: 'Expired',
- country: 'Thailand',
- provinceTH: 'ร้อยเอ็ด',
- provinceEN: 'Roi Et',
- category: 'TAS',
- authorizedSignatory: 'ดร. อนิรุทธ์ รัตนพิมล (CEO)'
- },
- {
- certificateNo: 'QAIC-TH-SUSPEND-XM',
- companyNameTH: 'บริษัท ยานยนต์ดั้งเดิมอุตสาหกรรม จำกัด',
- companyNameEN: 'Traditional Automotives Industrial Ltd.',
- standard: 'ISO 9001:2015',
- scopeTH: 'การหล่อเหล็กประกอบแม่พิมพ์ช่วงล่าง และน็อตเพลาขับสากล',
- scopeEN: 'Casting of steel for chassis molds and drive shaft nuts.',
- issueDate: '2020-03-01',
- expiryDate: '2023-02-28',
- status: 'Suspended',
- country: 'Thailand',
- provinceTH: 'ระยอง',
- provinceEN: 'Rayong',
- category: 'ISO 9001',
- authorizedSignatory: 'ดร. อนิรุทธ์ รัตนพิมล (CEO)'
- },
- {
- certificateNo: 'QAIC-TH-EXPIRED-99',
- companyNameTH: 'สำนักพิมพ์ มหาวิทยาลัยนิติกาล',
- companyNameEN: 'Nitikarn University Press Office',
- standard: 'ISO 9001:2015',
- scopeTH: 'การรับจ้างจัดพิมพ์ ผลิตตำราวิชาการ และหนังสืออิเล็กทรอนิกส์ด้านกฎหมายเอกภาพรัฐ',
- scopeEN: 'Printing contract work, manufacturing academic textbook materials, and electronic publications.',
- issueDate: '2019-12-01',
- expiryDate: '2022-11-30',
- status: 'Expired',
- country: 'Thailand',
- provinceTH: 'กรุงเทพมหานคร',
- provinceEN: 'Bangkok',
- category: 'ISO 9001',
- authorizedSignatory: 'ดร. อนิรุทธ์ รัตนพิมล (CEO)'
- }
-];
-
 export default function CertificateVerification({ settings }: CertificateVerificationProps) {
- const lang = settings.lang;
- 
- // States
- const [searchQuery, setSearchQuery] = useState('');
- const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Expired'>('All');
- const [categoryFilter, setCategoryFilter] = useState<string>('All');
- const [activeCert, setActiveCert] = useState<ClientCertificate | null>(null);
- const [customCertificates, setCustomCertificates] = useState<ClientCertificate[]>([]);
- const [certLayout, setCertLayout] = useState<'digital' | 'paper'>('paper');
+  const lang = settings.lang;
+  
+  // States
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Expired'>('All');
+  const [categoryFilter, setCategoryFilter] = useState<string>('All');
+  const [activeCert, setActiveCert] = useState<ClientCertificate | null>(null);
+  const [customCertificates, setCustomCertificates] = useState<ClientCertificate[]>([]);
+  const [certLayout, setCertLayout] = useState<'digital' | 'paper'>('paper');
+  const [currentPage, setCurrentPage] = useState(1);
 
  const getStandardLogo = (category: string) => {
  switch (category) {
@@ -359,6 +150,46 @@ export default function CertificateVerification({ settings }: CertificateVerific
  return true;
  });
  }, [databasePool, statusFilter, categoryFilter, searchQuery]);
+
+  // Reset pagination when search or filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter, categoryFilter]);
+
+  // Paginated client list for performance (12 items per page)
+  const paginatedClients = useMemo(() => {
+    const startIndex = (currentPage - 1) * 12;
+    return filteredClients.slice(startIndex, startIndex + 12);
+  }, [filteredClients, currentPage]);
+
+  const totalPages = useMemo(() => {
+    return Math.ceil(filteredClients.length / 12);
+  }, [filteredClients]);
+
+  // Helper to generate visible page numbers
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      pageNumbers.push(1);
+      if (currentPage > 3) {
+        pageNumbers.push('...');
+      }
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+      for (let i = start; i <= end; i++) {
+        pageNumbers.push(i);
+      }
+      if (currentPage < totalPages - 2) {
+        pageNumbers.push('...');
+      }
+      pageNumbers.push(totalPages);
+    }
+    return pageNumbers;
+  };
 
  // Open certificate detail sheets modal
  const openVerificationModal = (client: ClientCertificate) => {
@@ -644,13 +475,14 @@ export default function CertificateVerification({ settings }: CertificateVerific
 
  {/* Directory Results Rendering Area */}
  {filteredClients.length > 0 ? (
+    <>
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
- {filteredClients.map((client) => {
+ {paginatedClients.map((client) => {
  const isActiveStatus = client.status === 'Active';
  
  return (
  <div
- key={client.certificateNo}
+ key={`${client.certificateNo}-${client.companyNameTH}-${client.standard}`}
  onClick={() => openVerificationModal(client)}
  className="group bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] rounded-3xl border hover:border-blue-200 hover:shadow-xl hover:shadow-gray-200/40 transition-all duration-300 p-5 flex flex-col justify-between cursor-pointer relative overflow-hidden"
  >
@@ -724,11 +556,79 @@ export default function CertificateVerification({ settings }: CertificateVerific
  </button>
  )}
  </div>
- </div>
- );
- })}
- </div>
- ) : (
+            </div>
+          );
+        })}
+      </div>
+
+      {totalPages > 1 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-8 pt-6 border-t border-gray-200/40 dark:border-slate-800/60 w-full font-sans text-xs">
+          {/* Result Info Text */}
+          <div className="text-gray-650 dark:text-slate-400 font-medium">
+            {t(
+              `แสดง ${(currentPage - 1) * 12 + 1} - ${Math.min(currentPage * 12, filteredClients.length)} จากทั้งหมด ${filteredClients.length} รายการ`,
+              `Showing ${(currentPage - 1) * 12 + 1} - ${Math.min(currentPage * 12, filteredClients.length)} of ${filteredClients.length} certificates`
+            )}
+          </div>
+
+          {/* Page Buttons List */}
+          <div className="flex items-center gap-1.5">
+            {/* Prev Button */}
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className={`p-2 rounded-xl transition-all border flex items-center justify-center cursor-pointer ${
+                currentPage === 1
+                  ? 'text-gray-300 dark:text-slate-700 border-gray-100 dark:border-slate-800/40 bg-gray-50/20 dark:bg-slate-900/10 cursor-not-allowed'
+                  : 'bg-white/40 dark:bg-slate-900/40 border-white/40 dark:border-white/10 text-gray-800 dark:text-slate-300 hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white hover:border-blue-500 dark:hover:border-blue-600'
+              }`}
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            {/* Page Numbers */}
+            {getPageNumbers().map((page, idx) => {
+              if (page === '...') {
+                return (
+                  <span key={`dots-${idx}`} className="px-2 text-gray-400 dark:text-slate-655 select-none">
+                    ...
+                  </span>
+                );
+              }
+              const isCurrent = page === currentPage;
+              return (
+                <button
+                  key={`page-${page}`}
+                  onClick={() => setCurrentPage(Number(page))}
+                  className={`w-8 h-8 rounded-xl font-bold flex items-center justify-center transition-all border cursor-pointer ${
+                    isCurrent
+                      ? 'bg-blue-500 border-blue-500 text-white shadow-md shadow-blue-500/25 dark:bg-blue-600 dark:border-blue-600'
+                      : 'bg-white/40 dark:bg-slate-900/40 border-white/40 dark:border-white/10 text-gray-800 dark:text-slate-300 hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white hover:border-blue-500 dark:hover:border-blue-600'
+                  }`}
+                >
+                  {page}
+                </button>
+              );
+            })}
+
+            {/* Next Button */}
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className={`p-2 rounded-xl transition-all border flex items-center justify-center cursor-pointer ${
+                currentPage === totalPages
+                  ? 'text-gray-300 dark:text-slate-700 border-gray-100 dark:border-slate-800/40 bg-gray-50/20 dark:bg-slate-900/10 cursor-not-allowed'
+                  : 'bg-white/40 dark:bg-slate-900/40 border-white/40 dark:border-white/10 text-gray-800 dark:text-slate-300 hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white hover:border-blue-500 dark:hover:border-blue-600'
+              }`}
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  ) : (
+
  <div className="py-20 text-center border-2 border-dashed border-gray-150 rounded-3xl max-w-xl mx-auto space-y-4">
  <AlertCircle className="w-12 h-12 text-gray-300 mx-auto" />
  <div className="space-y-1">

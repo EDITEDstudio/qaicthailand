@@ -42,7 +42,8 @@ import {
  ChevronDown,
  GraduationCap,
  Calculator,
- Home
+ Home,
+ Download
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -143,14 +144,14 @@ export default function App() {
  const changeLang = (lang: Language) => setSettings(s => ({ ...s, lang }));
 
  const tabs = [
-  { id: 'assess', labelTH: 'หน้าแรก', labelEN: 'Home', icon: Home },
-  { id: 'standards', labelTH: 'มาตรฐานที่รับรอง', labelEN: 'Certified Standards', icon: Layers },
-  { id: 'training', labelTH: 'การฝึกอบรม', labelEN: 'Training', icon: GraduationCap },
-  { id: 'news', labelTH: 'ข่าวสารประชาสัมพันธ์', labelEN: 'News & PR', icon: FileText },
-  { id: 'quote', labelTH: 'ขอใบเสนอราคา', labelEN: 'Get Proposal', icon: Calculator },
-  { id: 'verify', labelTH: 'ตรวจใบรับรอง', labelEN: 'Verify Certificate', icon: ShieldCheck },
-  { id: 'profile', labelTH: 'โปรไฟล์ลูกค้า', labelEN: 'Customer Profile', icon: UserIcon },
-  { id: 'org', labelTH: 'เกี่ยวกับเรา', labelEN: 'About Us', icon: Users },
+   { id: 'assess', labelTH: 'หน้าแรก', labelEN: 'Home', icon: Home },
+   { id: 'org', labelTH: 'เกี่ยวกับเรา', labelEN: 'About Us', icon: Users },
+   { id: 'standards', labelTH: 'บริการตรวจประเมิน', labelEN: 'Accredited Services', icon: Layers },
+   { id: 'training', labelTH: 'การฝึกอบรม', labelEN: 'Training Courses', icon: GraduationCap },
+   { id: 'news', labelTH: 'ข่าวสารประชาสัมพันธ์', labelEN: 'News & PR', icon: FileText },
+   { id: 'verify', labelTH: 'ตรวจใบรับรอง', labelEN: 'Verify Certificate', icon: ShieldCheck },
+   { id: 'downloads', labelTH: 'ดาวน์โหลดแบบฟอร์ม', labelEN: 'Forms & Downloads', icon: Download },
+   { id: 'profile', labelTH: 'โปรไฟล์ลูกค้า', labelEN: 'Client Profile', icon: UserIcon },
   ];
 
  const t = (th: string, en: string) => settings.lang === 'TH' ? th : en;
@@ -181,312 +182,337 @@ export default function App() {
  backgroundAttachment: 'fixed' 
  }}
  >
- {/* Navigation */}
- <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 py-2.5' : 'bg-transparent py-4 md:py-5'}`}>
- <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
- <div className="flex items-center gap-4">
- <img 
- src="/logo.png" 
- alt="QAIC Thailand Logo" 
- className={`h-12 w-auto transition-all duration-300 ${scrolled ? 'scale-90' : 'scale-100'}`}
- />
-  <div className="hidden sm:flex flex-col justify-center">
-  <h1 className="font-display font-bold text-base lg:text-lg tracking-tight leading-tight text-gray-900 whitespace-nowrap">
-  QAIC Thailand
-  </h1>
-  <p className="text-[9px] lg:text-[10px] text-gray-600 font-sans tracking-widest uppercase mt-0.5 whitespace-nowrap">Global Certifications</p>
-  </div>
- </div>
+  {/* Desktop Sidebar */}
+  <aside className="fixed top-0 left-0 bottom-0 z-50 w-64 xl:w-72 bg-white/40 backdrop-blur-[35px] border-r border-gray-200/40 dark:bg-slate-900/40 dark:border-white/10 p-6 flex flex-col justify-between overflow-y-auto hidden lg:flex">
+    <div className="space-y-8 flex flex-col h-full">
+      {/* Brand Logo Section */}
+      <div className="flex items-center gap-3.5 px-2">
+        <img src="/logo.png" alt="QAIC Thailand Logo" className="h-10 w-auto" />
+        <div className="flex flex-col">
+          <span className="font-display font-bold text-gray-900 dark:text-white text-base tracking-tight leading-tight">
+            QAIC Thailand
+          </span>
+          <span className="text-[9px] text-gray-500 dark:text-slate-400 font-sans tracking-widest uppercase mt-0.5">
+            Global Certifications
+          </span>
+        </div>
+      </div>
 
- {/* Desktop Nav */}
- <div className="hidden xl:flex items-center gap-2 xl:gap-3">
- <div className="flex items-center gap-2 xl:gap-3 mr-1 xl:mr-1.5">
- <button onClick={() => setActiveTab('assess')} className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap ${activeTab === 'assess' ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'}`}>
- {t('หน้าแรก', 'Home')}
- </button>
- <button onClick={() => setActiveTab('org')} className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap ${activeTab === 'org' ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'}`}>
- {t('เกี่ยวกับเรา', 'About')}
- </button>
- <button onClick={() => setActiveTab('standards')} className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap ${activeTab === 'standards' ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'}`}>
- {t('บริการ', 'Services')}
- </button>
- <button 
- onClick={() => setActiveTab('training')} 
- className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap ${activeTab === 'training' ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'}`}
- >
- {t('ฝึกอบรม', 'Training')}
- </button>
-  <button 
-  onClick={() => setActiveTab('news')} 
-  className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap ${activeTab === 'news' ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'}`}
-  >
-  {t('ข่าวสาร', 'News')}
-  </button>
- <button 
- onClick={() => setActiveTab('profile')} 
- className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap ${activeTab === 'profile' ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'}`}
- >
- {t('โปรไฟล์', 'Profile')}
- </button>
- <button 
- onClick={() => setActiveTab('verify')} 
- className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${activeTab === 'verify' ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'}`}
- >
- <span className="whitespace-nowrap">{t('ตรวจใบรับรอง (มกษ./ISO)', 'Verify (TAS/ISO)')}</span>
- <span className="relative flex h-2 w-2">
- <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
- <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
- </span>
- </button>
- <button 
- onClick={() => setActiveTab('downloads')} 
- className={`text-[10px] font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap ${activeTab === 'downloads' ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'}`}
- >
- {t('ดาวน์โหลดแบบฟอร์ม', 'Downloads')}
- </button>
- <button onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })} className="text-[10px] text-gray-700 hover:text-blue-600 font-bold uppercase tracking-widest transition-colors cursor-pointer whitespace-nowrap">
- {t('ติดต่อ', 'Contact')}
- </button>
- </div>
+      {/* Navigation Tabs (Vertical list) */}
+      <div className="flex-1 flex flex-col gap-1.5 overflow-y-auto pr-1">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer text-left w-full relative ${
+                isActive 
+                  ? 'bg-blue-600/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 border border-blue-500/10 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)]' 
+                  : 'text-gray-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100/50 dark:hover:bg-slate-800/40 border border-transparent'
+              }`}
+            >
+              {isActive && (
+                <motion.div
+                  layoutId="activeTabIndicator"
+                  className="absolute left-0 top-3 bottom-3 w-1 bg-blue-600 dark:bg-blue-400 rounded-r-full"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+              <Icon className="w-4.5 h-4.5 flex-shrink-0" />
+              <span className="truncate">{t(tab.labelTH, tab.labelEN)}</span>
+              {tab.id === 'verify' && (
+                <span className="relative flex h-2 w-2 ml-auto">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+      
+      {/* Settings / Switchers at Bottom */}
+      <div className="pt-4 border-t border-gray-150 dark:border-white/10 space-y-4">
+        {/* Language switcher */}
+        <div className="flex bg-gray-100/50 dark:bg-slate-800/40 p-1 rounded-xl border border-gray-200/50 dark:border-white/10 justify-between items-center">
+          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest pl-2">
+            {t('ภาษา', 'Lang')}
+          </span>
+          <div className="flex gap-1">
+            <button 
+              onClick={() => changeLang('TH')}
+              className={`px-2.5 py-1 text-[10px] font-bold rounded-lg transition-all ${settings.lang === 'TH' ? ' bg-white dark:bg-slate-900 shadow-sm text-blue-600 font-extrabold border border-gray-200/30 dark:border-white/10' : 'text-gray-700 dark:text-slate-400 hover:text-gray-900 cursor-pointer'}`}
+            >TH</button>
+            <button 
+              onClick={() => changeLang('EN')}
+              className={`px-2.5 py-1 text-[10px] font-bold rounded-lg transition-all ${settings.lang === 'EN' ? ' bg-white dark:bg-slate-900 shadow-sm text-blue-600 font-extrabold border border-gray-200/30 dark:border-white/10' : 'text-gray-700 dark:text-slate-400 hover:text-gray-900 cursor-pointer'}`}
+            >EN</button>
+          </div>
+        </div>
 
- <div className="h-4 w-px bg-gray-200" />
+        {/* User Account / Profile Info */}
+        <div className="pt-2">
+          {user ? (
+            <div className="space-y-3">
+              {/* User badge */}
+              <div className="flex items-center gap-3 p-3 rounded-2xl bg-gray-50 dark:bg-slate-800/40 border border-gray-100 dark:border-white/5">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center overflow-hidden bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex-shrink-0">
+                  {user.photoURL ? (
+                    <img src={user.photoURL} alt={user.displayName || 'User'} className="w-full h-full object-cover" />
+                  ) : (
+                    <UserIcon className="w-4.5 h-4.5" />
+                  )}
+                </div>
+                <div className="text-left overflow-hidden">
+                  <p className="text-[10px] font-bold text-gray-900 dark:text-white leading-tight truncate">
+                    {user.displayName || user.email?.split('@')[0]}
+                  </p>
+                  <p className="text-[8px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">
+                    {(user as any).role === 'admin' ? t('ผู้ดูแลระบบ', 'Admin') : t('สมาชิก', 'Member')}
+                  </p>
+                </div>
+              </div>
 
- <div className="flex bg-gray-100/50 p-1 rounded-xl border border-gray-200/50">
- <button 
- onClick={() => changeLang('TH')}
- className={`px-3 py-1 text-[10px] font-bold rounded-lg transition-all ${settings.lang === 'TH' ? ' bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] text-blue-700 shadow-sm font-extrabold' : 'text-gray-700 hover:text-gray-900 cursor-pointer'}`}
- >TH</button>
- <button 
- onClick={() => changeLang('EN')}
- className={`px-3 py-1 text-[10px] font-bold rounded-lg transition-all ${settings.lang === 'EN' ? ' bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] text-blue-700 shadow-sm font-extrabold' : 'text-gray-700 hover:text-gray-900 cursor-pointer'}`}
- >EN</button>
- </div>
+              {/* Admin Mode toggle directly in sidebar */}
+              {(user as any).role === 'admin' && (
+                <div className="flex items-center justify-between px-2.5 py-1.5 bg-purple-50/50 dark:bg-purple-950/10 border border-purple-100/50 dark:border-purple-950/20 rounded-xl">
+                  <span className="text-[9px] uppercase font-bold tracking-widest text-purple-600 dark:text-purple-400">
+                    {t('โหมดแอดมิน', 'Admin Mode')}
+                  </span>
+                  <button
+                    onClick={() => setIsAdminModeActive(!isAdminModeActive)}
+                    className={`w-9 h-5.5 rounded-full p-0.5 transition-colors duration-200 focus:outline-none relative flex items-center cursor-pointer ${
+                      isAdminModeActive ? 'bg-purple-600' : 'bg-gray-200 dark:bg-slate-700'
+                    }`}
+                  >
+                    <div
+                      className={`w-4.5 h-4.5 rounded-full bg-white shadow-sm transform duration-200 ${
+                        isAdminModeActive ? 'translate-x-3.5' : 'translate-x-0'
+                      }`}
+                    />
+                  </button>
+                </div>
+              )}
 
- <div className="flex items-center gap-3">
- {user ? (
- <div className="relative">
- <button 
- onClick={() => setUserMenuOpen(!userMenuOpen)}
- className="flex items-center gap-3 px-3 py-1.5 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] rounded-xl hover:shadow-sm transition-all cursor-pointer"
- >
- <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center overflow-hidden">
- {user.photoURL ? (
- <img src={user.photoURL} alt={user.displayName || 'User'} className="w-full h-full object-cover" />
- ) : (
- <UserIcon className="w-4 h-4" />
- )}
- </div>
- <div className="text-left hidden md:block">
- <p className="text-[10px] font-bold text-gray-900 leading-tight truncate max-w-[100px]">
-  {user.displayName || user.email?.split('@')[0]}
-  </p>
-  <p className="text-[8px] text-gray-650 font-bold uppercase tracking-widest">
-    {(user as any).role === 'admin' ? t('ผู้ดูแลระบบ', 'Admin') : t('สมาชิก', 'Member')}
-  </p>
- </div>
- <ChevronDown className={`w-3.5 h-3.5 text-gray-600 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
- </button>
-
- <AnimatePresence>
- {userMenuOpen && (
- <motion.div 
- initial={{ opacity: 0, y: 10, scale: 0.95 }}
- animate={{ opacity: 1, y: 0, scale: 1 }}
- exit={{ opacity: 0, y: 10, scale: 0.95 }}
- className="absolute right-0 mt-2 w-48 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] border rounded-2xl shadow-xl shadow-gray-900/5 p-2 z-[60]"
- >
-  <div className="p-3 border-b border-gray-50 mb-1">
-    <p className="text-xs font-bold text-gray-900 truncate">{user.email}</p>
-  </div>
-  
-  {(user as any).role === 'admin' && (
-    <div className="flex items-center justify-between px-3 py-2 border-b border-gray-50 mb-1">
-      <span className="text-[9px] uppercase font-bold tracking-widest text-purple-600">
-        {t('โหมดแอดมิน', 'Admin Mode')}
-      </span>
-      <button
-        onClick={() => setIsAdminModeActive(!isAdminModeActive)}
-        className={`w-9 h-5.5 rounded-full p-0.5 transition-colors duration-200 focus:outline-none relative flex items-center cursor-pointer ${
-          isAdminModeActive ? 'bg-purple-600' : 'bg-gray-200'
-        }`}
-      >
-        <div
-          className={`w-4 h-4 rounded-full bg-white shadow-sm transform duration-200 ${
-            isAdminModeActive ? 'translate-x-4' : 'translate-x-0'
-          }`}
-        />
-      </button>
+              {/* Logout button */}
+              <button 
+                onClick={handleLogout}
+                className="w-full py-3 bg-red-50 hover:bg-red-100 dark:bg-red-950/15 dark:hover:bg-red-950/25 text-red-600 dark:text-red-400 rounded-xl text-[10px] font-bold flex items-center justify-center gap-2 cursor-pointer transition-all border border-red-100/50 dark:border-red-950/20 uppercase tracking-widest"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>{t('ออกจากระบบ', 'Log Out')}</span>
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              <button 
+                onClick={() => setAuthModal({ isOpen: true, mode: 'login' })}
+                className="w-full py-3 rounded-xl text-[10px] font-bold shadow-md cursor-pointer bg-gray-900 dark:bg-white text-white dark:text-gray-950 hover:bg-gray-800 dark:hover:bg-gray-100 transition-all uppercase tracking-widest"
+              >
+                {t('เข้าสู่ระบบ', 'Login')}
+              </button>
+              <button 
+                onClick={() => setAuthModal({ isOpen: true, mode: 'register' })}
+                className="w-full py-3 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-slate-350 hover:bg-gray-50 dark:hover:bg-slate-800/40 rounded-xl text-[10px] font-bold cursor-pointer transition-all uppercase tracking-widest"
+              >
+                {t('ลงทะเบียน', 'Register')}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
-  )}
+  </aside>
 
-  <button 
-    onClick={handleLogout}
-    className="w-full flex items-center gap-3 px-3 py-2 text-red-650 hover:bg-red-50 rounded-xl text-xs font-bold transition-all cursor-pointer"
-  >
-    <LogOut className="w-4 h-4" />
-    <span>{t('ออกจากระบบ', 'Log Out')}</span>
-  </button>
- </motion.div>
- )}
- </AnimatePresence>
- </div>
- ) : (
- <>
- <button 
- onClick={() => setAuthModal({ isOpen: true, mode: 'login' })}
- className="text-[10px] font-bold text-gray-800 px-4 py-2 hover:text-blue-600 transition-colors uppercase tracking-widest cursor-pointer whitespace-nowrap"
- >
- {t('เข้าสู่ระบบ', 'Login')}
- </button>
- <button 
- onClick={() => setAuthModal({ isOpen: true, mode: 'register' })}
- className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold rounded-xl transition-all shadow-lg shadow-blue-600/10 active:scale-95 cursor-pointer uppercase tracking-widest whitespace-nowrap"
- >
- {t('ลงทะเบียน', 'Register')}
- </button>
- </>
- )}
- </div>
- </div>
+  {/* Mobile Header (Visible on screen sizes < lg) */}
+  <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 lg:hidden ${scrolled ? 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-white/10 py-2.5' : 'bg-transparent py-4 md:py-5'}`}>
+    <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        <img src="/logo.png" alt="QAIC Thailand Logo" className="h-10 w-auto" />
+        <div className="flex flex-col">
+          <span className="font-display font-bold text-gray-900 dark:text-white text-sm tracking-tight leading-tight">
+            QAIC Thailand
+          </span>
+          <span className="text-[8px] text-gray-600 dark:text-slate-400 font-sans tracking-widest uppercase mt-0.5">
+            Global Certifications
+          </span>
+        </div>
+      </div>
+      <div className="flex items-center gap-2">
+        <div className="flex bg-gray-100/50 dark:bg-slate-800/40 p-0.5 rounded-lg border border-gray-200/50 dark:border-white/10 text-[9px] mr-2">
+          <button onClick={() => changeLang('TH')} className={`px-2 py-0.5 font-bold rounded ${settings.lang === 'TH' ? 'bg-white dark:bg-slate-950 text-blue-600 shadow-sm' : 'text-gray-600 dark:text-slate-400'}`}>TH</button>
+          <button onClick={() => changeLang('EN')} className={`px-2 py-0.5 font-bold rounded ${settings.lang === 'EN' ? 'bg-white dark:bg-slate-950 text-blue-600 shadow-sm' : 'text-gray-600 dark:text-slate-400'}`}>EN</button>
+        </div>
+        <button className="p-2 text-gray-800 dark:text-white" onClick={() => setMobileMenuOpen(true)}>
+          <Menu className="w-6 h-6" />
+        </button>
+      </div>
+    </div>
+  </nav>
 
- <button className="xl:hidden p-2 text-gray-800" onClick={() => setMobileMenuOpen(true)}>
- <Menu className="w-6 h-6" />
- </button>
- </div>
- </nav>
+  {/* Mobile Menu Overlay */}
+  <AnimatePresence>
+    {mobileMenuOpen && (
+      <motion.div 
+        initial={{ opacity: 0, x: '100%' }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: '100%' }}
+        className="fixed inset-0 z-[60] p-8 flex flex-col transition-all duration-300 bg-white/95 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-950/95 dark:border-white/10 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.1)] text-gray-950 dark:text-white overflow-y-auto"
+      >
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="Logo" className="h-10 w-auto" />
+            <div className="flex flex-col">
+              <span className="font-display font-bold text-gray-900 dark:text-white text-sm tracking-tight leading-tight">
+                QAIC Thailand
+              </span>
+              <span className="text-[8px] text-gray-600 dark:text-slate-400 font-sans tracking-widest uppercase mt-0.5">
+                Global Certifications
+              </span>
+            </div>
+          </div>
+          <button 
+            onClick={() => setMobileMenuOpen(false)} 
+            className="p-2.5 rounded-2xl cursor-pointer transition-colors bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-slate-700"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
 
- {/* Mobile Menu Overlay */}
- <AnimatePresence>
- {mobileMenuOpen && (
- <motion.div 
- initial={{ opacity: 0, x: '100%' }}
- animate={{ opacity: 1, x: 0 }}
- exit={{ opacity: 0, x: '100%' }}
- className="fixed inset-0 z-[60] p-8 flex flex-col transition-all duration-300 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] text-gray-950"
- >
- <div className="flex justify-between items-center mb-12">
- <img src="/logo.png" alt="Logo" className="h-10 w-auto" />
- <button onClick={() => setMobileMenuOpen(false)} className="p-2 rounded-full cursor-pointer transition-colors bg-gray-50 text-gray-900 hover:bg-gray-100"><X className="w-6 h-6" /></button>
- </div>
- <div className="flex flex-col gap-6">
- <button 
- onClick={() => { setActiveTab('assess'); setMobileMenuOpen(false); }}
- className={`text-left text-3xl font-display font-bold transition-colors cursor-pointer ${activeTab === 'assess' ? 'text-blue-600' : 'text-gray-900'}`}
- >
- {t('หน้าแรก', 'Home')}
- </button>
- <button 
- onClick={() => { setActiveTab('standards'); setMobileMenuOpen(false); }}
- className={`text-left text-3xl font-display font-bold transition-colors cursor-pointer ${activeTab === 'standards' ? 'text-blue-600' : 'text-gray-900'}`}
- >
- {t('บริการ', 'Services')}
- </button>
- <button 
- onClick={() => { setActiveTab('training'); setMobileMenuOpen(false); }}
- className={`text-left text-3xl font-display font-bold transition-colors cursor-pointer ${activeTab === 'training' ? 'text-blue-600' : 'text-gray-900'}`}
- >
- {t('การฝึกอบรม', 'Training')}
- </button>
-  <button 
-  onClick={() => { setActiveTab('news'); setMobileMenuOpen(false); }}
-  className={`text-left text-3xl font-display font-bold transition-colors cursor-pointer ${activeTab === 'news' ? 'text-blue-600' : 'text-gray-900'}`}
-  >
-  {t('ข่าวสารประชาสัมพันธ์', 'News & PR')}
-  </button>
- <button 
- onClick={() => { setActiveTab('profile'); setMobileMenuOpen(false); }}
- className={`text-left text-3xl font-display font-bold transition-colors cursor-pointer ${activeTab === 'profile' ? 'text-blue-600' : 'text-gray-900'}`}
- >
- {t('โปรไฟล์ลูกค้า', 'Profile')}
- </button>
- <button 
- onClick={() => { setActiveTab('verify'); setMobileMenuOpen(false); }}
- className={`text-left text-3xl font-display font-bold transition-colors cursor-pointer flex items-center gap-3 ${activeTab === 'verify' ? 'text-blue-600' : 'text-gray-900'}`}
- >
- <span>{t('ตรวจใบรับรอง (มกษ./ISO)', 'Verify (TAS/ISO)')}</span>
- <span className="relative flex h-3 w-3">
- <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
- <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
- </span>
- </button>
- <button 
- onClick={() => { setActiveTab('downloads'); setMobileMenuOpen(false); }}
- className={`text-left text-3xl font-display font-bold transition-colors cursor-pointer ${activeTab === 'downloads' ? 'text-blue-600' : 'text-gray-900'}`}
- >
- {t('ดาวน์โหลดแบบฟอร์ม', 'Downloads')}
- </button>
- <button 
- onClick={() => { setActiveTab('org'); setMobileMenuOpen(false); }}
- className={`text-left text-3xl font-display font-bold transition-colors cursor-pointer ${activeTab === 'org' ? 'text-blue-600' : 'text-gray-900'}`}
- >
- {t('เกี่ยวกับเรา', 'About')}
- </button>
- <button 
- onClick={() => { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); setMobileMenuOpen(false); }}
- className="text-left text-3xl font-display font-bold cursor-pointer transition-colors text-gray-900"
- >
- {t('ติดต่อ', 'Contact')}
- </button>
- 
- <div className="pt-12 mt-auto space-y-4 font-sans">
- {user ? (
- <div className="space-y-4">
- <div className="flex items-center gap-4 p-4 rounded-[2rem] bg-gray-50">
- <div className="w-12 h-12 rounded-2xl flex items-center justify-center overflow-hidden bg-blue-100 text-blue-600">
- {user.photoURL ? <img src={user.photoURL} className="w-full h-full object-cover" /> : <UserIcon className="w-6 h-6" />}
- </div>
- <div>
- <p className="font-bold text-gray-900">{user.displayName || user.email?.split('@')[0]}</p>
- <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Member</p>
- </div>
- </div>
- <button 
- onClick={handleLogout}
- className="w-full py-4 bg-red-50 text-red-600 rounded-2xl text-sm font-bold flex items-center justify-center gap-3 cursor-pointer"
- >
- <LogOut className="w-5 h-5" />
- <span>{t('ออกจากระบบ', 'Log Out')}</span>
- </button>
- </div>
- ) : (
- <>
- <button 
- onClick={() => { setAuthModal({ isOpen: true, mode: 'login' }); setMobileMenuOpen(false); }}
- className="w-full py-4 rounded-[2rem] text-sm font-bold shadow-lg cursor-pointer bg-gray-900 text-white shadow-gray-900/10 hover:bg-gray-800"
- >
- {t('เข้าสู่ระบบ', 'Login')}
- </button>
- <button 
- onClick={() => { setAuthModal({ isOpen: true, mode: 'register' }); setMobileMenuOpen(false); }}
- className="w-full py-4 border border-gray-200 text-gray-900 hover:bg-gray-50 rounded-[2rem] text-sm font-bold cursor-pointer"
- >
- {t('ลงทะเบียน', 'Register')}
- </button>
- </>
- )}
- 
- <div className="pt-6 flex justify-center gap-4 border-t items-center border-gray-100">
- <a href="https://www.facebook.com/qaicthailand.company" target="_blank" rel="noopener noreferrer" className="p-3 bg-gray-50 text-gray-600 rounded-2xl hover:text-blue-600 transition-colors">
- <Facebook className="w-6 h-6" />
- </a>
- <a href="#" className="p-3 bg-gray-50 text-gray-600 rounded-2xl hover:text-blue-600 transition-colors relative group">
- <MessageCircle className="w-6 h-6" />
- <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">LINE (Coming Soon)</span>
- </a>
- <a href="#" className="p-3 bg-gray-50 text-gray-600 dark:text-slate-500 rounded-2xl">
- <Linkedin className="w-6 h-6" />
- </a>
- <a href="#" className="p-3 bg-gray-50 text-gray-600 dark:text-slate-500 rounded-2xl">
- <Globe className="w-6 h-6" />
- </a>
- </div>
- </div>
- </div>
- </motion.div>
- )}
- </AnimatePresence>
+        {/* Navigation list */}
+        <div className="flex-1 flex flex-col gap-2 overflow-y-auto pr-1">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id as any);
+                  setMobileMenuOpen(false);
+                }}
+                className={`flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold uppercase tracking-wider transition-all cursor-pointer text-left w-full relative ${
+                  isActive 
+                    ? 'bg-blue-600/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 border border-blue-500/10 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)]' 
+                    : 'text-gray-700 dark:text-slate-350 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100/50 dark:hover:bg-slate-800/40 border border-transparent'
+                }`}
+              >
+                <Icon className="w-5 h-5 flex-shrink-0" />
+                <span className="truncate">{t(tab.labelTH, tab.labelEN)}</span>
+                {tab.id === 'verify' && (
+                  <span className="relative flex h-2.5 w-2.5 ml-auto">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
 
- <main className="pt-16 md:pt-20 pb-16 px-6">
+        {/* Footer info & switchers in drawer */}
+        <div className="pt-6 border-t border-gray-150 dark:border-white/10 mt-auto space-y-6 font-sans">
+          {user ? (
+            <div className="space-y-4">
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-slate-900/50 border border-gray-100 dark:border-white/5">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex-shrink-0">
+                  {user.photoURL ? (
+                    <img src={user.photoURL} alt={user.displayName || 'User'} className="w-full h-full object-cover" />
+                  ) : (
+                    <UserIcon className="w-6 h-6" />
+                  )}
+                </div>
+                <div>
+                  <p className="font-bold text-gray-900 dark:text-white text-sm">
+                    {user.displayName || user.email?.split('@')[0]}
+                  </p>
+                  <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">
+                    {(user as any).role === 'admin' ? t('ผู้ดูแลระบบ', 'Admin') : t('สมาชิก', 'Member')}
+                  </p>
+                </div>
+              </div>
+
+              {(user as any).role === 'admin' && (
+                <div className="flex items-center justify-between px-4 py-2.5 bg-purple-50/50 dark:bg-purple-950/10 border border-purple-100/50 dark:border-purple-950/20 rounded-xl">
+                  <span className="text-[10px] uppercase font-bold tracking-widest text-purple-600 dark:text-purple-400">
+                    {t('โหมดแอดมิน', 'Admin Mode')}
+                  </span>
+                  <button
+                    onClick={() => setIsAdminModeActive(!isAdminModeActive)}
+                    className={`w-9 h-5.5 rounded-full p-0.5 transition-colors duration-200 focus:outline-none relative flex items-center cursor-pointer ${
+                      isAdminModeActive ? 'bg-purple-600' : 'bg-gray-200 dark:bg-slate-700'
+                    }`}
+                  >
+                    <div
+                      className={`w-4.5 h-4.5 rounded-full bg-white shadow-sm transform duration-205 ${
+                        isAdminModeActive ? 'translate-x-3.5' : 'translate-x-0'
+                      }`}
+                    />
+                  </button>
+                </div>
+              )}
+
+              <button 
+                onClick={() => {
+                  handleLogout();
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full py-3.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/15 dark:hover:bg-red-950/25 text-red-600 dark:text-red-400 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition-all border border-red-100/50 dark:border-red-950/20 uppercase tracking-widest"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>{t('ออกจากระบบ', 'Log Out')}</span>
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-3">
+              <button 
+                onClick={() => {
+                  setAuthModal({ isOpen: true, mode: 'login' });
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full py-3.5 rounded-xl text-xs font-bold shadow-md cursor-pointer bg-gray-900 dark:bg-white text-white dark:text-gray-950 hover:bg-gray-800 dark:hover:bg-gray-100 transition-all uppercase tracking-widest text-center"
+              >
+                {t('เข้าสู่ระบบ', 'Login')}
+              </button>
+              <button 
+                onClick={() => {
+                  setAuthModal({ isOpen: true, mode: 'register' });
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full py-3.5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-slate-350 hover:bg-gray-50 dark:hover:bg-slate-800/40 rounded-xl text-xs font-bold cursor-pointer transition-all uppercase tracking-widest text-center"
+              >
+                {t('ลงทะเบียน', 'Register')}
+              </button>
+            </div>
+          )}
+
+          <div className="pt-4 flex justify-center gap-4 border-t items-center border-gray-100 dark:border-white/10">
+            {[
+              { Icon: Facebook, href: 'https://www.facebook.com/qaicthailand.company' },
+              { Icon: MessageCircle, href: '#', label: 'LINE' },
+              { Icon: Linkedin, href: '#' },
+              { Icon: Globe, href: '#' }
+            ].map(({ Icon, href }, idx) => (
+              <a 
+                key={idx} 
+                href={href} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="p-3 bg-gray-50 dark:bg-slate-900 text-gray-600 dark:text-slate-450 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-2xl transition-all"
+              >
+                <Icon className="w-5 h-5" />
+              </a>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+
+  <div className="lg:pl-64 xl:pl-72 flex flex-col min-h-screen transition-all duration-300">
+    <main className="pt-16 md:pt-20 lg:pt-8 pb-16 px-6">
  <div className="max-w-7xl mx-auto">
  {/* Premium Hero Section (Grid side-by-side) */}
  {activeTab === 'assess' && (
@@ -825,12 +851,13 @@ export default function App() {
  <p className="text-[10px] text-gray-600 dark:text-slate-500 font-sans uppercase tracking-widest">
  © 2025 QAIC Thailand Co., Ltd. All Rights Reserved.
  </p>
- <div className="flex gap-6 text-[10px] font-bold text-gray-600 dark:text-slate-500 uppercase tracking-widest">
+ <div className="flex gap-6 text-[10px] font-bold text-gray-500 dark:text-slate-500 uppercase tracking-widest">
  <span>License UKAS# 0001</span>
  <span>Accredited Body NAC-045</span>
  </div>
  </div>
  </footer>
+ </div>
 
  {/* Auth Modal */}
  <AuthModal 
