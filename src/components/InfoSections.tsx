@@ -28,6 +28,7 @@ import {
  Lock,
  Truck,
  Settings,
+ X,
  Calendar,
  Newspaper
 } from 'lucide-react';
@@ -57,6 +58,7 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
  const [openFaq, setOpenFaq] = React.useState<number | null>(null);
  const [isPlaying, setIsPlaying] = React.useState(false);
  const [showQuiz, setShowQuiz] = React.useState(false);
+ const [selectedImage, setSelectedImage] = React.useState<{ src: string, title: string } | null>(null);
 
  const coreStandards = [
  ISO_STANDARDS.find(s => s.id === 'iso-9001'),
@@ -98,7 +100,8 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
  'โดยปกติการขอรับรองจะใช้เวลาประมาณ 30 - 90 วัน ขึ้นอยู่กับความพร้อมของระบบภายในองค์กร ขนาดของบริษัท และประเภทของมาตรฐานที่ต้องการขอรับรอง',
  'Typically, certification takes about 30 - 90 days, depending on the readiness of the internal management system, company size, and the specific standard being sought.'
  ),
- color: 'amber'
+ image: '/how-long-does-it-take.jpeg',
+      color: 'amber'
  }
  ];
 
@@ -129,12 +132,21 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
         className="bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] rounded-3xl border shadow-sm relative group hover:shadow-xl hover:shadow-blue-900/5 transition-all flex flex-col overflow-hidden"
       >
         {/* Card Image Header */}
-        <div className="relative w-full aspect-[16/10] overflow-hidden border-b border-gray-100/50 dark:border-slate-800/50">
+        <div 
+          onClick={() => setSelectedImage({ src: section.image, title: section.title })}
+          className="relative w-full aspect-[16/10] overflow-hidden border-b border-gray-100/50 dark:border-slate-800/50 cursor-zoom-in"
+        >
           <img
             src={section.image}
             alt={section.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
+          {/* Zoom Indicator Icon Overlay on Hover */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+            <div className="p-2.5 rounded-full bg-white/90 text-slate-900 shadow-md">
+              <Plus className="w-4 h-4" />
+            </div>
+          </div>
         </div>
 
         {/* Card Info Content */}
@@ -462,6 +474,42 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
  <ChevronRight className="w-4 h-4" />
  </button>
  </section>
+
+  {/* Lightbox Image Preview Modal */}
+  <AnimatePresence>
+    {selectedImage && (
+      <div 
+        className="fixed inset-0 z-[150] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 cursor-zoom-out"
+        onClick={() => setSelectedImage(null)}
+      >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          className="relative max-w-5xl max-h-[90vh] overflow-hidden rounded-3xl bg-black/40 border border-white/10 shadow-2xl p-2 flex flex-col items-center cursor-default"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Close button */}
+          <button
+            onClick={() => setSelectedImage(null)}
+            className="absolute top-4 right-4 p-2 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors cursor-pointer border-none z-10"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          
+          <img
+            src={selectedImage.src}
+            alt={selectedImage.title}
+            className="max-w-full max-h-[80vh] object-contain rounded-2xl select-none"
+          />
+          <div className="py-3 px-4 text-center">
+            <h4 className="text-white font-bold text-sm tracking-wide">{selectedImage.title}</h4>
+          </div>
+        </motion.div>
+      </div>
+    )}
+  </AnimatePresence>
+  
  </div>
  </div>
  );
