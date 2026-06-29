@@ -35,6 +35,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ISO_STANDARDS } from '../constants';
 import DiagnosticQuiz from './DiagnosticQuiz';
 import BusinessSectors from './BusinessSectors';
+import VideoPresentation from './VideoPresentation';
 import { NewsArticle, DEFAULT_NEWS_ARTICLES } from './NewsSection';
 
 interface InfoSectionsProps {
@@ -199,6 +200,10 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
  ))}
  </div>
  </section>
+
+  <div className="mt-16">
+    <VideoPresentation settings={settings} />
+  </div>
 
   <hr className="border-gray-150/30 dark:border-slate-850/50 my-16 border-t" />
 
