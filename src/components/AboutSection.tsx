@@ -57,58 +57,48 @@ export default function AboutSection({ settings, isAdminMode = false }: AboutSec
  return (
  <div className={`transition-colors duration-500 rounded-[3rem] p-4 md:p-8 space-y-12 text-slate-900 dark:text-slate-100`}>
 
-  {/* ── Hero Banner ── */}
-  <motion.section
-    initial={{ opacity: 0, y: 20 }}
+  {/* ── Header / Title Section (Above Image) ── */}
+  <motion.div
+    initial={{ opacity: 0, y: -10 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.7 }}
-    className="relative w-full overflow-hidden rounded-[2rem] shadow-2xl"
-    style={{ aspectRatio: '21/7', maxHeight: '360px', minHeight: '200px' }}
+    transition={{ duration: 0.5 }}
+    className="space-y-4 px-2"
   >
-    {/* ภาพชัดเต็มๆ */}
+    <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div className="space-y-2">
+        <h1 className="text-3xl md:text-5xl font-display font-extrabold text-slate-900 dark:text-white leading-tight tracking-tight">
+          {t('เกี่ยวกับ QAIC Thailand', 'About QAIC Thailand')}
+        </h1>
+        <p className="text-slate-600 dark:text-slate-400 text-base md:text-lg leading-relaxed max-w-2xl">
+          {t(
+            'หน่วยตรวจประเมินอิสระที่ได้รับการรับรองระดับสากล',
+            'Independent certification body accredited internationally'
+          )}
+        </p>
+      </div>
+      
+      {/* Badge */}
+      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[11px] font-bold uppercase tracking-widest border whitespace-nowrap bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-500/10 dark:border-blue-500/30 dark:text-blue-400 self-start md:self-auto">
+        <Award className="w-3.5 h-3.5" />
+        {t('รับรองโดย UKAS & NAC', 'Accredited by UKAS & NAC')}
+      </div>
+    </div>
+  </motion.div>
+
+  {/* ── Hero Image (No overlays, fully clear) ── */}
+  <motion.div
+    initial={{ opacity: 0, scale: 0.98 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 0.7, delay: 0.15 }}
+    className="relative w-full overflow-hidden rounded-[2rem] shadow-xl border border-gray-100 dark:border-slate-800"
+    style={{ aspectRatio: '21/7', maxHeight: '360px', minHeight: '180px' }}
+  >
     <img
       src="/hero-banner.png"
-      alt="QAIC Thailand — เกี่ยวกับเรา"
-      className="absolute inset-0 w-full h-full object-cover object-center"
+      alt="QAIC Thailand Banner"
+      className="w-full h-full object-cover object-center"
     />
-
-    {/* gradient เบาๆ ด้านล่างเพื่อให้อ่านข้อความได้ */}
-    <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
-
-    {/* หัวข้อบนภาพ */}
-    <div className="absolute inset-0 flex flex-col justify-end px-8 md:px-12 pb-7 z-10">
-      <motion.span
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15 }}
-        className="inline-flex items-center gap-2 px-3 py-1 mb-3 rounded-full bg-white/15 border border-white/30 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest w-fit"
-      >
-        <Award className="w-3 h-3" />
-        {t('รับรองโดย UKAS & NAC', 'Accredited by UKAS & NAC')}
-      </motion.span>
-
-      <motion.h1
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.25 }}
-        className="text-3xl md:text-5xl font-display font-extrabold text-white leading-tight tracking-tight drop-shadow-2xl"
-      >
-        {t('เกี่ยวกับ QAIC Thailand', 'About QAIC Thailand')}
-      </motion.h1>
-
-      <motion.p
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.35 }}
-        className="mt-2 text-white/85 text-sm md:text-base leading-relaxed drop-shadow-lg max-w-xl"
-      >
-        {t(
-          'หน่วยตรวจประเมินอิสระที่ได้รับการรับรองระดับสากล',
-          'Independent certification body accredited internationally'
-        )}
-      </motion.p>
-    </div>
-  </motion.section>
+  </motion.div>
 
   {/* Header Section */}
   <section className="relative text-center space-y-4 max-w-4xl mx-auto pt-6 px-4">
