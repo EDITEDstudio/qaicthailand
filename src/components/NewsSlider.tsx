@@ -112,8 +112,8 @@ export default function NewsSlider() {
 
   return (
     <div
-      className="relative w-full overflow-hidden rounded-[2rem] mb-6 shadow-2xl"
-      style={{ aspectRatio: '21/9', maxHeight: '480px' }}
+      className="relative w-full overflow-hidden rounded-[2rem] mb-6 shadow-2xl bg-white dark:bg-slate-900"
+      style={{ aspectRatio: '16/9', maxHeight: '520px' }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -130,7 +130,7 @@ export default function NewsSlider() {
           <img
             src={slides[current].src}
             alt={slides[current].alt}
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-contain object-center"
             draggable={false}
           />
 
