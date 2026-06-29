@@ -19,6 +19,7 @@ import AuthModal from './components/auth/AuthModal';
 import NewsSection from './components/NewsSection';
 import DownloadsSection from './components/DownloadsSection';
 import NewsSlider from './components/NewsSlider';
+import VideoPresentation from './components/VideoPresentation';
 import { auth, db } from './lib/firebase';
 import { onAuthStateChanged, User, signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
@@ -625,6 +626,11 @@ export default function App() {
  </motion.div>
  </div>
  </div>
+ )}
+
+ {/* Video Presentation Section */}
+ {activeTab === 'assess' && (
+   <VideoPresentation settings={settings} />
  )}
 
  {/* Interactive Portal Area */}
