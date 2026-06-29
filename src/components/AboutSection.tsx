@@ -62,64 +62,54 @@ export default function AboutSection({ settings, isAdminMode = false }: AboutSec
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.7 }}
-    className="relative w-full overflow-hidden rounded-[2rem] shadow-2xl"
-    style={{ aspectRatio: '21/7', maxHeight: '340px', minHeight: '180px' }}
+    className="w-full space-y-5"
   >
-    {/* Background image */}
-    <img
-      src="/hero-banner.png"
-      alt="QAIC Thailand — เกี่ยวกับเรา"
-      className="absolute inset-0 w-full h-full object-cover object-center scale-105"
-    />
-
-    {/* Glassmorphism overlay */}
-    <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 via-slate-900/40 to-indigo-900/50" />
-    <div
-      className="absolute inset-0"
-      style={{
-        backdropFilter: 'blur(1px)',
-        WebkitBackdropFilter: 'blur(1px)',
-        background: 'rgba(15,23,42,0.25)',
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12)',
-      }}
-    />
-
-    {/* Content */}
-    <div className="relative z-10 h-full flex flex-col justify-center px-8 md:px-14">
-      <motion.span
-        initial={{ opacity: 0, x: -16 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.2 }}
-        className="inline-flex items-center gap-2 px-3 py-1 mb-4 rounded-full bg-white/15 border border-white/25 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest w-fit"
-      >
-        <Award className="w-3 h-3" />
-        {t('ได้รับการรับรองจาก UKAS & NAC', 'Accredited by UKAS & NAC')}
-      </motion.span>
-
-      <motion.h1
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="text-2xl md:text-4xl font-display font-bold text-white leading-tight tracking-tight drop-shadow-xl"
-      >
-        {t('เกี่ยวกับ QAIC Thailand', 'About QAIC Thailand')}
-      </motion.h1>
-
-      <motion.p
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="mt-2 text-white/80 text-sm md:text-base max-w-xl leading-relaxed"
-      >
-        {t(
-          'หน่วยตรวจประเมินอิสระที่ได้รับการรับรองระดับสากล ครอบคลุมมาตรฐาน ISO กว่า 15 ประเภท',
-          'Independent certification body accredited internationally, covering 15+ ISO standards'
-        )}
-      </motion.p>
+    {/* ภาพชัดเต็มๆ ไม่มี overlay */}
+    <div className="relative w-full overflow-hidden rounded-[2rem] shadow-2xl"
+      style={{ aspectRatio: '21/7', maxHeight: '340px', minHeight: '180px' }}
+    >
+      <img
+        src="/hero-banner.png"
+        alt="QAIC Thailand — เกี่ยวกับเรา"
+        className="w-full h-full object-cover object-center"
+      />
     </div>
 
-    {/* Bottom gradient fade */}
-    <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/40 to-transparent" />
+    {/* ข้อความใต้ภาพ */}
+    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 px-2">
+      <div className="flex-1">
+        <motion.h1
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-xl md:text-2xl font-display font-bold text-slate-900 dark:text-white leading-snug tracking-tight"
+        >
+          {t('เกี่ยวกับ QAIC Thailand', 'About QAIC Thailand')}
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mt-1 text-slate-600 dark:text-slate-400 text-sm md:text-base leading-relaxed"
+        >
+          {t(
+            'หน่วยตรวจประเมินอิสระที่ได้รับการรับรองระดับสากล',
+            'Independent certification body accredited internationally'
+          )}
+        </motion.p>
+      </div>
+
+      {/* Badge ด้านขวา */}
+      <motion.div
+        initial={{ opacity: 0, x: 16 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.35 }}
+        className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[11px] font-bold uppercase tracking-widest border whitespace-nowrap bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-500/10 dark:border-blue-500/30 dark:text-blue-400"
+      >
+        <Award className="w-3.5 h-3.5" />
+        {t('รับรองโดย UKAS & NAC', 'Accredited by UKAS & NAC')}
+      </motion.div>
+    </div>
   </motion.section>
 
   {/* Header Section */}
