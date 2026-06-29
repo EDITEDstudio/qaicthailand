@@ -146,7 +146,63 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
  </div>
  </div>
 
- {/* Core Standards Showcase */}
+ 
+
+  {/* Intro Grid */}
+ <div className="grid md:grid-cols-3 gap-8">
+ {sections.map((section, idx) => (
+ <motion.div 
+ key={section.id}
+ initial={{ opacity: 0, y: 20 }}
+ whileInView={{ opacity: 1, y: 0 }}
+ viewport={{ once: true }}
+ transition={{ delay: idx * 0.1 }}
+ className="p-8 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] rounded-3xl border shadow-sm relative group hover:shadow-xl hover:shadow-blue-900/5 transition-all"
+ >
+ <div className={`w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center mb-6 text-gray-600 dark:text-slate-500 group-hover:scale-110 transition-transform`}>
+ <section.icon className="w-7 h-7" />
+ </div>
+ <h3 className="text-xl font-display font-bold text-gray-900 dark:text-white mb-4">{section.title}</h3>
+ <p className="text-gray-700 dark:text-slate-400 text-sm leading-relaxed">{section.content}</p>
+ </motion.div>
+ ))}
+ </div>
+
+
+ 
+
+  {/* Process Steps */}
+ <section className="relative">
+ <div className="text-center mb-16">
+ <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 dark:text-white mb-4">{t('ขั้นตอนการขอรับรอง', 'Our Certification Process')}</h2>
+ <p className="text-gray-700 dark:text-slate-400">{t('กระบวนการ 4 ขั้นตอนง่ายๆ เพื่อก้าวสู่มาตรฐานระดับสากล', 'Simple 4-step journey to international excellence')}</p>
+ </div>
+
+ <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 relative">
+ {/* Connector Line (Desktop) Removed */}
+ 
+ {steps.map((step, idx) => (
+ <motion.div 
+ key={idx}
+ initial={{ opacity: 0, scale: 0.95 }}
+ whileInView={{ opacity: 1, scale: 1 }}
+ viewport={{ once: true }}
+ transition={{ delay: idx * 0.1 }}
+ className="relative z-10 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] p-6 rounded-3xl border text-center"
+ >
+ <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-display font-bold text-sm mx-auto mb-6 shadow-lg shadow-blue-600/20">
+ {step.num}
+ </div>
+ <h4 className="font-bold text-gray-900 dark:text-white mb-2">{step.title}</h4>
+ <p className="text-xs text-gray-700 dark:text-slate-400 leading-relaxed">{step.desc}</p>
+ </motion.div>
+ ))}
+ </div>
+ </section>
+
+  <hr className="border-gray-150/30 dark:border-slate-850/50 my-16 border-t" />
+
+  {/* Core Standards Showcase */}
  <div className="space-y-8">
  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
@@ -211,7 +267,10 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
  </div>
  </div>
 
- {/* Interactive Tools Hub */}
+ 
+  <hr className="border-gray-150/30 dark:border-slate-850/50 my-16 border-t" />
+
+  {/* Interactive Tools Hub */}
  <div className="bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] rounded-[3rem] p-8 md:p-12 shadow-sm space-y-8">
  <div className="text-center max-w-2xl mx-auto space-y-3">
  <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 dark:text-white">
@@ -308,59 +367,10 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
  </AnimatePresence>
  </div>
 
- {/* Intro Grid */}
- <div className="grid md:grid-cols-3 gap-8">
- {sections.map((section, idx) => (
- <motion.div 
- key={section.id}
- initial={{ opacity: 0, y: 20 }}
- whileInView={{ opacity: 1, y: 0 }}
- viewport={{ once: true }}
- transition={{ delay: idx * 0.1 }}
- className="p-8 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] rounded-3xl border shadow-sm relative group hover:shadow-xl hover:shadow-blue-900/5 transition-all"
- >
- <div className={`w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center mb-6 text-gray-600 dark:text-slate-500 group-hover:scale-110 transition-transform`}>
- <section.icon className="w-7 h-7" />
- </div>
- <h3 className="text-xl font-display font-bold text-gray-900 dark:text-white mb-4">{section.title}</h3>
- <p className="text-gray-700 dark:text-slate-400 text-sm leading-relaxed">{section.content}</p>
- </motion.div>
- ))}
- </div>
-
-
- {/* Process Steps */}
- <section className="relative">
- <div className="text-center mb-16">
- <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 dark:text-white mb-4">{t('ขั้นตอนการขอรับรอง', 'Our Certification Process')}</h2>
- <p className="text-gray-700 dark:text-slate-400">{t('กระบวนการ 4 ขั้นตอนง่ายๆ เพื่อก้าวสู่มาตรฐานระดับสากล', 'Simple 4-step journey to international excellence')}</p>
- </div>
-
- <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 relative">
- {/* Connector Line (Desktop) Removed */}
  
- {steps.map((step, idx) => (
- <motion.div 
- key={idx}
- initial={{ opacity: 0, scale: 0.95 }}
- whileInView={{ opacity: 1, scale: 1 }}
- viewport={{ once: true }}
- transition={{ delay: idx * 0.1 }}
- className="relative z-10 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] p-6 rounded-3xl border text-center"
- >
- <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-display font-bold text-sm mx-auto mb-6 shadow-lg shadow-blue-600/20">
- {step.num}
- </div>
- <h4 className="font-bold text-gray-900 dark:text-white mb-2">{step.title}</h4>
- <p className="text-xs text-gray-700 dark:text-slate-400 leading-relaxed">{step.desc}</p>
- </motion.div>
- ))}
- </div>
- </section>
+  <hr className="border-gray-150/30 dark:border-slate-850/50 my-16 border-t" />
 
- <hr className="border-gray-150/30 dark:border-slate-850/50 my-16 border-t" />
-
- <BusinessSectors settings={settings} />
+  <BusinessSectors settings={settings} />
 
  <hr className="border-gray-150/30 dark:border-slate-850/50 my-16 border-t" />
 
