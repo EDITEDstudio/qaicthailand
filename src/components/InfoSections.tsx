@@ -115,41 +115,7 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
 
  return (
  <div className="space-y-24 mt-8">
- {/* Accreditation Trust Bar */}
- <div className="bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] rounded-3xl border p-6 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-6">
- <div className="flex items-center gap-4 text-center lg:text-left">
- <div className="p-3.5 bg-blue-50 text-blue-600 rounded-2xl hidden sm:block">
- <Award className="w-6 h-6" />
- </div>
- <div>
- <h3 className="font-display font-bold text-sm text-gray-900 dark:text-white uppercase tracking-wider">
- {t('การรับรองและการยอมรับระดับสากล', 'Accreditation & Recognition')}
- </h3>
- <p className="text-xs text-gray-700 dark:text-slate-400 font-sans mt-0.5">
- {t('QAIC Thailand ได้รับการรับรองระบบงานจากสถาบันระดับสากลอย่างเต็มรูปแบบ', 'QAIC Thailand is fully accredited and certified by global institutions.')}
- </p>
- </div>
- </div>
- <div className="flex flex-wrap items-center justify-center gap-6 lg:gap-8">
- <div className="flex items-center gap-3">
- <span className="text-[10px] font-bold text-gray-600 dark:text-slate-500 uppercase tracking-widest">Accredited Body</span>
- <div className="px-3 py-1.5 bg-gray-900 text-white rounded-xl text-[10px] font-mono font-bold tracking-wider">
- UKAS #0046
- </div>
- </div>
- <div className="h-6 w-px bg-gray-200 hidden sm:block" />
- <div className="flex items-center gap-3">
- <span className="text-[10px] font-bold text-gray-600 dark:text-slate-500 uppercase tracking-widest">Accredited Body</span>
- <div className="px-3 py-1.5 bg-blue-600 text-white rounded-xl text-[10px] font-mono font-bold tracking-wider">
- NAC-045
- </div>
- </div>
- </div>
- </div>
-
- 
-
-  {/* Intro Grid */}
+ {/* Intro Grid */}
  <div className="grid md:grid-cols-3 gap-8">
  {sections.map((section, idx) => (
  <motion.div 

@@ -624,6 +624,38 @@ export default function App() {
  />
  </motion.div>
  </div>
+
+ {/* Accreditation Trust Bar */}
+ <div className={`lg:col-span-12 mt-8 pt-6 border-t flex flex-col lg:flex-row items-center justify-between gap-6 ${isDarkMode ? 'border-white/10' : 'border-gray-150/40'}`}>
+   <div className="flex items-center gap-4 text-center lg:text-left">
+     <div className={`p-3.5 rounded-2xl hidden sm:block ${isDarkMode ? 'bg-blue-500/10 text-blue-400' : 'bg-blue-50 text-blue-600'}`}>
+       <Award className="w-6 h-6" />
+     </div>
+     <div>
+       <h3 className="font-display font-bold text-sm text-gray-900 dark:text-white uppercase tracking-wider">
+         {t('การรับรองและการยอมรับระดับสากล', 'Accreditation & Recognition')}
+       </h3>
+       <p className="text-xs text-gray-700 dark:text-slate-400 font-sans mt-0.5">
+         {t('QAIC Thailand ได้รับการรับรองระบบงานจากสถาบันระดับสากลอย่างเต็มรูปแบบ', 'QAIC Thailand is fully accredited and certified by global institutions.')}
+       </p>
+     </div>
+   </div>
+   <div className="flex flex-wrap items-center justify-center gap-6 lg:gap-8">
+     <div className="flex items-center gap-3">
+       <span className="text-[10px] font-bold text-gray-600 dark:text-slate-500 uppercase tracking-widest">Accredited Body</span>
+       <div className="px-3 py-1.5 bg-gray-900 text-white rounded-xl text-[10px] font-mono font-bold tracking-wider">
+         UKAS #0046
+       </div>
+     </div>
+     <div className="h-6 w-px bg-gray-200 dark:bg-slate-800 hidden sm:block" />
+     <div className="flex items-center gap-3">
+       <span className="text-[10px] font-bold text-gray-600 dark:text-slate-500 uppercase tracking-widest">Accredited Body</span>
+       <div className="px-3 py-1.5 bg-blue-600 text-white rounded-xl text-[10px] font-mono font-bold tracking-wider">
+         NAC-045
+       </div>
+     </div>
+   </div>
+ </div>
  </div>
  )}
 
