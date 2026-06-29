@@ -279,25 +279,6 @@ export default function AuthModal({ isOpen, onClose, settings, initialMode = 'lo
       <Chrome className="w-4 h-4 text-blue-600" />
       <span>{t('เข้าสู่ระบบด้วย Google', 'Continue with Google')}</span>
     </button>
-    
-    <div className="grid grid-cols-2 gap-3">
-      <button 
-        type="button"
-        onClick={() => handleQuickDemoLogin('customer')}
-        disabled={loading}
-        className="w-full py-3 bg-blue-50 border border-blue-100 hover:bg-blue-100 dark:bg-blue-950/20 dark:border-blue-900/30 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-2xl text-xs font-bold transition-all flex items-center justify-center active:scale-[0.98] cursor-pointer"
-      >
-        <span>{t('ลูกค้าทดสอบ', 'Demo Customer')}</span>
-      </button>
-      <button 
-        type="button"
-        onClick={() => handleQuickDemoLogin('admin')}
-        disabled={loading}
-        className="w-full py-3 bg-purple-50 border border-purple-100 hover:bg-purple-100 dark:bg-purple-950/20 dark:border-purple-900/30 dark:hover:bg-purple-900/30 text-purple-700 dark:text-purple-400 rounded-2xl text-xs font-bold transition-all flex items-center justify-center active:scale-[0.98] cursor-pointer"
-      >
-        <span>{t('แอดมินทดสอบ', 'Demo Admin')}</span>
-      </button>
-    </div>
   </div>
 
  <p className="text-center text-xs text-gray-700 dark:text-slate-400 pt-4">
