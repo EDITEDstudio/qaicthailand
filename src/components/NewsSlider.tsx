@@ -132,19 +132,15 @@ export default function NewsSlider() {
             alt=""
             aria-hidden
             className="w-full h-full object-cover object-center scale-110"
-            style={{ filter: 'blur(28px) saturate(1.4) brightness(0.55)' }}
+            style={{ filter: 'blur(20px)' }}
             draggable={false}
           />
-          {/* Glassmorphism colour tint */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/30 via-slate-900/20 to-indigo-900/30" />
-          {/* Frosted-glass shimmer */}
+          {/* Light Frosted-glass shimmer for texture without changing colors */}
           <div
             className="absolute inset-0"
             style={{
-              backdropFilter: 'blur(2px)',
-              WebkitBackdropFilter: 'blur(2px)',
-              background: 'rgba(255,255,255,0.04)',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.15)',
+              background: 'rgba(255,255,255,0.02)',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1)',
             }}
           />
         </motion.div>
