@@ -76,6 +76,7 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
  'ISO (International Organization for Standardization) คือมาตรฐานสากลที่กำหนดขึ้นเพื่อรองรับระบบบริหารจัดการ และกระบวนการทำงานในองค์กรให้มีคุณภาพ ความปลอดภัย และประสิทธิภาพเหมือนกันทั่วโลก ช่วยสร้างความมั่นใจให้กับลูกค้าและคู่ค้าถาวร',
  'ISO (International Organization for Standardization) is a set of international standards designed to ensure quality, safety, and efficiency in organizational management and processes worldwide. It builds trust with customers and partners globally.'
  ),
+ image: '/what-is-iso.jpg',
  color: 'blue'
  },
  {
@@ -86,6 +87,7 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
  'ISO เหมาะสำหรับองค์กรทุกขนาด ตั้งแต่ SME ไปจนถึงองค์กรขนาดใหญ่ ไม่ว่าจะเป็นภาคการผลิต การบริการ ร้านอาหาร ก่อสร้าง หรือธุรกิจออนไลน์ ที่ต้องการยกระดับความเชื่อมั่นและเพิ่มโอกาสในการขยายตลาดทั้งในและต่างประเทศ',
  'ISO is suitable for organizations of all sizes, from SMEs to large corporations, across manufacturing, services, restaurants, construction, or online businesses looking to enhance trust and expand into local and international markets.'
  ),
+ image: '/who-is-iso-for.jpg',
  color: 'blue'
  },
  {
@@ -116,24 +118,42 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
  return (
  <div className="space-y-24 mt-8">
  {/* Intro Grid */}
- <div className="grid md:grid-cols-3 gap-8">
- {sections.map((section, idx) => (
- <motion.div 
- key={section.id}
- initial={{ opacity: 0, y: 20 }}
- whileInView={{ opacity: 1, y: 0 }}
- viewport={{ once: true }}
- transition={{ delay: idx * 0.1 }}
- className="p-8 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] rounded-3xl border shadow-sm relative group hover:shadow-xl hover:shadow-blue-900/5 transition-all"
- >
- <div className={`w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center mb-6 text-gray-600 dark:text-slate-500 group-hover:scale-110 transition-transform`}>
- <section.icon className="w-7 h-7" />
- </div>
- <h3 className="text-xl font-display font-bold text-gray-900 dark:text-white mb-4">{section.title}</h3>
- <p className="text-gray-700 dark:text-slate-400 text-sm leading-relaxed">{section.content}</p>
- </motion.div>
- ))}
- </div>
+  <div className="grid md:grid-cols-3 gap-8">
+    {sections.map((section, idx) => (
+      <motion.div 
+        key={section.id}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: idx * 0.1 }}
+        className="bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] rounded-3xl border shadow-sm relative group hover:shadow-xl hover:shadow-blue-900/5 transition-all flex flex-col overflow-hidden"
+      >
+        {/* Card Image Header */}
+        <div className="relative w-full aspect-[16/10] overflow-hidden border-b border-gray-100/50 dark:border-slate-800/50">
+          <img
+            src={section.image}
+            alt={section.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        </div>
+
+        {/* Card Info Content */}
+        <div className="p-6 space-y-3 flex-1 flex flex-col">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-blue-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400">
+              <section.icon className="w-4 h-4" />
+            </div>
+            <h3 className="text-base font-display font-bold text-gray-900 dark:text-white leading-tight">
+              {section.title}
+            </h3>
+          </div>
+          <p className="text-gray-600 dark:text-slate-400 text-xs leading-relaxed flex-1">
+            {section.content}
+          </p>
+        </div>
+      </motion.div>
+    ))}
+  </div>
 
 
  
