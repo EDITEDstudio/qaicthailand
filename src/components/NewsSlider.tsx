@@ -112,12 +112,45 @@ export default function NewsSlider() {
 
   return (
     <div
-      className="relative w-full overflow-hidden rounded-[2rem] mb-6 shadow-2xl bg-white dark:bg-slate-900"
+      className="relative w-full overflow-hidden rounded-[2rem] mb-6 shadow-2xl"
       style={{ aspectRatio: '16/9', maxHeight: '520px' }}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {/* Slides */}
+      {/* ── Layer 1: Blurred background image (glassmorphism base) ── */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={`bg-${current}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.8 }}
+          className="absolute inset-0 z-0"
+        >
+          <img
+            src={slides[current].src}
+            alt=""
+            aria-hidden
+            className="w-full h-full object-cover object-center scale-110"
+            style={{ filter: 'blur(28px) saturate(1.4) brightness(0.55)' }}
+            draggable={false}
+          />
+          {/* Glassmorphism colour tint */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/30 via-slate-900/20 to-indigo-900/30" />
+          {/* Frosted-glass shimmer */}
+          <div
+            className="absolute inset-0"
+            style={{
+              backdropFilter: 'blur(2px)',
+              WebkitBackdropFilter: 'blur(2px)',
+              background: 'rgba(255,255,255,0.04)',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.15)',
+            }}
+          />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* ── Layer 2: Main image (object-contain, sharp & centered) ── */}
       <AnimatePresence mode="wait">
         <motion.div
           key={current}
@@ -125,34 +158,32 @@ export default function NewsSlider() {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.97 }}
           transition={{ duration: 0.7, ease: 'easeInOut' }}
-          className="absolute inset-0"
+          className="absolute inset-0 z-10 flex items-center justify-center p-4"
         >
           <img
             src={slides[current].src}
             alt={slides[current].alt}
-            className="w-full h-full object-contain object-center"
+            className="max-w-full max-h-full object-contain drop-shadow-2xl rounded-xl"
             draggable={false}
           />
-
-          {/* Gradient overlay bottom */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-
-          {/* Label bottom-left */}
-          <div className="absolute bottom-5 left-6 right-16">
-            <span className="inline-block px-3 py-1 rounded-full bg-blue-600/90 text-white text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm mb-2">
-              มาตรฐาน QAIC
-            </span>
-            <p className="text-white text-sm md:text-base font-bold leading-snug drop-shadow-lg line-clamp-2">
-              {slides[current].alt}
-            </p>
-          </div>
         </motion.div>
       </AnimatePresence>
+
+      {/* ── Layer 3: Bottom gradient + label ── */}
+      <div className="absolute inset-x-0 bottom-0 z-20 h-28 bg-gradient-to-t from-black/70 via-black/20 to-transparent rounded-b-[2rem]" />
+      <div className="absolute bottom-5 left-6 right-16 z-30">
+        <span className="inline-block px-3 py-1 rounded-full bg-blue-500/80 text-white text-[10px] font-bold uppercase tracking-widest backdrop-blur-md border border-white/20 mb-2">
+          มาตรฐาน QAIC
+        </span>
+        <p className="text-white text-sm md:text-base font-bold leading-snug drop-shadow-lg line-clamp-2">
+          {slides[current].alt}
+        </p>
+      </div>
 
       {/* Prev Button */}
       <button
         onClick={prev}
-        className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white flex items-center justify-center transition-all cursor-pointer border border-white/20"
+        className="absolute left-3 top-1/2 -translate-y-1/2 z-40 w-9 h-9 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white flex items-center justify-center transition-all cursor-pointer border border-white/20"
         aria-label="Previous slide"
       >
         <ChevronLeft className="w-5 h-5" />
@@ -161,14 +192,14 @@ export default function NewsSlider() {
       {/* Next Button */}
       <button
         onClick={next}
-        className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white flex items-center justify-center transition-all cursor-pointer border border-white/20"
+        className="absolute right-3 top-1/2 -translate-y-1/2 z-40 w-9 h-9 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white flex items-center justify-center transition-all cursor-pointer border border-white/20"
         aria-label="Next slide"
       >
         <ChevronRight className="w-5 h-5" />
       </button>
 
       {/* Dot Indicators */}
-      <div className="absolute bottom-3 right-4 flex gap-1.5 z-10">
+      <div className="absolute bottom-3 right-4 flex gap-1.5 z-40">
         {slides.map((_, i) => (
           <button
             key={i}
