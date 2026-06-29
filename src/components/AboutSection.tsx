@@ -62,53 +62,51 @@ export default function AboutSection({ settings, isAdminMode = false }: AboutSec
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.7 }}
-    className="w-full space-y-5"
+    className="relative w-full overflow-hidden rounded-[2rem] shadow-2xl"
+    style={{ aspectRatio: '21/7', maxHeight: '360px', minHeight: '200px' }}
   >
-    {/* ภาพชัดเต็มๆ ไม่มี overlay */}
-    <div className="relative w-full overflow-hidden rounded-[2rem] shadow-2xl"
-      style={{ aspectRatio: '21/7', maxHeight: '340px', minHeight: '180px' }}
-    >
-      <img
-        src="/hero-banner.png"
-        alt="QAIC Thailand — เกี่ยวกับเรา"
-        className="w-full h-full object-cover object-center"
-      />
-    </div>
+    {/* ภาพชัดเต็มๆ */}
+    <img
+      src="/hero-banner.png"
+      alt="QAIC Thailand — เกี่ยวกับเรา"
+      className="absolute inset-0 w-full h-full object-cover object-center"
+    />
 
-    {/* ข้อความใต้ภาพ */}
-    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 px-2">
-      <div className="flex-1">
-        <motion.h1
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="text-xl md:text-2xl font-display font-bold text-slate-900 dark:text-white leading-snug tracking-tight"
-        >
-          {t('เกี่ยวกับ QAIC Thailand', 'About QAIC Thailand')}
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mt-1 text-slate-600 dark:text-slate-400 text-sm md:text-base leading-relaxed"
-        >
-          {t(
-            'หน่วยตรวจประเมินอิสระที่ได้รับการรับรองระดับสากล',
-            'Independent certification body accredited internationally'
-          )}
-        </motion.p>
-      </div>
+    {/* gradient เบาๆ ด้านล่างเพื่อให้อ่านข้อความได้ */}
+    <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
 
-      {/* Badge ด้านขวา */}
-      <motion.div
-        initial={{ opacity: 0, x: 16 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.35 }}
-        className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[11px] font-bold uppercase tracking-widest border whitespace-nowrap bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-500/10 dark:border-blue-500/30 dark:text-blue-400"
+    {/* หัวข้อบนภาพ */}
+    <div className="absolute inset-0 flex flex-col justify-end px-8 md:px-12 pb-7 z-10">
+      <motion.span
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+        className="inline-flex items-center gap-2 px-3 py-1 mb-3 rounded-full bg-white/15 border border-white/30 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest w-fit"
       >
-        <Award className="w-3.5 h-3.5" />
+        <Award className="w-3 h-3" />
         {t('รับรองโดย UKAS & NAC', 'Accredited by UKAS & NAC')}
-      </motion.div>
+      </motion.span>
+
+      <motion.h1
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25 }}
+        className="text-3xl md:text-5xl font-display font-extrabold text-white leading-tight tracking-tight drop-shadow-2xl"
+      >
+        {t('เกี่ยวกับ QAIC Thailand', 'About QAIC Thailand')}
+      </motion.h1>
+
+      <motion.p
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35 }}
+        className="mt-2 text-white/85 text-sm md:text-base leading-relaxed drop-shadow-lg max-w-xl"
+      >
+        {t(
+          'หน่วยตรวจประเมินอิสระที่ได้รับการรับรองระดับสากล',
+          'Independent certification body accredited internationally'
+        )}
+      </motion.p>
     </div>
   </motion.section>
 
