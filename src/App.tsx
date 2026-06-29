@@ -18,6 +18,7 @@ import ProposalForm from './components/ProposalForm';
 import AuthModal from './components/auth/AuthModal';
 import NewsSection from './components/NewsSection';
 import DownloadsSection from './components/DownloadsSection';
+import NewsSlider from './components/NewsSlider';
 import { auth, db } from './lib/firebase';
 import { onAuthStateChanged, User, signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
@@ -514,6 +515,11 @@ export default function App() {
   <div className="lg:pl-64 xl:pl-72 flex flex-col min-h-screen transition-all duration-300">
     <main className="pt-16 md:pt-20 lg:pt-8 pb-16 px-6">
  <div className="max-w-7xl mx-auto">
+ {/* News Slideshow — top of Home page */}
+ {activeTab === 'assess' && (
+   <NewsSlider />
+ )}
+
  {/* Premium Hero Section (Grid side-by-side) */}
  {activeTab === 'assess' && (
  <div className={`grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center py-8 md:py-10 rounded-[3rem] px-6 md:px-12 mb-8 relative overflow-hidden transition-all duration-500 ${isDarkMode ? 'bg-slate-900/40 backdrop-blur-[35px] border border-white/20 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.25),0_15px_35px_rgba(0,0,0,0.35)]' : 'bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)]'}`}>
