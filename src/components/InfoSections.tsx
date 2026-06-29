@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { UserSettings } from '../types';
 import { 
  HelpCircle, 
@@ -476,39 +477,42 @@ export default function InfoSections({ settings, onTabChange }: InfoSectionsProp
  </section>
 
   {/* Lightbox Image Preview Modal */}
-  <AnimatePresence>
-    {selectedImage && (
-      <div 
-        className="fixed inset-0 z-[150] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 cursor-zoom-out"
-        onClick={() => setSelectedImage(null)}
-      >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          className="relative max-w-5xl max-h-[90vh] overflow-hidden rounded-3xl bg-black/40 border border-white/10 shadow-2xl p-2 flex flex-col items-center cursor-default"
-          onClick={(e) => e.stopPropagation()}
+  {createPortal(
+    <AnimatePresence>
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 z-[150] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 cursor-zoom-out"
+          onClick={() => setSelectedImage(null)}
         >
-          {/* Close button */}
-          <button
-            onClick={() => setSelectedImage(null)}
-            className="absolute top-4 right-4 p-2 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors cursor-pointer border-none z-10"
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="relative max-w-5xl max-h-[90vh] overflow-hidden rounded-3xl bg-black/40 border border-white/10 shadow-2xl p-2 flex flex-col items-center cursor-default"
+            onClick={(e) => e.stopPropagation()}
           >
-            <X className="w-5 h-5" />
-          </button>
-          
-          <img
-            src={selectedImage.src}
-            alt={selectedImage.title}
-            className="max-w-full max-h-[80vh] object-contain rounded-2xl select-none"
-          />
-          <div className="py-3 px-4 text-center">
-            <h4 className="text-white font-bold text-sm tracking-wide">{selectedImage.title}</h4>
-          </div>
-        </motion.div>
-      </div>
-    )}
-  </AnimatePresence>
+            {/* Close button */}
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="absolute top-4 right-4 p-2 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors cursor-pointer border-none z-10"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <img
+              src={selectedImage.src}
+              alt={selectedImage.title}
+              className="max-w-full max-h-[80vh] object-contain rounded-2xl select-none"
+            />
+            <div className="py-3 px-4 text-center">
+              <h4 className="text-white font-bold text-sm tracking-wide">{selectedImage.title}</h4>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>,
+    document.body
+  )}
   
  </div>
  </div>
