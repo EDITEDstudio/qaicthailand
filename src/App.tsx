@@ -18,6 +18,7 @@ import ProposalForm from './components/ProposalForm';
 import AuthModal from './components/auth/AuthModal';
 import NewsSection from './components/NewsSection';
 import DownloadsSection from './components/DownloadsSection';
+import CareersSection from './components/CareersSection';
 import NewsSlider from './components/NewsSlider';
 import { auth, db } from './lib/firebase';
 import { onAuthStateChanged, User, signOut } from 'firebase/auth';
@@ -44,7 +45,8 @@ import {
  GraduationCap,
  Calculator,
  Home,
- Download
+ Download,
+ Briefcase
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -56,7 +58,7 @@ export default function App() {
  primaryColor: '#2563eb' // Blue 600
  });
 
- const [activeTab, setActiveTab] = useState<'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote' | 'news' | 'downloads'>('assess');
+ const [activeTab, setActiveTab] = useState<'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote' | 'news' | 'downloads' | 'careers'>('assess');
  const [isAiOpen, setIsAiOpen] = useState(false);
  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
  const [scrolled, setScrolled] = useState(false);
@@ -152,6 +154,7 @@ export default function App() {
    { id: 'news', labelTH: 'ข่าวสารประชาสัมพันธ์', labelEN: 'News & PR', icon: FileText },
    { id: 'verify', labelTH: 'ตรวจใบรับรอง', labelEN: 'Verify Certificate', icon: ShieldCheck },
    { id: 'downloads', labelTH: 'ดาวน์โหลดแบบฟอร์ม', labelEN: 'Forms & Downloads', icon: Download },
+    { id: 'careers', labelTH: 'ร่วมงานกับเรา', labelEN: 'Careers', icon: Briefcase },
    { id: 'profile', labelTH: 'โปรไฟล์ลูกค้า', labelEN: 'Client Profile', icon: UserIcon },
   ];
 
@@ -784,6 +787,18 @@ export default function App() {
  <DownloadsSection settings={settings} />
  </motion.div>
  )}
+
+      {activeTab === 'careers' && (
+        <motion.div 
+          key="careers"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.02 }}
+          transition={{ duration: 0.3 }}
+        >
+          <CareersSection settings={settings} />
+        </motion.div>
+      )}
  </AnimatePresence>
  </div>
  </div>
