@@ -89,62 +89,16 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  const [simulatorOpen, setSimulatorOpen] = useState(false);
 
  // Document checklist status
- const [docStatuses, setDocStatuses] = useState<{ [key: string]: 'approved' | 'pending' | 'under_review' | 'action_required' }>({
- qualityManual: 'approved',
- managementReview: 'approved',
- internalAudit: 'pending',
- riskAssessment: 'pending'
- });
+ const [docStatuses, setDocStatuses] = useState<{ [key: string]: 'approved' | 'pending' | 'under_review' | 'action_required' }>({});
 
  // Dynamic Invoices State
- const [invoices, setInvoices] = useState<any[]>([
- {
- id: 'inv-1',
- invoiceNo: 'INV-2024-001',
- descriptionTH: 'ค่าธรรมเนียมสมัครและทบทวนเอกสาร Stage 1',
- descriptionEN: 'ISO 45001 Application & Stage 1 Review Fee',
- amount: 15400,
- dueDate: '2024-01-20',
- status: 'paid',
- paidDate: '2024-01-15'
- },
- {
- id: 'inv-2',
- invoiceNo: 'INV-2024-002',
- descriptionTH: 'ค่าบริการคณะตรวจและรับรอง Stage 2',
- descriptionEN: 'ISO 45001 Stage 2 Audit & Certification Fee',
- amount: 15400,
- dueDate: '2024-03-20',
- status: 'unpaid'
- }
- ]);
+ const [invoices, setInvoices] = useState<any[]>([]);
 
  // Dynamic Auditor State
- const [assignedAuditor, setAssignedAuditor] = useState<any>({
- id: 'auditor-1',
- nameTH: 'คุณนิชชาภัทร เนตรทิพย์',
- nameEN: 'Ms. Nitchaphat Netthip',
- roleTH: 'หัวหน้าคณะผู้ตรวจประเมิน',
- roleEN: 'Lead Auditor',
- deptTH: 'แผนกตรวจประเมิน (EAC/ISIC)',
- deptEN: 'Auditing Department (EAC/ISIC)',
- avatar: 'NN',
- bioTH: 'ผู้ตรวจประเมินระบบงานขึ้นทะเบียน EAC/ISIC, ผู้เชี่ยวชาญการประเมินคุณภาพด้าน ISO 9001/14001/45001 ประสบการณ์ตรวจอุตสาหกรรมกว่า 12 ปี',
- bioEN: 'Registered Lead Assessor for EAC/ISIC, specializing in ISO 9001/14001/45001 with 12+ years of industrial audit experience.'
- });
+ const [assignedAuditor, setAssignedAuditor] = useState<any>(null);
 
  // Dynamic NC/CAR State
- const [ncFinding, setNcFinding] = useState<any | null>({
- id: 'nc-1',
- findingTH: 'รายงานบันทึกการตรวจประเมินภายในไม่ครบถ้วน',
- findingEN: 'Internal Audit Record Incomplete',
- commentTH: 'รายงานผลลัพธ์การประชุมทบทวนรายงานการตรวจสอบภายในตามแผนไม่มีหลักฐานอ้างอิงชัดเจน',
- commentEN: 'No clear record of management review inputs mapping from last internal audit.',
- clause: '9.2.2',
- severity: 'Major NC',
- status: 'action_required',
- dueDate: '2024-03-30'
- });
+ const [ncFinding, setNcFinding] = useState<any | null>(null);
 
  // Certificate Viewer Modal
  const [selectedCert, setSelectedCert] = useState<Certificate | null>(null);
@@ -171,56 +125,14 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  const auditsSnapshot = await getDocs(auditsQuery);
  const auditsData = auditsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AuditProject));
 
- // If no real data, use demo data for the UI showcase
+ // If no real data, leave them empty
  if (certsData.length === 0 && auditsData.length === 0) {
- setCerts([
- {
- id: '1',
- standardId: 'iso-9001',
- code: 'GCL / ISO 9001:2015',
- certNumber: 'QAIC/TH/9001/0123',
- issueDate: '2023-01-15',
- expiryDate: '2026-01-14',
- status: 'active',
- companyNameTH: 'บริษัท เพรสซิเดนท์ เบเกอรี่ จำกัด (มหาชน)',
- companyNameEN: 'President Bakery Public Company Limited',
- scopeTH: 'การผลิตและจัดจำหน่ายขนมปังและเบเกอรี่ทุกชนิด',
- scopeEN: 'Manufacture and distribution of bread and bakery products',
- provinceTH: 'กรุงเทพมหานคร',
- provinceEN: 'Bangkok',
- country: 'Thailand',
- category: 'GCL / ISO 9001'
- },
- {
- id: '2',
- standardId: 'iso-14001',
- code: 'GCL / ISO 14001:2015',
- certNumber: 'QAIC/TH/14001/1055',
- issueDate: '2023-03-20',
- expiryDate: '2026-03-19',
- status: 'active',
- companyNameTH: 'บริษัท เพรสซิเดนท์ เบเกอรี่ จำกัด (มหาชน)',
- companyNameEN: 'President Bakery Public Company Limited',
- scopeTH: 'การผลิตและจัดจำหน่ายขนมปังและเบเกอรี่ทุกชนิด',
- scopeEN: 'Manufacture and distribution of bread and bakery products',
- provinceTH: 'กรุงเทพมหานคร',
- provinceEN: 'Bangkok',
- country: 'Thailand',
- category: 'GCL / ISO 14001'
- }
- ]);
- setAudits([
- {
- id: '101',
- standardId: 'iso-45001',
- code: 'QAIC / ISO 45001:2018',
- status: 'On-site Audit',
- currentStep: 2,
- totalSteps: 4,
- scheduledDate: '2024-03-24',
- outstandingBalance: 15400
- }
- ]);
+ setCerts([]);
+ setAudits([]);
+ setInvoices([]);
+ setAssignedAuditor(null);
+ setNcFinding(null);
+ setDocStatuses({});
  } else {
  setCerts(certsData);
  setCerts(prev => prev.map(c => ({
@@ -235,6 +147,65 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  category: c.category || c.code.split(':')[0]
  })));
  setAudits(auditsData);
+ 
+ // If they have audits, we can populate the demo invoices and auditor to show the portal's functionality
+ if (auditsData.length > 0) {
+ setInvoices([
+ {
+ id: 'inv-1',
+ invoiceNo: 'INV-2024-001',
+ descriptionTH: 'ค่าธรรมเนียมสมัครและทบทวนเอกสาร Stage 1',
+ descriptionEN: 'ISO 45001 Application & Stage 1 Review Fee',
+ amount: 15400,
+ dueDate: '2024-01-20',
+ status: 'paid',
+ paidDate: '2024-01-15'
+ },
+ {
+ id: 'inv-2',
+ invoiceNo: 'INV-2024-002',
+ descriptionTH: 'ค่าบริการคณะตรวจและรับรอง Stage 2',
+ descriptionEN: 'ISO 45001 Stage 2 Audit & Certification Fee',
+ amount: 15400,
+ dueDate: '2024-03-20',
+ status: 'unpaid'
+ }
+ ]);
+ setAssignedAuditor({
+ id: 'auditor-1',
+ nameTH: 'คุณนิชชาภัทร เนตรทิพย์',
+ nameEN: 'Ms. Nitchaphat Netthip',
+ roleTH: 'หัวหน้าคณะผู้ตรวจประเมิน',
+ roleEN: 'Lead Auditor',
+ deptTH: 'แผนกตรวจประเมิน (EAC/ISIC)',
+ deptEN: 'Auditing Department (EAC/ISIC)',
+ avatar: 'NN',
+ bioTH: 'ผู้ตรวจประเมินระบบงานขึ้นทะเบียน EAC/ISIC, ผู้เชี่ยวชาญการประเมินคุณภาพด้าน ISO 9001/14001/45001 ประสบการณ์ตรวจอุตสาหกรรมกว่า 12 ปี',
+ bioEN: 'Registered Lead Assessor for EAC/ISIC, specializing in ISO 9001/14001/45001 with 12+ years of industrial audit experience.'
+ });
+ setNcFinding({
+ id: 'nc-1',
+ findingTH: 'รายงานบันทึกการตรวจประเมินภายในไม่ครบถ้วน',
+ findingEN: 'Internal Audit Record Incomplete',
+ commentTH: 'รายงานผลลัพธ์การประชุมทบทวนรายงานการตรวจสอบภายในตามแผนไม่มีหลักฐานอ้างอิงชัดเจน',
+ commentEN: 'No clear record of management review inputs mapping from last internal audit.',
+ clause: '9.2.2',
+ severity: 'Major NC',
+ status: 'action_required',
+ dueDate: '2024-03-30'
+ });
+ setDocStatuses({
+ qualityManual: 'approved',
+ managementReview: 'approved',
+ internalAudit: 'pending',
+ riskAssessment: 'pending'
+ });
+ } else {
+ setInvoices([]);
+ setAssignedAuditor(null);
+ setNcFinding(null);
+ setDocStatuses({});
+ }
  }
  } catch (error) {
  console.error('Error fetching profile data:', error);
@@ -565,7 +536,9 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  </div>
  <div>
  <p className="text-[10px] text-gray-600 dark:text-slate-500 font-bold uppercase tracking-wider leading-none mb-1.5">{t('ตรวจติดตามรอบหน้า', 'Next Audit Date')}</p>
- <p className="text-xl font-display font-bold text-gray-900 dark:text-white">24 {t('มี.ค.', 'Mar')} 2024</p>
+ <p className="text-xl font-display font-bold text-gray-900 dark:text-white">
+   {audits.length > 0 ? `24 ${t('มี.ค.', 'Mar')} 2024` : '—'}
+ </p>
  </div>
  </div>
  <div className="bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] p-6 rounded-3xl border flex items-center gap-5 shadow-sm">
@@ -601,30 +574,36 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  {t('บันทึกกิจกรรมล่าสุด', 'Recent Activities')}
  </h3>
  <div className="space-y-6 relative ml-3 border-l border-gray-100 pl-6">
- <div className="relative">
- <div className="absolute -left-[30px] top-0.5 w-4.5 h-4.5 rounded-full bg-blue-100 border-4 border-white flex items-center justify-center"><div className="w-1.5 h-1.5 bg-blue-600 rounded-full" /></div>
- <p className="text-xs font-bold text-gray-900 dark:text-white">{t('จับคู่ผู้ตรวจประเมินเข้าระบบ', 'Lead Auditor Assigned')}</p>
- <p className="text-[10px] text-gray-600 dark:text-slate-500">{t(`วันนี้ - ผู้ตรวจประเมิน ${assignedAuditor.nameTH} ถูกมอบหมายสำหรับแผนงานของคุณ`, `Today - Auditor ${assignedAuditor.nameEN} assigned to your standard project.`)}</p>
- </div>
- {paymentStatus === 'verifying' && (
- <div className="relative">
- <div className="absolute -left-[30px] top-0.5 w-4.5 h-4.5 rounded-full bg-amber-100 border-4 border-white flex items-center justify-center"><div className="w-1.5 h-1.5 bg-amber-600 rounded-full" /></div>
- <p className="text-xs font-bold text-gray-900 dark:text-white">{t('ลูกค้าส่งหลักฐานสลิปแจ้งชำระเงิน', 'Payment Slip Uploaded')}</p>
- <p className="text-[10px] text-gray-600 dark:text-slate-500">{t('วันนี้ - ยื่นสลิปยอดชำระ ฿15,400 เข้าสู่ระบบ อยู่ระหว่างตรวจสอบบัญชี', 'Today - Submitted slip for ฿15,400. Pending accountant verification.')}</p>
- </div>
+ {assignedAuditor ? (
+   <>
+     <div className="relative">
+       <div className="absolute -left-[30px] top-0.5 w-4.5 h-4.5 rounded-full bg-blue-100 border-4 border-white flex items-center justify-center"><div className="w-1.5 h-1.5 bg-blue-600 rounded-full" /></div>
+       <p className="text-xs font-bold text-gray-900 dark:text-white">{t('จับคู่ผู้ตรวจประเมินเข้าระบบ', 'Lead Auditor Assigned')}</p>
+       <p className="text-[10px] text-gray-600 dark:text-slate-500">{t(`วันนี้ - ผู้ตรวจประเมิน ${assignedAuditor.nameTH} ถูกมอบหมายสำหรับแผนงานของคุณ`, `Today - Auditor ${assignedAuditor.nameEN} assigned to your standard project.`)}</p>
+     </div>
+     {paymentStatus === 'verifying' && (
+       <div className="relative">
+         <div className="absolute -left-[30px] top-0.5 w-4.5 h-4.5 rounded-full bg-amber-100 border-4 border-white flex items-center justify-center"><div className="w-1.5 h-1.5 bg-amber-600 rounded-full" /></div>
+         <p className="text-xs font-bold text-gray-900 dark:text-white">{t('ลูกค้าส่งหลักฐานสลิปแจ้งชำระเงิน', 'Payment Slip Uploaded')}</p>
+         <p className="text-[10px] text-gray-600 dark:text-slate-500">{t('วันนี้ - ยื่นสลิปยอดชำระ ฿15,400 เข้าสู่ระบบ อยู่ระหว่างตรวจสอบบัญชี', 'Today - Submitted slip for ฿15,400. Pending accountant verification.')}</p>
+       </div>
+     )}
+     {ncFinding && ncFinding.status === 'under_review' && (
+       <div className="relative">
+         <div className="absolute -left-[30px] top-0.5 w-4.5 h-4.5 rounded-full bg-blue-100 border-4 border-white flex items-center justify-center"><div className="w-1.5 h-1.5 bg-blue-600 rounded-full" /></div>
+         <p className="text-xs font-bold text-gray-900 dark:text-white">{t('ลูกค้าส่งหลักฐานการแก้ไขข้อบกพร่อง (NC)', 'CAR Evidence Submitted')}</p>
+         <p className="text-[10px] text-gray-600 dark:text-slate-500">{t('วันนี้ - ยื่นเอกสารแก้ไขสำหรับจุดบันทึกรายงานตรวจประเมินภายใน', 'Today - Submitted corrective action report for internal audit clause.')}</p>
+       </div>
+     )}
+     <div className="relative">
+       <div className="absolute -left-[30px] top-0.5 w-4.5 h-4.5 rounded-full bg-gray-100 border-4 border-white flex items-center justify-center"><div className="w-1.5 h-1.5 bg-gray-400 rounded-full" /></div>
+       <p className="text-xs font-bold text-gray-900 dark:text-white">{t('ออกใบแจ้งหนี้ #INV-2024-002', 'Invoice INV-2024-002 Issued')}</p>
+       <p className="text-[10px] text-gray-600 dark:text-slate-500">{t('เมื่อวานนี้ - ออกใบแจ้งค่าบริการตรวจติดตาม ISO 45001', 'Yesterday - Invoice generated for ISO 45001 Stage 2 Audit.')}</p>
+     </div>
+   </>
+ ) : (
+   <p className="text-xs text-gray-500 italic py-2">{t('ไม่มีบันทึกกิจกรรมล่าสุด', 'No recent activities found.')}</p>
  )}
- {ncFinding && ncFinding.status === 'under_review' && (
- <div className="relative">
- <div className="absolute -left-[30px] top-0.5 w-4.5 h-4.5 rounded-full bg-blue-100 border-4 border-white flex items-center justify-center"><div className="w-1.5 h-1.5 bg-blue-600 rounded-full" /></div>
- <p className="text-xs font-bold text-gray-900 dark:text-white">{t('ลูกค้าส่งหลักฐานการแก้ไขข้อบกพร่อง (NC)', 'CAR Evidence Submitted')}</p>
- <p className="text-[10px] text-gray-600 dark:text-slate-500">{t('วันนี้ - ยื่นเอกสารแก้ไขสำหรับจุดบันทึกรายงานตรวจประเมินภายใน', 'Today - Submitted corrective action report for internal audit clause.')}</p>
- </div>
- )}
- <div className="relative">
- <div className="absolute -left-[30px] top-0.5 w-4.5 h-4.5 rounded-full bg-gray-100 border-4 border-white flex items-center justify-center"><div className="w-1.5 h-1.5 bg-gray-400 rounded-full" /></div>
- <p className="text-xs font-bold text-gray-900 dark:text-white">{t('ออกใบแจ้งหนี้ #INV-2024-002', 'Invoice INV-2024-002 Issued')}</p>
- <p className="text-[10px] text-gray-600 dark:text-slate-500">{t('เมื่อวานนี้ - ออกใบแจ้งค่าบริการตรวจติดตาม ISO 45001', 'Yesterday - Invoice generated for ISO 45001 Stage 2 Audit.')}</p>
- </div>
  </div>
  </div>
 
@@ -660,6 +639,14 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  {t('ดาวน์โหลดใบรับรองทั้งหมด', 'Download All')}
  </button>
  </div>
+
+ {certs.length === 0 && (
+   <div className="bg-white/40 backdrop-blur-[35px] border border-white/40 rounded-3xl p-8 border shadow-sm text-center py-16 col-span-full">
+     <Award className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('ไม่มีใบรับรองมาตรฐานระบบงาน', 'No Certificates')}</h3>
+     <p className="text-xs text-gray-700 dark:text-slate-400 max-w-sm mx-auto">{t('คุณยังไม่มีใบรับรองมาตรฐาน ISO ที่ผ่านการอนุมัติในขณะนี้', 'You do not have any active accredited ISO certificates in our database yet.')}</p>
+   </div>
+ )}
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  {certs.map(cert => (
@@ -715,7 +702,7 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  </div>
  ))}
 
- {!certs.some(c => c.standardId === 'iso-45001') && (
+ {audits.some(a => a.standardId === 'iso-45001') && !certs.some(c => c.standardId === 'iso-45001') && (
  <div className="border-2 border-dashed border-gray-200 rounded-3xl p-6 flex flex-col items-center justify-center gap-4 text-gray-600 dark:text-slate-500 min-h-[200px]">
  <div className="p-4 bg-gray-50 rounded-full text-gray-600 dark:text-slate-500"><ShieldCheck className="w-8 h-8" /></div>
  <div className="text-center space-y-1">
@@ -731,6 +718,14 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  {/* TAB 3: AUDIT & CAR TRACKING */}
  {portalTab === 'tracking' && (
  <div className="space-y-8">
+ {audits.length === 0 ? (
+   <div className="bg-white/40 backdrop-blur-[35px] border border-white/40 rounded-3xl p-8 border shadow-sm text-center py-16">
+     <FileCheck2 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('ไม่มีโครงการตรวจประเมินที่กำลังดำเนินงาน', 'No Active Audits')}</h3>
+     <p className="text-xs text-gray-700 dark:text-slate-400 max-w-sm mx-auto">{t('คุณยังไม่มีโครงการตรวจประเมินระบบงานหรือตรวจติดตามมาตรฐานในขณะนี้', 'You do not have any active standard audits or surveillance audits under progress.')}</p>
+   </div>
+ ) : (
+   <>
  {/* Audit Project Info */}
  <div className="bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] p-6 md:p-8 rounded-3xl border shadow-sm space-y-6">
  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-50 pb-5">
@@ -906,12 +901,22 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  </div>
  )}
  </div>
+   </>
+ )}
  </div>
  )}
 
  {/* TAB 4: DOCUMENT CHECKLIST */}
  {portalTab === 'documents' && (
  <div className="space-y-6">
+ {audits.length === 0 ? (
+   <div className="bg-white/40 backdrop-blur-[35px] border border-white/40 rounded-3xl p-8 border shadow-sm text-center py-16">
+     <FileSpreadsheet className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('ไม่มีรายการเอกสารที่ต้องนำส่ง', 'No Documents Required')}</h3>
+     <p className="text-xs text-gray-700 dark:text-slate-400 max-w-sm mx-auto">{t('คุณยังไม่มีโครงการตรวจประเมินระบบงานที่ต้องนำส่งเอกสารวิเคราะห์ในขณะนี้', 'You do not have any active standard audits that require uploading document reviews.')}</p>
+   </div>
+ ) : (
+   <>
  <div className="flex items-center justify-between">
  <div>
  <h3 className="text-xl font-display font-bold text-gray-900 dark:text-white">{t('รายการตรวจสอบเอกสาร (Document Checklist)', 'Document Checklist')}</h3>
@@ -986,6 +991,8 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  })}
  </div>
  </div>
+   </>
+ )}
  </div>
  )}
 
@@ -1043,6 +1050,14 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  </div>
 
  <div className="divide-y divide-gray-50 text-xs">
+ {invoices.length === 0 && (
+   <div className="p-8 text-center text-gray-650 dark:text-slate-500 py-16 col-span-full">
+     <Receipt className="w-12 h-12 text-gray-450 mx-auto mb-4" />
+     <h3 className="text-sm font-bold text-gray-700 dark:text-slate-200">{t('ไม่มีใบแจ้งหนี้หรือรายการชำระเงิน', 'No Invoices Found')}</h3>
+     <p className="text-xs text-gray-650 dark:text-slate-500">{t('คุณยังไม่มีใบแจ้งหนี้หรือประวัติการเรียกเก็บเงินในระบบในขณะนี้', 'You do not have any invoices or payment histories in the system.')}</p>
+   </div>
+ )}
+
  {invoices.map(inv => (
  <div key={inv.id} className="p-5 grid grid-cols-5 gap-4 items-center">
  <div className="font-mono font-bold text-gray-900 dark:text-white">#{inv.invoiceNo}</div>
