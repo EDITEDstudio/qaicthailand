@@ -863,7 +863,7 @@ export default function CertificateVerification({ settings }: CertificateVerific
                 {t('ผู้ลงนามรับรอง (Authorized Signatory)', 'Authorized Signatory')}
               </span>
               <p className="text-xs text-gray-800 dark:text-slate-300 font-medium">
-                {activeCert.authorizedSignatory}
+                QAIC THAILAND
               </p>
             </div>
           </div>
