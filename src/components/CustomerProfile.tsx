@@ -459,6 +459,7 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  {portalTab === 'dashboard' && (
  <div className="space-y-6">
  {/* Action Center Banner */}
+ {audits.length > 0 && (
  <div className="bg-amber-50/70 border border-amber-100 rounded-3xl p-6 space-y-4">
  <div className="flex items-center gap-2 text-amber-800">
  <AlertCircle className="w-5 h-5 flex-shrink-0" />
@@ -518,6 +519,7 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  )}
  </div>
  </div>
+ )}
 
  {/* Dashboard Stats Row */}
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
