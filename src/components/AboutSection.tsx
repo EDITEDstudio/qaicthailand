@@ -201,8 +201,8 @@ export default function AboutSection({ settings, isAdminMode = false }: AboutSec
  <div className="space-y-6">
  <p className={`leading-relaxed font-sans text-gray-700 dark:text-white`}>
  {t(
- 'บริษัท คิวเอไอซี (ประเทศไทย) จำกัด เป็นหน่วยตรวจประเมินรับรองระบบมาตรฐานสากลที่ได้รับความเชื่อถือให้กับสถานประกอบการ องค์กร และหน่วยงานที่นำข้อกำหนดตามมาตรฐานสากลต่างๆ มาประยุกต์ใช้ โดยได้รับการรับรองระบบงานจาก United Kingdom Accreditation Service (UKAS) เลขที่ 46',
- 'QAIC (Thailand) Co., Ltd. is a trusted international certification body for organizations implementing global standards. We are accredited by the United Kingdom Accreditation Service (UKAS), Accredited Body No. 46.'
+ 'บริษัท คิวเอไอซี (ประเทศไทย) จำกัด เป็นหน่วยตรวจประเมินรับรองระบบมาตรฐานสากลที่ได้รับความเชื่อถือให้กับสถานประกอบการ องค์กร และหน่วยงานที่นำข้อกำหนดตามมาตรฐานสากลต่างๆ มาประยุกต์ใช้ โดยได้รับการรับรองระบบงานจาก United Kingdom Accreditation Service (UKAS) เลขที่ 5965',
+ 'QAIC (Thailand) Co., Ltd. is a trusted international certification body for organizations implementing global standards. We are accredited by the United Kingdom Accreditation Service (UKAS), Accredited Body No. 5965.'
  )}
  </p>
  <div className={`p-6 rounded-3xl flex items-center gap-6 bg-gray-50 dark:bg-slate-900/50 dark:border dark:border-slate-800`}>
@@ -211,7 +211,7 @@ export default function AboutSection({ settings, isAdminMode = false }: AboutSec
  </div>
  <div>
  <p className="text-[10px] font-bold text-gray-600 dark:text-slate-300 uppercase tracking-widest mb-1">Accreditation</p>
- <p className="text-sm font-bold">UKAS Accredited Body #46</p>
+ <p className="text-sm font-bold">UKAS Accredited Body 5965</p>
  </div>
  </div>
  </div>

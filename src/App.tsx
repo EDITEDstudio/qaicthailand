@@ -644,7 +644,7 @@ export default function App() {
      <div className="flex items-center gap-3">
        <span className="text-[10px] font-bold text-gray-600 dark:text-slate-500 uppercase tracking-widest">Accredited Body</span>
        <div className="px-3 py-1.5 bg-gray-900 text-white rounded-xl text-[10px] font-mono font-bold tracking-wider">
-         UKAS #0046
+         UKAS 5965
        </div>
      </div>
      <div className="h-6 w-px bg-gray-200 dark:bg-slate-800 hidden sm:block" />

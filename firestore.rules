@@ -40,16 +40,16 @@ service cloud.firestore {
     // users/{userId}
     match /users/{userId} {
       allow get: if isOwner(userId);
-      // Only the user themselves can create their profile, and they can't set their own role to admin
+      // Only the user themselves can create their profile, and they can't set their own role to admin (unless it's the admin email)
       allow create: if isOwner(userId) && 
                       isValidUser(incoming()) && 
                       incoming().uid == userId &&
-                      incoming().role == 'user'; // Prevent self-elevating to admin
+                      (incoming().role == 'user' || incoming().email == 'admin@qaic-thailand.com'); // Allow admin registration
       
       allow update: if isOwner(userId) && 
                       isValidUser(incoming()) && 
                       incoming().uid == userId &&
-                      incoming().role == existing().role && // Prevent changing own role
+                      (incoming().role == existing().role || incoming().email == 'admin@qaic-thailand.com') && // Prevent changing own role unless admin email
                       incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL', 'updatedAt']);
     }
 
