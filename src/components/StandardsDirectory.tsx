@@ -419,7 +419,7 @@ export default function StandardsDirectory({ settings, isAdminMode = false }: St
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white/95 backdrop-blur-[35px] border border-white/60 shadow-2xl dark:bg-slate-900/95 dark:border-slate-800 w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] overflow-hidden flex flex-col"
+              className="bg-white/95 border border-white/60 shadow-2xl dark:bg-slate-900/95 dark:border-slate-800 w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] overflow-hidden flex flex-col"
             >
               <div className="relative h-48 bg-blue-800 p-10 flex flex-col justify-end">
                 {/* Back / Close button */}
@@ -463,7 +463,7 @@ export default function StandardsDirectory({ settings, isAdminMode = false }: St
               </div>
 
               <div className="flex-1 overflow-y-auto p-8 md:p-12 space-y-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 gap-8">
                   {/* Card 1: คืออะไร (What is it?) */}
                   <div className="bg-blue-50/40 dark:bg-blue-950/10 border border-blue-100/50 dark:border-blue-900/30 p-6 md:p-8 rounded-[2rem] space-y-4 backdrop-blur-[10px] flex flex-col text-left">
                     <h3 className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest flex items-center gap-2 border-b border-blue-100/50 dark:border-blue-900/30 pb-2">
