@@ -747,7 +747,7 @@ export default function App() {
  exit={{ opacity: 0, scale: 1.02 }}
  transition={{ duration: 0.3 }}
  >
- <CertificateVerification settings={settings} />
+ <CertificateVerification settings={settings} user={user} />
  </motion.div>
  )}
  {activeTab === 'profile' && (

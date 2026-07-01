@@ -5,6 +5,8 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { UserSettings } from '../types';
+import { db } from '../lib/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { ENRICHED_CLIENTS } from '../data/clientsData';
 import {
  Search,
@@ -18,6 +20,7 @@ import {
  Award,
  QrCode,
  Printer,
+ Lock,
  ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -37,6 +40,7 @@ import {
 
 interface CertificateVerificationProps {
  settings: UserSettings;
+ user: any;
 }
 
 interface ClientCertificate {
@@ -56,7 +60,7 @@ interface ClientCertificate {
  authorizedSignatory: string;
 }
 
-export default function CertificateVerification({ settings }: CertificateVerificationProps) {
+export default function CertificateVerification({ settings, user }: CertificateVerificationProps) {
   const lang = settings.lang;
   
   // States
@@ -67,6 +71,68 @@ export default function CertificateVerification({ settings }: CertificateVerific
   const [customCertificates, setCustomCertificates] = useState<ClientCertificate[]>([]);
   const [certLayout, setCertLayout] = useState<'digital' | 'paper'>('paper');
   const [currentPage, setCurrentPage] = useState(1);
+  const [printError, setPrintError] = useState<string | null>(null);
+  const [isVerifyingPrint, setIsVerifyingPrint] = useState(false);
+
+  const handlePrintCertificate = async () => {
+    setPrintError(null);
+    if (!activeCert) return;
+
+    if (!user) {
+      setPrintError(
+        lang === 'TH' 
+          ? '⚠️ ขออภัย ระบบสงวนสิทธิ์การพิมพ์เอกสารใบรับรองเฉพาะสมาชิกที่ใช้บริการผ่านการตรวจประเมินและชำระเงินเรียบร้อยแล้วเท่านั้น กรุณาเข้าสู่ระบบในโปรไฟล์ลูกค้าเพื่อดาวน์โหลดใบรับรองของคุณ'
+          : '⚠️ Restricted. Printing is only available to certified members who have completed assessments and payments. Please log in.'
+      );
+      return;
+    }
+
+    if (user.role === 'admin') {
+      window.print();
+      return;
+    }
+
+    setIsVerifyingPrint(true);
+    try {
+      const q = query(
+        collection(db, 'certificates'), 
+        where('userId', '==', user.uid)
+      );
+      const querySnapshot = await getDocs(q);
+      
+      let hasAccess = false;
+      querySnapshot.forEach((doc) => {
+        const certData = doc.data();
+        if (
+          certData.certificateNo === activeCert.certificateNo || 
+          certData.certNo === activeCert.certificateNo ||
+          certData.companyNameTH === activeCert.companyNameTH ||
+          certData.companyNameEN === activeCert.companyNameEN
+        ) {
+          hasAccess = true;
+        }
+      });
+
+      if (hasAccess) {
+        window.print();
+      } else {
+        setPrintError(
+          lang === 'TH'
+            ? '⚠️ ขออภัย คุณไม่มีสิทธิ์ดาวน์โหลดใบรับรองนี้ (ระบบสงวนสิทธิ์เฉพาะผู้ประสานงานหลักของบริษัทผู้ได้รับใบรับรองนี้เท่านั้น)'
+            : '⚠️ Sorry, you do not have permission to download this certificate (Restricted to the authorized coordinator of this certified company).'
+        );
+      }
+    } catch (err) {
+      console.error('Error verifying print permissions:', err);
+      setPrintError(
+        lang === 'TH'
+          ? 'เกิดข้อผิดพลาดในการตรวจสอบสิทธิ์ กรุณาลองใหม่อีกครั้ง'
+          : 'Error verifying permissions. Please try again.'
+      );
+    } finally {
+      setIsVerifyingPrint(false);
+    }
+  };
 
  const getStandardLogo = (category: string) => {
  switch (category) {
@@ -191,14 +257,16 @@ export default function CertificateVerification({ settings }: CertificateVerific
     return pageNumbers;
   };
 
- // Open certificate detail sheets modal
- const openVerificationModal = (client: ClientCertificate) => {
- setActiveCert(client);
- };
+  // Open certificate detail sheets modal
+  const openVerificationModal = (client: ClientCertificate) => {
+    setActiveCert(client);
+    setPrintError(null);
+  };
 
- const closeVerificationModal = () => {
- setActiveCert(null);
- };
+  const closeVerificationModal = () => {
+    setActiveCert(null);
+    setPrintError(null);
+  };
 
  // Open renewal flow modal
  const openRenewalModal = (client: ClientCertificate, e: React.MouseEvent) => {
@@ -891,18 +959,33 @@ export default function CertificateVerification({ settings }: CertificateVerific
             </div>
           </div>
 
+          {/* Print Permission Error Message */}
+          {printError && (
+            <div className="w-full text-xs p-3.5 bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 rounded-2xl border border-red-100 dark:border-red-900/30 text-left font-sans flex items-start gap-2.5">
+              <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
+              <span className="leading-relaxed">{printError}</span>
+            </div>
+          )}
+
           {/* Action Buttons */}
-          <div className="flex gap-2 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto items-center">
             <button
-              onClick={() => window.print()}
-              className="flex-1 sm:flex-initial px-5 py-2.5 bg-red-800 hover:bg-red-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer border-none shadow-md shadow-red-800/10"
+              onClick={handlePrintCertificate}
+              disabled={isVerifyingPrint}
+              className="w-full sm:w-auto px-5 py-2.5 bg-red-850 hover:bg-red-750 disabled:opacity-50 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer border-none shadow-md shadow-red-850/15"
             >
-              <Printer className="w-4 h-4" />
+              {isVerifyingPrint ? (
+                <RefreshCw className="w-4 h-4 animate-spin" />
+              ) : !user ? (
+                <Lock className="w-4 h-4 text-white/80" />
+              ) : (
+                <Printer className="w-4 h-4" />
+              )}
               <span>{t('พิมพ์ข้อมูลระบบ', 'Print Official Records')}</span>
             </button>
             <button
               onClick={closeVerificationModal}
-              className="flex-1 sm:flex-initial px-5 py-2.5 bg-gray-200 dark:bg-slate-800 hover:bg-gray-300 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-200 rounded-xl text-xs font-bold cursor-pointer border-none"
+              className="w-full sm:w-auto px-5 py-2.5 bg-gray-200 dark:bg-slate-800 hover:bg-gray-300 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-200 rounded-xl text-xs font-bold cursor-pointer border-none"
             >
               {t('ปิดหน้าต่าง', 'Close')}
             </button>
