@@ -46,7 +46,9 @@ import {
  Calculator,
  Home,
  Download,
- Briefcase
+ Briefcase,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -62,6 +64,7 @@ export default function App() {
  const [isAiOpen, setIsAiOpen] = useState(false);
  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
  const [scrolled, setScrolled] = useState(false);
+  const [pcSidebarOpen, setPcSidebarOpen] = useState(true);
  const isDarkMode = false;
 
   // Auth State
@@ -187,19 +190,28 @@ export default function App() {
  }}
  >
   {/* Desktop Sidebar */}
-  <aside className="fixed top-0 left-0 bottom-0 z-50 w-64 xl:w-72 bg-white/40 backdrop-blur-[35px] border-r border-gray-200/40 dark:bg-slate-900/40 dark:border-white/10 p-6 flex flex-col justify-between overflow-y-auto hidden lg:flex">
+   <aside className={`fixed top-0 left-0 bottom-0 z-50 w-64 xl:w-72 bg-white/40 backdrop-blur-[35px] border-r border-gray-200/40 dark:bg-slate-900/40 dark:border-white/10 p-6 flex flex-col justify-between overflow-y-auto hidden lg:flex transition-transform duration-300 ease-in-out ${pcSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
     <div className="space-y-8 flex flex-col h-full">
       {/* Brand Logo Section */}
-      <div className="flex items-center gap-3.5 px-2">
-        <img src="/logo.png" alt="QAIC Thailand Logo" className="h-10 w-auto" />
-        <div className="flex flex-col">
-          <span className="font-display font-bold text-gray-900 dark:text-white text-base tracking-tight leading-tight">
-            QAIC Thailand
-          </span>
-          <span className="text-[9px] text-gray-500 dark:text-slate-400 font-sans tracking-widest uppercase mt-0.5">
-            Global Certifications
-          </span>
+      <div className="flex items-center justify-between px-2">
+        <div className="flex items-center gap-3.5">
+          <img src="/logo.png" alt="QAIC Thailand Logo" className="h-10 w-auto" />
+          <div className="flex flex-col">
+            <span className="font-display font-bold text-gray-900 dark:text-white text-base tracking-tight leading-tight">
+              QAIC Thailand
+            </span>
+            <span className="text-[9px] text-gray-500 dark:text-slate-400 font-sans tracking-widest uppercase mt-0.5">
+              Global Certifications
+            </span>
+          </div>
         </div>
+        <button 
+          onClick={() => setPcSidebarOpen(false)}
+          className="p-1.5 hover:bg-gray-100/50 dark:hover:bg-slate-800/40 rounded-xl text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer hidden lg:block border-none bg-transparent"
+          title={t('ซ่อนเมนู', 'Hide Menu')}
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
       </div>
 
       {/* Navigation Tabs (Vertical list) */}
@@ -329,6 +341,17 @@ export default function App() {
       </div>
     </div>
   </aside>
+
+  {/* Floating open sidebar button for PC */}
+  {!pcSidebarOpen && (
+    <button 
+      onClick={() => setPcSidebarOpen(true)}
+      className="fixed left-6 top-6 z-[45] p-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-gray-250/80 dark:border-slate-800 rounded-2xl text-gray-700 dark:text-slate-200 hover:text-blue-600 shadow-md cursor-pointer hover:scale-105 active:scale-95 transition-all hidden lg:flex items-center justify-center border-none"
+      title={t('แสดงเมนู', 'Show Menu')}
+    >
+      <ChevronRight className="w-5 h-5" />
+    </button>
+  )}
 
   {/* Mobile Header (Visible on screen sizes < lg) */}
   <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 lg:hidden ${scrolled ? 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-white/10 py-2.5' : 'bg-transparent py-4 md:py-5'}`}>
@@ -515,7 +538,7 @@ export default function App() {
     )}
   </AnimatePresence>
 
-  <div className="lg:pl-64 xl:pl-72 flex flex-col min-h-screen transition-all duration-300">
+  <div className={`flex flex-col min-h-screen transition-all duration-300 ${pcSidebarOpen ? 'lg:pl-64 xl:pl-72' : 'lg:pl-0 xl:pl-0'}`}>
     <main className="pt-16 md:pt-20 lg:pt-8 pb-16 px-6">
  <div className="max-w-7xl mx-auto">
  {/* News Slideshow — top of Home page */}
