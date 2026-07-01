@@ -199,12 +199,20 @@ export default function AboutSection({ settings, isAdminMode = false }: AboutSec
  
  <div className="grid md:grid-cols-2 gap-12 items-start">
  <div className="space-y-6">
- <p className={`leading-relaxed font-sans text-gray-700 dark:text-white`}>
- {t(
- 'บริษัท คิวเอไอซี (ประเทศไทย) จำกัด เป็นหน่วยตรวจประเมินรับรองระบบมาตรฐานสากลที่ได้รับความเชื่อถือให้กับสถานประกอบการ องค์กร และหน่วยงานที่นำข้อกำหนดตามมาตรฐานสากลต่างๆ มาประยุกต์ใช้ โดยได้รับการรับรองระบบงานจาก United Kingdom Accreditation Service (UKAS) เลขที่ 5965',
- 'QAIC (Thailand) Co., Ltd. is a trusted international certification body for organizations implementing global standards. We are accredited by the United Kingdom Accreditation Service (UKAS), Accredited Body No. 5965.'
- )}
- </p>
+  <div className="space-y-4 leading-relaxed font-sans text-gray-700 dark:text-white">
+    <p>
+      {t(
+        'บริษัท คิวเอไอซี (ประเทศไทย) จำกัด เป็นหน่วยตรวจประเมินรับรองระบบมาตรฐานสากลที่ได้รับความเชื่อถือให้กับสถานประกอบการ องค์กร และหน่วยงานที่นำข้อกำหนดตามมาตรฐานสากลต่างๆ มาประยุกต์ใช้',
+        'QAIC (Thailand) Co., Ltd. is a trusted international certification body for organizations implementing global standards.'
+      )}
+    </p>
+    <p>
+      {t(
+        'โดยบริษัทฯ ได้รับการรับรองระบบงานจาก United Kingdom Accreditation Service (UKAS) เลขที่ 5965',
+        'We are accredited by the United Kingdom Accreditation Service (UKAS), Accredited Body No. 5965.'
+      )}
+    </p>
+  </div>
  <div className={`p-6 rounded-3xl flex items-center gap-6 bg-gray-50 dark:bg-slate-900/50 dark:border dark:border-slate-800`}>
  <div className="w-16 h-16 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] rounded-2xl shadow-sm flex items-center justify-center p-3">
  <img src="/logo.png" alt="UKAS" className="w-full h-auto opacity-90" />
@@ -375,4 +383,3 @@ const impartialityPolicies = [
  'มั่นใจในบุคลากร ไม่เลือกปฏิบัติ และให้ความเสมอภาคต่อลูกค้าทุกราย',
  'ไม่มีการทำการตลาดร่วมกับกิจกรรมที่ส่งผลกระทบต่อความเป็นกลาง'
 ];
-
