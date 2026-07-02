@@ -800,7 +800,7 @@ export default function App() {
           exit={{ opacity: 0, scale: 1.02 }}
           transition={{ duration: 0.3 }}
         >
-          <ArticlesSection settings={settings} onTabChange={setActiveTab} />
+          <ArticlesSection settings={settings} onTabChange={setActiveTab} isAdminMode={isAdminModeActive} />
         </motion.div>
       )}
  {activeTab === 'org' && (
