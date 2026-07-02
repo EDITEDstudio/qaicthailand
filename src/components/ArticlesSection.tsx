@@ -521,21 +521,28 @@ export default function ArticlesSection({ settings, onTabChange, isAdminMode = f
       setIsLoading(true);
       try {
         const querySnapshot = await getDocs(collection(db, 'articles'));
-        if (querySnapshot.empty) {
-          // Seed database with defaults
-          for (const art of defaultArticles) {
+        const loaded: Article[] = [];
+        const loadedIds = new Set<string>();
+        
+        querySnapshot.forEach(docSnap => {
+          const data = docSnap.data() as Article;
+          loaded.push(data);
+          loadedIds.add(data.id);
+        });
+
+        // Auto-seed any missing default articles (so new articles sync on reload)
+        let hasNewSeed = false;
+        for (const art of defaultArticles) {
+          if (!loadedIds.has(art.id)) {
             await setDoc(doc(db, 'articles', art.id), art);
+            loaded.push(art);
+            hasNewSeed = true;
           }
-          setArticlesList(defaultArticles);
-        } else {
-          const loaded: Article[] = [];
-          querySnapshot.forEach(docSnap => {
-            loaded.push(docSnap.data() as Article);
-          });
-          // Sort descending
-          loaded.sort((a, b) => b.id.localeCompare(a.id));
-          setArticlesList(loaded);
         }
+
+        // Sort descending by id
+        loaded.sort((a, b) => b.id.localeCompare(a.id));
+        setArticlesList(loaded);
       } catch (err) {
         console.error('Failed to load articles from Firestore:', err);
         setArticlesList(defaultArticles);
