@@ -50,6 +50,7 @@ interface Article {
   contentTH: string[];
   contentEN: string[];
   imageUrl?: string;
+  imagePositionClass?: string;
 }
 
 export default function ArticlesSection({ settings, onTabChange }: ArticlesSectionProps) {
@@ -130,6 +131,7 @@ export default function ArticlesSection({ settings, onTabChange }: ArticlesSecti
     },
     {
       id: 'begin-3',
+      imagePositionClass: 'object-top',
       imageUrl: '/knowledge/iso มีกี่ประเภท.jpg',
       category: 'beginner',
       categoryLabelTH: '1. เริ่มต้นมาตรฐาน (Beginner)',
@@ -574,7 +576,7 @@ export default function ArticlesSection({ settings, onTabChange }: ArticlesSecti
                 <div className={`h-36 bg-gradient-to-br ${article.colorClass} p-6 relative flex flex-col justify-between overflow-hidden text-white`}>
                   {article.imageUrl ? (
                     <>
-                      <img src={article.imageUrl} alt={article.titleEN} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <img src={article.imageUrl} alt={article.titleEN} className={`absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${article.imagePositionClass || 'object-center'}`} />
                       <div className="absolute inset-0 bg-black/45 group-hover:bg-black/50 transition-colors" />
                     </>
                   ) : (
@@ -636,7 +638,7 @@ export default function ArticlesSection({ settings, onTabChange }: ArticlesSecti
               {/* Header Banner */}
               <div className={`relative flex flex-col min-h-44 md:min-h-56 w-full overflow-hidden bg-gradient-to-r ${selectedArticle.colorClass}`}>
                 {selectedArticle.imageUrl ? (
-                  <img src={selectedArticle.imageUrl} alt={selectedArticle.titleEN} className="absolute inset-0 w-full h-full object-cover" />
+                  <img src={selectedArticle.imageUrl} alt={selectedArticle.titleEN} className={`absolute inset-0 w-full h-full object-cover ${selectedArticle.imagePositionClass || 'object-center'}`} />
                 ) : (
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_60%)]" />
                 )}
