@@ -19,6 +19,7 @@ import AuthModal from './components/auth/AuthModal';
 import NewsSection from './components/NewsSection';
 import DownloadsSection from './components/DownloadsSection';
 import CareersSection from './components/CareersSection';
+import ArticlesSection from './components/ArticlesSection';
 import NewsSlider from './components/NewsSlider';
 import { auth, db } from './lib/firebase';
 import { onAuthStateChanged, User, signOut } from 'firebase/auth';
@@ -49,6 +50,7 @@ import {
  Briefcase,
   ChevronLeft,
   ChevronRight,
+  BookOpen,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -60,7 +62,7 @@ export default function App() {
  primaryColor: '#2563eb' // Blue 600
  });
 
- const [activeTab, setActiveTab] = useState<'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote' | 'news' | 'downloads' | 'careers'>('assess');
+ const [activeTab, setActiveTab] = useState<'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote' | 'news' | 'downloads' | 'careers' | 'articles'>('assess');
  const [isAiOpen, setIsAiOpen] = useState(false);
  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
  const [scrolled, setScrolled] = useState(false);
@@ -155,6 +157,7 @@ export default function App() {
    { id: 'standards', labelTH: 'บริการตรวจประเมิน', labelEN: 'Accredited Services', icon: Layers },
    { id: 'training', labelTH: 'การฝึกอบรม', labelEN: 'Training Courses', icon: GraduationCap },
    { id: 'news', labelTH: 'ข่าวสารประชาสัมพันธ์', labelEN: 'News & PR', icon: FileText },
+    { id: 'articles', labelTH: 'บทความความรู้', labelEN: 'Knowledge Hub', icon: BookOpen },
    { id: 'verify', labelTH: 'ตรวจใบรับรอง', labelEN: 'Verify Certificate', icon: ShieldCheck },
    { id: 'downloads', labelTH: 'ดาวน์โหลดแบบฟอร์ม', labelEN: 'Forms & Downloads', icon: Download },
     { id: 'careers', labelTH: 'ร่วมงานกับเรา', labelEN: 'Careers', icon: Briefcase },
@@ -788,6 +791,18 @@ export default function App() {
  <NewsSection settings={settings} isAdminMode={isAdminModeActive} />
  </motion.div>
  )}
+
+      {activeTab === 'articles' && (
+        <motion.div 
+          key="articles"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.02 }}
+          transition={{ duration: 0.3 }}
+        >
+          <ArticlesSection settings={settings} onTabChange={setActiveTab} />
+        </motion.div>
+      )}
  {activeTab === 'org' && (
  <motion.div 
  key="org"
