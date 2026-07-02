@@ -97,6 +97,7 @@ export default function ArticlesSection({ settings, onTabChange }: ArticlesSecti
     },
     {
       id: 'begin-2',
+      imageUrl: '/knowledge/ทำไมต้องมี iso.jpg',
       category: 'beginner',
       categoryLabelTH: '1. เริ่มต้นมาตรฐาน (Beginner)',
       categoryLabelEN: '1. Introduction (Beginner)',
@@ -129,6 +130,7 @@ export default function ArticlesSection({ settings, onTabChange }: ArticlesSecti
     },
     {
       id: 'begin-3',
+      imageUrl: '/knowledge/iso มีกี่ประเภท.jpg',
       category: 'beginner',
       categoryLabelTH: '1. เริ่มต้นมาตรฐาน (Beginner)',
       categoryLabelEN: '1. Introduction (Beginner)',
