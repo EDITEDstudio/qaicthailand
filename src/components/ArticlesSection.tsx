@@ -100,12 +100,13 @@ export default function ArticlesSection({ settings, onTabChange, isAdminMode = f
 
   // Default seeded articles
   const defaultArticles: Article[] = [
+    // 1. Beginner Articles
     {
       id: 'begin-1',
       category: 'beginner',
       categoryLabelTH: '1. เริ่มต้นมาตรฐาน (Beginner)',
       categoryLabelEN: '1. Introduction (Beginner)',
-      titleTH: 'ISO คืออะไร? เข้าใจความหมายและบทบาทของมาตรฐานสากลใน 5นาที',
+      titleTH: 'ISO คืออะไร? เข้าใจความหมายและบทบาทของมาตรฐานสากลใน 5 นาที',
       titleEN: 'What is ISO? Understand International Standards in 5 Minutes',
       excerptTH: 'ทำความเข้าใจจุดเริ่มต้นของคำว่า ISO และความสำคัญในการขับเคลื่อนอุตสาหกรรมในยุคปัจจุบันเพื่อความโปร่งใสและน่าเชื่อถือ',
       excerptEN: 'Discover the history, purpose, and significance of ISO standards in modern industries to build global trust.',
@@ -202,6 +203,314 @@ export default function ArticlesSection({ settings, onTabChange, isAdminMode = f
         '3. ISO 45001 (Occupational Health & Safety): A safety-first framework that prevents workplace hazards, injuries, and illness while building an employee-friendly workspace.',
         '4. ISO/IEC 27001 (Information Security Management): Designed to protect critical data, secure customer privacy, and block cyber leaks. Vital for IT vendors, FinTech, and SaaS providers.',
         'Strategy: Start with ISO 9001 as your base. It establishes a high-level structure (Annex SL) that easily integrates with other codes in an Integrated Management System (IMS) later.'
+      ]
+    },
+    {
+      id: 'begin-4',
+      category: 'beginner',
+      categoryLabelTH: '1. เริ่มต้นมาตรฐาน (Beginner)',
+      categoryLabelEN: '1. Introduction (Beginner)',
+      titleTH: 'ขั้นตอนการขอใบรับรองมาตรฐาน ISO ฉบับเข้าใจง่ายสำหรับผู้เริ่มต้น',
+      titleEN: 'Step-by-Step ISO Certification Roadmap for Beginners',
+      excerptTH: 'สรุป 6 ขั้นตอนหลักในการขอใบเซอร์ตั้งแต่เตรียมตัว ตรวจประเมินเบื้องต้น จนได้รับการอนุมัติรับรองระบบงาน',
+      excerptEN: 'Summary of the 6 key steps from initial gap assessment, audit stages, up to formal certificate approval.',
+      readTime: '8 min read',
+      authorTH: 'ฝ่ายวางแผนรับรองระบบ QAIC',
+      authorEN: 'QAIC Certification Planning',
+      date: '2026-06-28',
+      tagsTH: ['ขั้นตอนขอรับรอง', 'เตรียมความพร้อม'],
+      tagsEN: ['Certification Steps', 'Preparation Guide'],
+      iconName: 'info',
+      colorClass: 'from-blue-700 to-indigo-850',
+      contentTH: [
+        'การเริ่มต้นขอใบรับรอง ISO สำหรับผู้ที่ไม่เคยทำระบบมาก่อน อาจดูซับซ้อน แต่หากแบ่งสัดส่วนการปฏิบัติงานตามมาตรฐานสากล จะพบว่ามีเพียง 6 ขั้นตอนหลักๆ ดังนี้:',
+        '1. ตรวจสอบความพร้อมและวิเคราะห์ประเด็นต่างจากมาตรฐาน (Gap Analysis): ศึกษาว่าปัจจุบันกระบวนการทำงานของเราขาดอะไรบ้างเมื่อเทียบกับเกณฑ์ข้อกำหนดของ ISO มาตรฐานนั้นๆ',
+        '2. ออกแบบและพัฒนาเอกสารระบบงาน (Documentation): เขียนนโยบายคุณภาพ (Quality Policy) คู่มือคุณภาพ (Quality Manual) และระเบียบปฏิบัติงาน (SOP) ในแต่ละกระบวนการทำงาน',
+        '3. นำระบบไปปฏิบัติใช้จริงและเก็บข้อมูลบันทึกหลักฐาน (Implementation & Records): ฝึกอบรมพนักงานให้ทำงานตามที่ระบุไว้ในเอกสาร และเก็บบันทึกร่องรอยการทำงานอย่างน้อย 3 เดือน',
+        '4. ตรวจประเมินภายใน (Internal Audit & Management Review): สุ่มตรวจสอบการทำงานภายในเองเพื่อหาข้อบกพร่อง และจัดประชุมทบทวนฝ่ายบริหารเพื่ออนุมัติข้อมูลระบบก่อนส่งตรวจจริง',
+        '5. ตรวจประเมินโดย Certification Body (CB Audits): แบ่งเป็น Stage 1 (ตรวจความพร้อมของเอกสาร) และ Stage 2 (ตรวจหน้างานจริงเพื่อหาข้อสรุป NC หรือข้อบกพร่อง)',
+        '6. ปิดข้อบกพร่องและรับใบรับรอง (Certification Approval): แก้ไขข้อบกพร่องค้างคาที่ได้รับจากการตรวจ (หากมี) เพื่อส่งเล่มรายงานให้คณะกรรมการพิจารณาอนุมัติออกใบเซอร์อย่างเป็นทางการ'
+      ],
+      contentEN: [
+        'The journey to certification can be broken down into 6 straightforward phases:',
+        '1. Gap Analysis: Evaluate your existing operations against standard requirements to identify what controls are missing.',
+        '2. Documentation: Define quality policies, draft Standard Operating Procedures (SOPs), and build process maps.',
+        '3. Implementation & Evidence Gathering: Educate employees on the new systems, execute operations, and gather at least 3 months of logs.',
+        '4. Internal Audit & Management Review: Conduct internal mock assessments to identify gaps, followed by a formal leadership review.',
+        '5. Certification Audits (CB): Split into Stage 1 (Doc review and readiness check) and Stage 2 (On-site assessment to verify physical evidence and identify NCs).',
+        '6. Corrective Actions & Certification: Address remaining findings (NCs) to secure technical board approval and receive your accredited certificate.'
+      ]
+    },
+
+    // 2. Implementation Articles
+    {
+      id: 'impl-1',
+      category: 'implementation',
+      categoryLabelTH: '2. แนวทางปฏิบัติ (Implementation)',
+      categoryLabelEN: '2. Implementation Guides',
+      titleTH: 'วิธีเตรียมตัวรับ Audit อย่างมืออาชีพ: เทคนิคการจัดการเอกสารและบุคลากร',
+      titleEN: 'How to Prepare for a Professional Audit: Document and Staff Readiness',
+      excerptTH: 'คู่มือการจัดห้องตรวจและฝึกอบรมทีมงานหน้าบ้านให้ตอบคำถามผู้ตรวจประเมินได้อย่างถูกต้องและมั่นใจ',
+      excerptEN: 'Guide on setting up the audit room and coaching your frontline staff to answer auditor inquiries with confidence.',
+      readTime: '6 min read',
+      authorTH: 'ผู้ตรวจประเมินอาวุโส QAIC',
+      authorEN: 'QAIC Senior Lead Auditor',
+      date: '2026-06-29',
+      tagsTH: ['การเตรียมตัว Audit', 'คู่มือพนักงาน'],
+      tagsEN: ['Audit Preparation', 'Staff Coaching'],
+      iconName: 'zap',
+      colorClass: 'from-emerald-500 to-teal-650',
+      contentTH: [
+        'วันตรวจประเมินหน้างานจริง (Stage 2 Audit) คือตัวชี้วัดสำคัญว่าจะผ่านการรับรองหรือไม่ การเตรียมการล่วงหน้าในส่วนของเอกสารและบุคคลเป็นสิ่งจำเป็นอย่างยิ่ง:',
+        '1. จัดระเบียบเอกสารตามหัวข้อตรวจ (Document Organization): เตรียมไฟล์นโยบาย, SOP, รายงานการประชุมทบทวนฝ่ายบริหาร, และประวัติการทำ Internal Audit ล่าสุดให้อยู่ในแฟ้มหรือระบบที่เรียกดูได้ทันทีภายใน 5 นาที เพื่อแสดงถึงความเป็นระบบ',
+        '2. การซักซ้อมพนักงาน (Staff Coaching): พนักงานในไลน์ปฏิบัติงานต้องทราบว่านโยบายคุณภาพของบริษัทคืออะไร และตนเองมีบทบาทสำคัญในการควบคุมข้อบกพร่องอย่างไร เน้นตอบตามกระบวนการทำงานจริงตาม SOP',
+        '3. จัดการสถานที่ตรวจ (Housekeeping): เคลียร์พื้นที่จัดเก็บ ป้ายเตือนความปลอดภัย ถังดับเพลิง จุดทิ้งขยะอันตราย และป้ายบอกทิศทางต่างๆ ให้สะอาด ถูกต้องตามกฎหมายและข้อกำหนด',
+        'เคล็ดลับจากผู้ตรวจประเมิน: หากไม่มั่นใจในคำตอบ หรือหาเอกสารไม่เจอในทันที ให้ตอบตามตรงว่าขอเวลาค้นหาข้อมูลแทนการคาดเดาคำตอบ หรือพยายามปิดบังข้อมูล เพราะความโปร่งใสคือหัวใจหลักของการประเมินระบบงาน'
+      ],
+      contentEN: [
+        "The Stage 2 Audit is the defining moment of your certification journey. Preparing documents and coaching your team can significantly reduce friction:",
+        "1. Structured Document Access: Keep policies, SOPs, management review minutes, and internal audit logs organized. If an auditor requests a document, you should retrieve it within 5 minutes to show control.",
+        "2. Coaching Operational Staff: Employees should know the company's quality policies and understand their role in controlling non-conformities. Instruct them to answer questions based on actual daily SOP tasks.",
+        "3. On-Site Housekeeping: Clean operational spaces, verify that safety signs, fire extinguishers, waste management bins, and safety gear conform to regulations.",
+        "Pro-tip: If you cannot find a requested document immediately, ask for a brief moment to locate it instead of guessing or concealing. Transparency builds trust with lead auditors."
+      ]
+    },
+    {
+      id: 'impl-2',
+      category: 'implementation',
+      categoryLabelTH: '2. แนวทางปฏิบัติ (Implementation)',
+      categoryLabelEN: '2. Implementation Guides',
+      titleTH: 'วิธีทำ Internal Audit ให้ได้ผลลัพธ์จริง: สรุปหลักการตรวจประเมินภายใน',
+      titleEN: 'Internal Auditing Best Practices: How to Drive Real Improvements',
+      excerptTH: 'เรียนรู้กระบวนการจัดทำแผนตรวจภายใน การจัดตั้งคณะผู้ตรวจ และการเขียนใบ CAR เพื่อแก้ไขปัญหาก่อนวันตรวจจริง',
+      excerptEN: 'Learn how to outline audit plans, assign internal audit teams, and issue CAPA/CARs to resolve system errors.',
+      readTime: '7 min read',
+      authorTH: 'ผู้เชี่ยวชาญระบบควบคุมวิชาการ',
+      authorEN: 'QAIC Technical Expert',
+      date: '2026-06-30',
+      tagsTH: ['ตรวจประเมินภายใน', 'เอกสารตรวจสอบ'],
+      tagsEN: ['Internal Audit', 'Checklists'],
+      iconName: 'zap',
+      colorClass: 'from-emerald-600 to-green-600',
+      contentTH: [
+        'Internal Audit หรือการตรวจประเมินภายใน เป็นเงื่อนไขบังคับในระบบ ISO ทุกมาตรฐาน เพื่อให้แน่ใจว่าระบบยังคงมีประสิทธิภาพก่อนการตรวจประเมินภายนอกจริง:',
+        '1. กฎการแต่งตั้งผู้ตรวจประเมินภายใน (Auditor Independence): ผู้ที่จะไปตรวจแผนกใดก็ตาม ต้องไม่มีหน้าที่หลักในการรับผิดชอบแผนกนั้นๆ เพื่อป้องกันการมีอคติ (เช่น บัญชีห้ามตรวจแผนกบัญชีของตัวเอง แต่ตรวจฝ่ายจัดซื้อได้)',
+        '2. การร่างรายการตรวจสอบ (Checklist Generation): อ้างอิงตามเกณฑ์ข้อกำหนดมาตรฐาน (Standard Clause) ผสานกับคู่มือการทำงานจริง (SOP) เพื่อนำมาไล่เช็คว่าพนักงานทำตรงตามเอกสารหรือไม่',
+        '3. การออกใบแจ้งเตือนข้อบกพร่อง (CAR / NCR): หากพบข้อบกพร่องที่ไม่เป็นไปตามข้อกำหนด ให้ทำการออกใบคำขอการแก้ไข (Corrective Action Request) เพื่อให้แผนกที่เกี่ยวข้องทำการวิเคราะห์สาเหตุที่แท้จริง (Root Cause Analysis) และแก้ไข',
+        'สรุป: การตรวจภายในที่ดีไม่ใช่การตรวจเพื่อหาเรื่องตำหนิกัน แต่คือการช่วยเหลือซึ่งกันและกันเพื่อซ่อมแซมระบบที่รั่วไหลก่อนที่ผู้ตรวจภายนอกจริงจะเข้ามาพิจารณาใบรับรอง'
+      ],
+      contentEN: [
+        "Internal Auditing is a mandatory clause in all ISO standards, serving as your system's pre-screening health check:",
+        "1. Auditor Independence: Ensure auditors do not audit their own work or department. A finance team member can audit purchasing, but not the accounting logs.",
+        "2. Checklist Formulation: Build lists based on ISO clauses merged with your actual SOPs. This keeps the audit targeted and evidence-focused.",
+        "3. Issuing CARs/NCRs: When discrepancies are found, issue a Corrective Action Request (CAR). This requires the affected department to perform Root Cause Analysis and implement a permanent fix.",
+        "Takeaway: Internal audits are not meant to criticize staff. They are a collaborative tool to optimize your processes before the external registrar arrives."
+      ]
+    },
+    {
+      id: 'impl-3',
+      category: 'implementation',
+      categoryLabelTH: '2. แนวทางปฏิบัติ (Implementation)',
+      categoryLabelEN: '2. Implementation Guides',
+      titleTH: 'คู่มือการเขียน SOP (Standard Operating Procedure) ให้สอดคล้องตามมาตรฐาน',
+      titleEN: 'Guide to Writing SOPs (Standard Operating Procedures) for ISO Conformance',
+      excerptTH: 'เจาะลึกโครงสร้างการทำเอกสารระเบียบปฏิบัติงาน การกำหนดผู้รับผิดชอบ และการใช้สัญลักษณ์ Flowchart ในองค์กร',
+      excerptEN: 'Detailed layout of writing work instructions, allocating responsibilities, and mapping workflows using standard Flowcharts.',
+      readTime: '6 min read',
+      authorTH: 'วิศวกรวิเคราะห์ระบบงาน QAIC',
+      authorEN: 'QAIC Systems Engineer',
+      date: '2026-07-01',
+      tagsTH: ['เขียน SOP', 'คู่มือคุณภาพ'],
+      tagsEN: ['SOP Writing', 'Quality Manuals'],
+      iconName: 'fileText',
+      colorClass: 'from-teal-600 to-cyan-650',
+      contentTH: [
+        'SOP หรือระเบียบปฏิบัติการมาตรฐาน คือหัวใจของการรันระบบงานให้คงที่และลดความพึ่งพาในตัวบุคคลใดบุคคลหนึ่ง โครงสร้างที่สอดคล้องกับ ISO มีดังนี้:',
+        '1. ข้อมูลการควบคุมเอกสาร (Document Control Header): ประกอบด้วย รหัสเอกสาร, ครั้งที่แก้ไข (Revision), วันที่ประกาศใช้, หน้า และผู้ลงนามอนุมัติ (เป็นเกณฑ์สำคัญใน ISO 9001)',
+        '2. วัตถุประสงค์และขอบเขต (Purpose & Scope): เขียนอธิบายสั้นๆ ว่าเอกสารนี้จัดทำขึ้นเพื่อควบคุมเรื่องอะไร ครอบคลุมตั้งแต่ขั้นตอนใดถึงขั้นตอนใด',
+        '3. แผนผังกระบวนการทำงาน (Process Flowchart): ใช้สัญลักษณ์มาตรฐาน เช่น จุดเริ่มต้น/สิ้นสุด (Oval), กิจกรรม (Rectangle), และการตัดสินใจ (Diamond) เพื่อให้เข้าใจลื่นไหลง่ายที่สุด',
+        '4. รายละเอียดขั้นตอนการทำงานและผู้รับผิดชอบ (Procedure Details): เขียนระบุรายละเอียดงานให้ชัดเจนว่า ใครต้องทำอะไร อย่างไร และมีเอกสารบันทึกร่องรอย (Form) อะไรบ้างประกอบงานนั้นๆ'
+      ],
+      contentEN: [
+        'A Standard Operating Procedure (SOP) forms the backbone of a system-driven business. Here is how to construct ISO-conforming SOPs:',
+        '1. Document Control Header: Every SOP must display a Document ID, Revision Number, Effective Date, Page Number, and approval signatures.',
+        '2. Purpose & Scope: Clearly define the objective of the SOP and outline which departments, operations, or sites it applies to.',
+        '3. Process Flowcharts: Use standard flow shapes (Oval for start/end, Rectangle for actions, Diamond for decisions) to present visual process flows.',
+        '4. Detailed Procedures & Responsibility: Document step-by-step tasks, assign ownership (roles, not names), and list standard forms/logs generated.',
+      ]
+    },
+    {
+      id: 'impl-4',
+      category: 'implementation',
+      categoryLabelTH: '2. แนวทางปฏิบัติ (Implementation)',
+      categoryLabelEN: '2. Implementation Guides',
+      titleTH: 'Pre-Audit Checklist: 10 รายการสิ่งของและบันทึกข้อมูลที่ต้องเช็คด่วนที่สุด',
+      titleEN: 'Pre-Audit Checklist: 10 Critical Records to Review Immediately',
+      excerptTH: 'เช็คลิสต์ด่วนสำหรับเจ้าหน้าที่ควบคุมระบบ (QMR) นำไปตรวจทานเพื่อความสมบูรณ์ 1 สัปดาห์ก่อนวันรับตรวจประเมินจริง',
+      excerptEN: 'A quick checklist for Management Representatives (QMR) to verify logs and training evidence 1 week prior to the CB audit.',
+      readTime: '5 min read',
+      authorTH: 'ผู้ประเมินวิชาการ ISO',
+      authorEN: 'QAIC Technical Assessor',
+      date: '2026-07-01',
+      tagsTH: ['Checklist ก่อนตรวจ', 'QMR เตรียมความพร้อม'],
+      tagsEN: ['Pre-Audit Check', 'QMR Support'],
+      iconName: 'zap',
+      colorClass: 'from-emerald-500 to-green-700',
+      contentTH: [
+        'ก่อนผู้ตรวจภายนอกจริงจะก้าวเข้ามาในสัปดาห์หน้า เจ้าหน้าที่ควบคุมระบบมาตรฐาน (QMR) ควรนำ 10 รายการเช็คลิสต์นี้ไปตรวจสอบให้แน่ใจว่าไม่มีข้อตกหล่น:',
+        '1. ทะเบียนคุมเอกสารและฉบับปรับปรุง (Master Document Control List) ได้รับการอัปเดตตรงตามหน้างานจริง',
+        '2. รายงานการประชุมทบทวนฝ่ายบริหาร (Management Review Minutes) มีหลักฐานครบถ้วน มีลายเซ็นกรรมการและผู้เกี่ยวข้อง',
+        '3. รายงานข้อบกพร่องและการปิด CAR (Corrective Action Request Log) ทั้งหมดที่เกิดจากรอบตรวจประเมินภายในได้รับการปิดเรียบร้อย',
+        '4. ประวัติการฝึกอบรมพนักงานและประวัติการประเมินผลพนักงานใหม่ได้รับการบันทึกข้อมูลและรวบรวมอย่างเป็นระบบ',
+        '5. ข้อมูลการประเมินคู่ค้าภายนอก (Supplier Evaluation Records) ของแผนกจัดซื้อได้รับการบันทึกครบถ้วนตามหลักเกณฑ์',
+        '6. ข้อมูลการวัดความพึงพอใจของลูกค้า (Customer Satisfaction Analysis) มีการรวบรวมและวิเคราะห์สถิติ',
+        '7. ประวัติการซ่อมบำรุงเครื่องจักรและการสอบเทียบเครื่องมือวัด (Calibration Records) ที่สำคัญได้รับการติดป้ายระบุสถานะถูกต้อง',
+        '8. แผนบริหารความเสี่ยงและโอกาสทางธุรกิจ (Risk & Opportunity Matrix) มีการทบทวนผลสัมฤทธิ์อย่างเป็นรูปธรรม',
+        '9. การกำหนดค่าเป้าหมายดัชนีชี้วัดความสำเร็จ (KPI Target Review) ของแต่ละแผนกได้รับการสรุปประเมิน',
+        '10. สภาพความสะอาดและความปลอดภัยขั้นพื้นฐานของสถานที่หน้างานได้รับการเคลียร์อุปสรรคทางเดินและการจัดเก็บแล้ว'
+      ],
+      contentEN: [
+        "Ensure the following 10 items are ready and verified 1 week before the audit starts:",
+        "1. Master Document Control List: Check that all active documents are at their latest revision status.",
+        "2. Management Review Minutes: Verify signed leadership commitment, objective outcomes, and strategic action plans.",
+        "3. Corrective Action Log (CAR/CAPA): Ensure all internal audit findings have closed corrective actions with verification evidence.",
+        "4. Staff Training Records: Compile competency matrices, training attendances, and evaluations.",
+        "5. Supplier Evaluations: Confirm annual performance evaluations of critical external vendors are fully documented.",
+        "6. Customer Feedback & Satisfaction Surveys: Gather statistical feedback summaries and complaint logs.",
+        "7. Equipment Calibration Logs: Ensure key measuring instruments show up-to-date calibration stamps.",
+        "8. Risk & Opportunity Matrix: Verify that business risk mitigations show active review logs.",
+        "9. KPI Performance Logs: Compile progress metrics for all department goals.",
+        "10. Site Walk-through: Check walkways, emergency exit clearances, fire extinguisher locations, and waste handling areas."
+      ]
+    },
+
+    // 3. Industry Articles
+    {
+      id: 'ind-1',
+      category: 'industry',
+      categoryLabelTH: '3. เจาะลึกอุตสาหกรรม (Industry)',
+      categoryLabelEN: '3. Industry Insights',
+      titleTH: 'ISO 13485 & ISO 9001 มาตรฐานสำคัญสำหรับกลุ่มโรงพยาบาลและเครื่องมือแพทย์',
+      titleEN: 'ISO 13485 & 9001: Critical Standards for Hospitals and Medical Devices',
+      excerptTH: 'วิเคราะห์การประยุกต์ใช้ข้อกำหนดควบคุมคุณภาพเพื่อความปลอดภัยของผู้ป่วยและการจัดเก็บอุปกรณ์เครื่องมืออย่างถูกสุขลักษณะ',
+      excerptEN: 'An analysis of quality control implementation for patient safety, medical supply chain integrity, and clean rooms.',
+      readTime: '8 min read',
+      authorTH: 'ผู้ตรวจประเมินชีวการแพทย์ QAIC',
+      authorEN: 'QAIC Medical Systems Auditor',
+      date: '2026-07-01',
+      tagsTH: ['โรงพยาบาล', 'เครื่องมือแพทย์'],
+      tagsEN: ['Hospitals', 'Medical Devices'],
+      iconName: 'building',
+      colorClass: 'from-indigo-650 to-blue-800',
+      contentTH: [
+        'ในภาคส่วนการดูแลสุขภาพ โรงพยาบาล และผู้ผลิตเครื่องมือแพทย์ คุณภาพของระบบไม่ใช่เพียงแค่เรื่องการลดต้นทุน แต่ส่งผลโดยตรงต่อชีวิตและความปลอดภัยของมนุษย์:',
+        '1. ISO 9001 ในโรงพยาบาล (Healthcare Quality): ประยุกต์ใช้เพื่อจัดระเบียบขั้นตอนการรับผู้ป่วย, ระบบคัดกรอง (Triage), การจัดเก็บประวัติบันทึกทางการแพทย์อย่างเป็นระบบ, และระบบการจ่ายยาเพื่อป้องกันข้อผิดพลาด',
+        '2. ISO 13485 สำหรับผู้ผลิตเครื่องมือแพทย์ (Medical Devices QMS): เป็นมาตรฐานเฉพาะด้านเทคนิคที่เข้มงวด มุ่งเน้นการออกแบบชิ้นงาน, การบริหารความเสี่ยงด้านอุปกรณ์แพทย์ (ISO 14971), และการจัดห้องสะอาด (Clean Room Control)',
+        '3. ระบบควบคุมการฆ่าเชื้อและการสอบเทียบเครื่องมือวัดทางแพทย์: เครื่องมือแพทย์ทุกชิ้นที่ส่งผลต่อการตรวจวินิจฉัยโรค ต้องได้รับการสอบเทียบ (Calibration) อย่างเที่ยงตรงเพื่อความแม่นยำสูง',
+        'ข้อเสนอแนะ: การทำมาตรฐานในกลุ่มสุขภาพควรเน้นการฝึกอบรมทัศนคติของบุคลากรให้ตระหนักถึงความปลอดภัยเชิงรุก (Risk-based thinking) เพื่อป้องกันความเสี่ยงก่อนที่จะเกิดความผิดพลาดจริงกับผู้ป่วย'
+      ],
+      contentEN: [
+        "In the healthcare and medical devices sector, quality systems directly impact patient safety and clinical outcomes:",
+        "1. ISO 9001 in Healthcare: Focuses on patient admission workflows, medical records encryption, and medication dispensing safety loops.",
+        "2. ISO 13485 for Medical Device Manufacturers: A highly specialized standard emphasizing product design control, medical risk management (ISO 14971), cleanroom particle control, and sterile packaging.",
+        "3. Calibration of Clinical Tools: Healthcare diagnostic instruments must demonstrate traceable calibration history to assure accuracy.",
+        "Recommendation: Implement proactive risk-based thinking (FMEA) across departments, treating quality as a safety protocol rather than a paper exercise."
+      ]
+    },
+    {
+      id: 'ind-2',
+      category: 'industry',
+      categoryLabelTH: '3. เจาะลึกอุตสาหกรรม (Industry)',
+      categoryLabelEN: '3. Industry Insights',
+      titleTH: 'ISO 14001 และ ISO 45001 หัวใจหลักในการขับเคลื่อนโรงงานอุตสาหกรรมยุคใหม่',
+      titleEN: 'ISO 14001 & 45001: The Backbone of Modern Manufacturing Factories',
+      excerptTH: 'แนวทางการบริหารจัดการมลพิษสิ่งแวดล้อม และระบบป้องกันอุบัติเหตุในสายการผลิตเพื่อเพิ่มประสิทธิภาพการทำงานและสอดคล้องตามกฎหมาย',
+      excerptEN: 'Strategies for environmental waste management and accident prevention in production lines to ensure legal compliance.',
+      readTime: '7 min read',
+      authorTH: 'ผู้ประเมินระบบสิ่งแวดล้อมอาวุโส',
+      authorEN: 'QAIC Senior Environmental Auditor',
+      date: '2026-07-01',
+      tagsTH: ['โรงงานและสิ่งแวดล้อม', 'อาชีวอนามัย'],
+      tagsEN: ['Factory & Environment', 'Safety First'],
+      iconName: 'building',
+      colorClass: 'from-indigo-700 to-indigo-900',
+      contentTH: [
+        'โรงงานอุตสาหกรรมคือจุดที่มีกระบวนการทำงานซับซ้อน ปล่อยของเสีย และมีความเสี่ยงด้านอุบัติภัยสูงที่สุด การประยุกต์ใช้ ISO สองมาตรฐานร่วมกัน (Integrated Management System) จึงเป็นแนวทางมาตรฐานทั่วโลก:',
+        '1. ISO 14001 (Environmental Management): ควบคุมการปล่อยน้ำเสีย, มลพิษทางอากาศ, การจำแนกประเภทขยะอันตราย, และประหยัดการใช้พลังงานในโรงงาน เพื่อสอดคล้องกับมาตรการกฎหมายกระทรวงอุตสาหกรรมและกระทรวงทรัพยากรฯ',
+        '2. ISO 45001 (OH&S): การประเมินความเสี่ยงด้านความปลอดภัย (Job Safety Analysis - JSA), การทำความคุ้นเคยกับการฝึกซ้อมหนีไฟ, ระบบ Lockout Tagout (LOTO) ในงานซ่อมบำรุงเครื่องจักร, และการใช้ชุดป้องกันอันตรายส่วนบุคคล (PPE)',
+        '3. การตรวจสอบกฎหมายเกี่ยวข้อง (Legal Compliance Registry): โรงงานต้องจัดทำระบบคอยติดตามกฎหมายใหม่ๆ ด้านสิ่งแวดล้อมและความปลอดภัย และประเมินตนเองอย่างน้อยปีละ 1 ครั้ง',
+        'สรุป: การรักษาระบบร่วมกันนี้ ช่วยลดโอกาสที่โรงงานจะโดนร้องเรียนจากชุมชนภายนอก ลดเบี้ยประกันอุบัติภัยลง และลดอุบัติเหตุร้ายแรงในสายการผลิตได้เกือบ 100%'
+      ],
+      contentEN: [
+        "Manufacturing sites face the highest operational hazards, emissions risks, and regulatory oversight. Integrating these two core standards is global best practice:",
+        "1. ISO 14001: Controls wastewater quality, air emissions, chemical storage, hazardous waste disposal, and energy consumption. Essential for compliance with industrial and green regulations.",
+        "2. ISO 45001: Focuses on Job Safety Analysis (JSA), incident reports, Lockout-Tagout (LOTO) machinery protocols, and Personal Protective Equipment (PPE) compliance.",
+        "3. Legal Registry Maintenance: Factories must document applicable environmental/safety laws and perform compliance evaluations at least annually.",
+        "Summary: Dual implementation shields factories from environmental litigation, lowers insurance premiums, and virtually eliminates workplace fatalities."
+      ]
+    },
+    {
+      id: 'ind-3',
+      category: 'industry',
+      categoryLabelTH: '3. เจาะลึกอุตสาหกรรม (Industry)',
+      categoryLabelEN: '3. Industry Insights',
+      titleTH: 'GHPs & HACCP มาตรฐานการจัดการความปลอดภัยและสุขอนามัยสำหรับธุรกิจร้านอาหาร',
+      titleEN: 'GHPs & HACCP: Food Safety and Sanitation Standards for Restaurants',
+      excerptTH: 'แนวทางการจัดระบบการผลิตอาหารตั้งแต่การควบคุมวัตถุดิบ การจัดเก็บ การเตรียมครัว และการป้องกันสิ่งปนเปื้อนในอาหาร',
+      excerptEN: 'Guidelines for managing food production chains from raw materials, safe storage, kitchen layouts, to cross-contamination prevention.',
+      readTime: '6 min read',
+      authorTH: 'ผู้ตรวจประเมินอุตสาหกรรมอาหาร',
+      authorEN: 'QAIC Food Chain Specialist',
+      date: '2026-07-02',
+      tagsTH: ['ร้านอาหารและเบเกอรี่', 'ความปลอดภัยอาหาร'],
+      tagsEN: ['Food & Beverage', 'Food Safety'],
+      iconName: 'zap',
+      colorClass: 'from-blue-800 to-indigo-950',
+      contentTH: [
+        'สำหรับร้านอาหาร โรงแรม คลังจัดเก็บ และผู้ผลิตเบเกอรี่ ความปลอดภัยของอาหารไม่มีคำว่าอะลุ่มอล่วย มาตรฐาน GHPs (Good Hygiene Practices) และ HACCP คือหัวใจ:',
+        '1. การแยกพื้นที่เก็บวัตถุดิบดิบและอาหารพร้อมทาน (Cross-contamination Prevention): ควบคุมการไหลเวียนของงานในครัว (Work Flow Layout) ห้ามพนักงานใช้เขียงหรือมีดหั่นเนื้อดิบและผักสลัดปะปนกัน',
+        '2. การควบคุมอุณหภูมิ (Cold Chain Control): ตู้แช่เย็นต้องคงอุณหภูมิ 0-4 องศาเซลเซียส และช่องแช่แข็งต้องอยู่ต่ำกว่า -18 องศาเซลเซียส โดยต้องมีบันทึกอุณหภูมิเช้า-เย็นทุกวัน',
+        '3. การวิเคราะห์จุดวิกฤตที่ต้องควบคุม (HACCP CCPs): ระบุและหามาตรการควบคุมจุดวิกฤต เช่น อุณหภูมิในขั้นความร้อนที่ฆ่าเชื้อโรคของเนื้อสัตว์ ต้องสูงเกิน 74 องศาเซลเซียส เพื่อความปลอดภัยสูงสุดของผู้บริโภค',
+        'สรุป: การได้รับรองมาตรฐานระบบนี้ ช่วยให้ร้านอาหารของคุณสามารถขยายสาขาแฟรนไชส์ หรือยื่นเสนอเป็นผู้จัดทำอาหารส่งออกสายการบินหรือห้างค้าปลีกชั้นนำได้อย่างน่าเชื่อถือ'
+      ],
+      contentEN: [
+        "Food safety compliance is the prerequisite for franchising, supplying to hypermarkets, or securing airline catering contracts.",
+        "1. Cross-Contamination Prevention: Maintain strict separation of raw ingredients from ready-to-eat products. Optimize kitchen workflow layouts (one-way flow) to prevent raw juice spills.",
+        "2. Temperature Control (Cold Chain): Refrigerator temps must run at 0-4°C, and freezers at -18°C or below, backed by daily logs.",
+        "3. Critical Control Points (CCP) under HACCP: Identify and monitor key limits, such as heating temperatures of meats (min 74°C) to ensure biological hazards are eliminated.",
+        "Summary: Food safety compliance is the prerequisite for franchising, supplying to hypermarkets, or securing airline catering contracts."
+      ]
+    },
+    {
+      id: 'ind-4',
+      category: 'industry',
+      categoryLabelTH: '3. เจาะลึกอุตสาหกรรม (Industry)',
+      categoryLabelEN: '3. Industry Insights',
+      titleTH: 'ISO/IEC 27001 มาตรฐานการปกป้องข้อมูลและความปลอดภัยทางไซเบอร์สำหรับบริษัทไอที',
+      titleEN: 'ISO/IEC 27001: Data Protection and Cybersecurity for IT Companies',
+      excerptTH: 'วิเคราะห์หลักการควบคุมความปลอดภัยข้อมูลสารสนเทศ แผนกู้คืนระบบเมื่อเกิดภัยพิบัติ และความสำคัญในการรักษาข้อมูลลูกค้า',
+      excerptEN: 'Analyze information security controls, disaster recovery plans, and the importance of safeguarding user data.',
+      readTime: '8 min read',
+      authorTH: 'ผู้ตรวจประเมินระบบเทคโนโลยีสารสนเทศอาวุโส',
+      authorEN: 'QAIC Senior IT Assessor',
+      date: '2026-07-02',
+      tagsTH: ['บริษัท IT และเทค', 'ความปลอดภัยข้อมูลไซเบอร์'],
+      tagsEN: ['IT & Tech Companies', 'Information Security'],
+      iconName: 'building',
+      colorClass: 'from-blue-900 to-indigo-950',
+      contentTH: [
+        'ในยุคที่ข้อมูลมีค่ามากกว่าน้ำมันดิบ และภัยคุกคามทางไซเบอร์เกิดขึ้นทุกนาที บริษัทซอฟต์แวร์, SaaS, คลาวด์, และบริษัทเทคจำจำเป็นต้องควบคุมระบบความปลอดภัยตามมาตรฐาน ISO 27001:',
+        '1. การประเมินความเสี่ยงด้านสินทรัพย์สารสนเทศ (Asset Risk Assessment): ค้นหาว่าอุปกรณ์ เซิร์ฟเวอร์ ซอร์สโค้ด และข้อมูลส่วนบุคคล (PDPA) ของลูกค้าชิ้นไหนมีความเสี่ยง และกำหนดมาตรการควบคุม (Annex A Controls)',
+        '2. การควบคุมการเข้าถึงระบบแบบเข้มงวด (Access Control Policy): จำกัดสิทธิ์การเข้าถึงข้อมูลตามความจำเป็น (Need-to-Know basis) และเปิดใช้งานการยืนยันตัวตนแบบหลายปัจจัย (MFA)',
+        '3. แผนกู้คืนความเสียหายและดำเนินธุรกิจต่อเนื่อง (Disaster Recovery & BCP): ต้องมีระบบสำรองข้อมูล (Backup) และจำลองเหตุการณ์เซิร์ฟเวอร์หลักพัง หรือโดน Ransomware ว่าจะสามารถกู้ข้อมูลกลับมาให้บริการต่อได้ในกี่ชั่วโมง',
+        'ความสำคัญต่อการขายงาน: ปัจจุบันบริษัทยักษ์ใหญ่และธนาคารแทบทุกแห่ง จะปฏิเสธการเชื่อมต่อ API หรือซื้อระบบจากบริษัทซอฟต์แวร์ที่ยังไม่ผ่าน ISO 27001 ดังนั้นนี่จึงเป็นเสมือนกุญแจสำคัญในการเปิดดีลโปรเจกต์ระดับองค์กรใหญ่'
+      ],
+      contentEN: [
+        "For software, cloud infrastructure, and SaaS companies, securing customer data and preventing server breaches is a B2B requirement:",
+        "1. Information Asset Risk Assessment: Catalog databases, software source codes, and personal data (PDPA), establishing Annex A controls.",
+        "2. Access Control Policies: Restrict data access strictly on a 'need-to-know' basis. Enforce multi-factor authentication (MFA) across servers.",
+        "3. Disaster Recovery (DR) & BCP: Implement auto-backup routines and run simulations of server outages or ransomware locks to define Recovery Time Objectives (RTO).",
+        "Enterprise Sales Advantage: Enterprises and banking networks refuse API integrations or SaaS purchases from vendors lacking ISO 27001. It is a critical sales enabler for B2B tech."
       ]
     }
   ];
