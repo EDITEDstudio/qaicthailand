@@ -49,6 +49,7 @@ interface Article {
   colorClass: string;
   contentTH: string[];
   contentEN: string[];
+  imageUrl?: string;
 }
 
 export default function ArticlesSection({ settings, onTabChange }: ArticlesSectionProps) {
@@ -63,6 +64,7 @@ export default function ArticlesSection({ settings, onTabChange }: ArticlesSecti
     // 1. Beginner Articles
     {
       id: 'begin-1',
+      imageUrl: '/knowledge/ISO คืออะไร.jpg',
       category: 'beginner',
       categoryLabelTH: '1. เริ่มต้นมาตรฐาน (Beginner)',
       categoryLabelEN: '1. Introduction (Beginner)',
@@ -568,8 +570,15 @@ export default function ArticlesSection({ settings, onTabChange }: ArticlesSecti
               >
                 {/* Image Placeholder Banner */}
                 <div className={`h-36 bg-gradient-to-br ${article.colorClass} p-6 relative flex flex-col justify-between overflow-hidden text-white`}>
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_60%)]" />
-                  <span className="self-start px-2 py-0.5 bg-white/20 backdrop-blur-md rounded-lg text-[9px] font-bold uppercase tracking-wider">
+                  {article.imageUrl ? (
+                    <>
+                      <img src={article.imageUrl} alt={article.titleEN} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <div className="absolute inset-0 bg-black/45 group-hover:bg-black/50 transition-colors" />
+                    </>
+                  ) : (
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_60%)]" />
+                  )}
+                  <span className="self-start px-2 py-0.5 bg-white/20 backdrop-blur-md rounded-lg text-[9px] font-bold uppercase tracking-wider z-10">
                     {t(article.categoryLabelTH, article.categoryLabelEN)}
                   </span>
                   <div className="flex items-end justify-between z-10">
@@ -628,9 +637,15 @@ export default function ArticlesSection({ settings, onTabChange }: ArticlesSecti
             >
               {/* Header Banner */}
               <div className={`p-8 bg-gradient-to-r ${selectedArticle.colorClass} text-white relative flex flex-col justify-end min-h-44`}>
+                {selectedArticle.imageUrl && (
+                  <>
+                    <img src={selectedArticle.imageUrl} alt={selectedArticle.titleEN} className="absolute inset-0 w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/50" />
+                  </>
+                )}
                 <button
                   onClick={() => setSelectedArticle(null)}
-                  className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/30 backdrop-blur-md border border-white/20 text-white rounded-full transition-all cursor-pointer"
+                  className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/30 backdrop-blur-md border border-white/20 text-white rounded-full transition-all cursor-pointer z-20"
                 >
                   <X className="w-5 h-5" />
                 </button>
