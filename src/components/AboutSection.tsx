@@ -319,6 +319,91 @@ export default function AboutSection({ settings, isAdminMode = false }: AboutSec
  </div>
  </section>
 
+  {/* Sample Certificates Section */}
+  <section className="space-y-8 px-4 md:px-8 border-t border-gray-150 dark:border-slate-800 pt-16 mt-16">
+    <div className="text-center space-y-3">
+      <h3 className="text-2xl font-display font-bold text-gray-900 dark:text-white">
+        {t('ตัวอย่างใบรับรองมาตรฐานสากล', 'Sample ISO Certificate Specimens')}
+      </h3>
+      <p className="text-xs text-gray-600 dark:text-slate-400 max-w-xl mx-auto font-sans leading-relaxed">
+        {t(
+          'ตัวอย่างเอกสารใบรับรองมาตรฐาน ISO ที่ออกโดย QAIC Thailand ทั้งฉบับภาษาไทยและภาษาอังกฤษ ภายใต้การรับรองระบบงานจาก UKAS',
+          'Sample ISO certificate templates issued by QAIC Thailand in both Thai and English formats under UKAS accreditation.'
+        )}
+      </p>
+    </div>
+
+    <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+      {/* Thai Version */}
+      <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-[2rem] p-6 shadow-sm flex flex-col items-center space-y-4 hover:shadow-md transition-all relative overflow-hidden group">
+        <h4 className="font-bold text-sm text-gray-900 dark:text-white">
+          {t('ฉบับภาษาไทย (Thai Version)', 'Thai Version Template')}
+        </h4>
+        
+        {/* Certificate Container with Watermark */}
+        <div 
+          className="relative w-full max-w-[340px] aspect-[1/1.414] rounded-2xl overflow-hidden shadow-md bg-gray-50 border border-gray-150 dark:border-slate-800 select-none cursor-not-allowed group-hover:shadow-lg transition-shadow"
+          onContextMenu={(e) => e.preventDefault()}
+        >
+          {/* Main Image (Blocked right click and drag) */}
+          <img 
+            src="/certificateTH.jpg" 
+            alt="Thai ISO Certificate Template" 
+            className="w-full h-full object-cover pointer-events-none select-none"
+            draggable="false"
+            onContextMenu={(e) => e.preventDefault()}
+          />
+          
+          {/* Repeated Watermark Grid Overlay */}
+          <div className="absolute inset-0 grid grid-cols-3 grid-rows-4 p-4 pointer-events-none select-none overflow-hidden z-10">
+            {Array.from({ length: 12 }).map((_, idx) => (
+              <div 
+                key={idx} 
+                className="flex items-center justify-center text-red-600/18 dark:text-red-500/12 font-display font-extrabold text-[11px] md:text-xs tracking-wider uppercase transform -rotate-[35deg] select-none pointer-events-none whitespace-nowrap"
+              >
+                QAIC SAMPLE
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* English Version */}
+      <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-[2rem] p-6 shadow-sm flex flex-col items-center space-y-4 hover:shadow-md transition-all relative overflow-hidden group">
+        <h4 className="font-bold text-sm text-gray-900 dark:text-white">
+          {t('ฉบับภาษาอังกฤษ (English Version)', 'English Version Template')}
+        </h4>
+        
+        {/* Certificate Container with Watermark */}
+        <div 
+          className="relative w-full max-w-[340px] aspect-[1/1.414] rounded-2xl overflow-hidden shadow-md bg-gray-50 border border-gray-150 dark:border-slate-800 select-none cursor-not-allowed group-hover:shadow-lg transition-shadow"
+          onContextMenu={(e) => e.preventDefault()}
+        >
+          {/* Main Image (Blocked right click and drag) */}
+          <img 
+            src="/CertificateEng.jpg" 
+            alt="English ISO Certificate Template" 
+            className="w-full h-full object-cover pointer-events-none select-none"
+            draggable="false"
+            onContextMenu={(e) => e.preventDefault()}
+          />
+          
+          {/* Repeated Watermark Grid Overlay */}
+          <div className="absolute inset-0 grid grid-cols-3 grid-rows-4 p-4 pointer-events-none select-none overflow-hidden z-10">
+            {Array.from({ length: 12 }).map((_, idx) => (
+              <div 
+                key={idx} 
+                className="flex items-center justify-center text-red-600/18 dark:text-red-500/12 font-display font-extrabold text-[11px] md:text-xs tracking-wider uppercase transform -rotate-[35deg] select-none pointer-events-none whitespace-nowrap"
+              >
+                QAIC SAMPLE
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
  {/* Goals & Impartiality */}
  <section className="space-y-16 px-4 md:px-8">
  <div className="grid md:grid-cols-2 gap-8">
