@@ -10,6 +10,31 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const slides = [
   {
+    src: '/news-slide/มกษ.4403.png',
+    alt: 'มกษ.4403 การปฏิบัติที่ดีสำหรับโรงสีข้าว',
+    label: 'มกษ.4403',
+  },
+  {
+    src: '/news-slide/มกษ.6401.jpeg',
+    alt: 'มกษ.6401 การปฏิบัติที่ดีสำหรับศูนย์รวบรวมน้ำนมดิบ',
+    label: 'มกษ.6401',
+  },
+  {
+    src: '/news-slide/มกษ.9023.png',
+    alt: 'มกษ.9023 หลักเกณฑ์ทั่วไปเกี่ยวกับสุขลักษณะอาหาร',
+    label: 'มกษ.9023',
+  },
+  {
+    src: '/news-slide/มกษ.9046.jpeg',
+    alt: 'มกษ.9046 การปฏิบัติสำหรับการผลิตทุเรียนแช่เยือกแข็ง',
+    label: 'มกษ.9046',
+  },
+  {
+    src: '/news-slide/มกษ.9047.jpeg',
+    alt: 'มกษ.9047 การปฏิบัติที่ดีสำหรับโรงรวบรวมผักและผลไม้สด',
+    label: 'มกษ.9047',
+  },
+  {
     src: '/news-slide/General Principles of Food Hygiene- Good Hygiene Practices (GHPs) and the Hazard Analysis and Critical Control Point (HACCP) System (GHPs:HACCP) (CXC1-1969), Revised in 2022.jpeg',
     alt: 'GHP/HACCP - General Principles of Food Hygiene (CXC1-1969)',
     label: 'GHP / HACCP',
