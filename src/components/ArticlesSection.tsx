@@ -583,10 +583,6 @@ export default function ArticlesSection({ settings, onTabChange }: ArticlesSecti
                   </span>
                   <div className="flex items-end justify-between z-10">
                     <Icon className="w-10 h-10 opacity-80 stroke-1" />
-                    <span className="flex items-center gap-1 text-[9px] opacity-90">
-                      <Clock className="w-3.5 h-3.5" />
-                      {article.readTime}
-                    </span>
                   </div>
                 </div>
 
@@ -636,50 +632,47 @@ export default function ArticlesSection({ settings, onTabChange }: ArticlesSecti
               className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 w-full max-w-3xl max-h-[85vh] rounded-[2.5rem] overflow-hidden flex flex-col shadow-2xl relative"
             >
               {/* Header Banner */}
-              <div className={`p-8 bg-gradient-to-r ${selectedArticle.colorClass} text-white relative flex flex-col justify-end min-h-44`}>
-                {selectedArticle.imageUrl && (
-                  <>
-                    <img src={selectedArticle.imageUrl} alt={selectedArticle.titleEN} className="absolute inset-0 w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/50" />
-                  </>
+              <div className={`relative flex flex-col min-h-44 md:min-h-56 w-full overflow-hidden bg-gradient-to-r ${selectedArticle.colorClass}`}>
+                {selectedArticle.imageUrl ? (
+                  <img src={selectedArticle.imageUrl} alt={selectedArticle.titleEN} className="absolute inset-0 w-full h-full object-cover" />
+                ) : (
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_60%)]" />
                 )}
                 <button
                   onClick={() => setSelectedArticle(null)}
-                  className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/30 backdrop-blur-md border border-white/20 text-white rounded-full transition-all cursor-pointer z-20"
+                  className="absolute top-6 right-6 p-2 bg-white/20 hover:bg-white/40 backdrop-blur-md border border-white/30 text-white rounded-full transition-all cursor-pointer z-20"
                 >
                   <X className="w-5 h-5" />
                 </button>
-                <div className="space-y-3 z-10 max-w-2xl">
-                  <span className="px-2.5 py-0.5 bg-white/20 backdrop-blur-md rounded-lg text-[9px] font-bold uppercase tracking-wider inline-block">
-                    {t(selectedArticle.categoryLabelTH, selectedArticle.categoryLabelEN)}
-                  </span>
-                  <h2 className="text-base md:text-xl font-bold leading-snug">
-                    {t(selectedArticle.titleTH, selectedArticle.titleEN)}
-                  </h2>
-                  <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[10px] opacity-90 font-sans">
-                    <span className="flex items-center gap-1">
-                      <User className="w-3.5 h-3.5" />
-                      {t(selectedArticle.authorTH, selectedArticle.authorEN)}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5" />
-                      {selectedArticle.date}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      {selectedArticle.readTime}
-                    </span>
-                  </div>
-                </div>
               </div>
 
               {/* Scrollable Content */}
               <div className="flex-1 overflow-y-auto p-8 md:p-12 space-y-6 text-sm text-gray-700 dark:text-slate-200 leading-relaxed font-sans text-left">
+                <div className="border-b border-gray-150 dark:border-slate-800 pb-6 mb-6">
+                  <span className="px-2.5 py-0.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-lg text-[10px] font-bold uppercase tracking-wider inline-block mb-3">
+                    {t(selectedArticle.categoryLabelTH, selectedArticle.categoryLabelEN)}
+                  </span>
+                  <h2 className="text-xl md:text-2xl font-display font-bold text-gray-900 dark:text-white leading-snug">
+                    {t(selectedArticle.titleTH, selectedArticle.titleEN)}
+                  </h2>
+                </div>
                 {t(selectedArticle.contentTH, selectedArticle.contentEN).map((para, idx) => (
                   <p key={idx} className="indent-6">
                     {para}
                   </p>
                 ))}
+
+                {/* Author and Date Footer */}
+                <div className="pt-6 border-t border-gray-150 dark:border-slate-850 flex items-center justify-between text-[11px] text-gray-500 dark:text-slate-450 font-sans mt-8">
+                  <span className="flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5 text-gray-400" />
+                    {t('เขียนโดย:', 'Written by:')} {t(selectedArticle.authorTH, selectedArticle.authorEN)}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                    {t('เผยแพร่เมื่อ:', 'Published:')} {selectedArticle.date}
+                  </span>
+                </div>
 
                 {/* Call to Action Inside Article */}
                 <div className="mt-8 p-6 bg-blue-50/50 dark:bg-slate-850/50 rounded-3xl border border-blue-100/50 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
