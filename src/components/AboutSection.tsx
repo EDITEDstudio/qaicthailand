@@ -319,6 +319,47 @@ export default function AboutSection({ settings, isAdminMode = false }: AboutSec
  </div>
  </section>
 
+
+ {/* Goals & Impartiality */}
+ <section className="space-y-16 px-4 md:px-8">
+ <div className="grid md:grid-cols-2 gap-8">
+ {/* Our Goals */}
+ <div className={`rounded-[2.5rem] p-8 md:p-12 space-y-8 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] relative overflow-hidden`}>
+ <div className="flex items-center gap-3">
+ <div className="p-3 bg-blue-50 dark:bg-slate-900 rounded-xl text-blue-600 dark:text-blue-400">
+ <Target className="w-6 h-6" />
+ </div>
+ <h3 className={`font-display font-bold text-xl text-gray-900 dark:text-white`}>{t('เป้าหมายของเรา', 'Our Strategic Goals')}</h3>
+ </div>
+ <div className="space-y-6">
+ {goals.map((goal, i) => (
+ <div key={i} className="flex gap-4">
+ <CheckCircle2 className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+ <p className={`text-sm leading-relaxed font-sans text-gray-800 dark:text-white`}>{goal}</p>
+ </div>
+ ))}
+ </div>
+ </div>
+
+ {/* Impartiality Policy */}
+ <div className={`rounded-[2.5rem] p-8 md:p-12 space-y-8 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] relative overflow-hidden`}>
+ <div className="flex items-center gap-3">
+ <div className="p-3 bg-amber-50 dark:bg-slate-900 rounded-xl text-amber-600 dark:text-amber-400">
+ <Scale className="w-6 h-6" />
+ </div>
+ <h3 className={`font-display font-bold text-xl text-gray-900 dark:text-white`}>{t('นโยบายความเป็นกลาง', 'Impartiality Policy')}</h3>
+ </div>
+ <div className="space-y-6">
+ {impartialityPolicies.map((policy, i) => (
+ <div key={i} className="flex gap-4">
+ <ShieldCheck className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+ <p className={`text-sm leading-relaxed font-sans text-gray-800 dark:text-white`}>{policy}</p>
+ </div>
+ ))}
+ </div>
+ </div>
+ </div>
+ </section>
   {/* Sample Certificates Section */}
   <section className="space-y-8 px-4 md:px-8 border-t border-gray-150 dark:border-slate-800 pt-16 mt-16">
     <div className="text-center space-y-3">
@@ -403,47 +444,6 @@ export default function AboutSection({ settings, isAdminMode = false }: AboutSec
       </div>
     </div>
   </section>
-
- {/* Goals & Impartiality */}
- <section className="space-y-16 px-4 md:px-8">
- <div className="grid md:grid-cols-2 gap-8">
- {/* Our Goals */}
- <div className={`rounded-[2.5rem] p-8 md:p-12 space-y-8 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] relative overflow-hidden`}>
- <div className="flex items-center gap-3">
- <div className="p-3 bg-blue-50 dark:bg-slate-900 rounded-xl text-blue-600 dark:text-blue-400">
- <Target className="w-6 h-6" />
- </div>
- <h3 className={`font-display font-bold text-xl text-gray-900 dark:text-white`}>{t('เป้าหมายของเรา', 'Our Strategic Goals')}</h3>
- </div>
- <div className="space-y-6">
- {goals.map((goal, i) => (
- <div key={i} className="flex gap-4">
- <CheckCircle2 className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
- <p className={`text-sm leading-relaxed font-sans text-gray-800 dark:text-white`}>{goal}</p>
- </div>
- ))}
- </div>
- </div>
-
- {/* Impartiality Policy */}
- <div className={`rounded-[2.5rem] p-8 md:p-12 space-y-8 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] relative overflow-hidden`}>
- <div className="flex items-center gap-3">
- <div className="p-3 bg-amber-50 dark:bg-slate-900 rounded-xl text-amber-600 dark:text-amber-400">
- <Scale className="w-6 h-6" />
- </div>
- <h3 className={`font-display font-bold text-xl text-gray-900 dark:text-white`}>{t('นโยบายความเป็นกลาง', 'Impartiality Policy')}</h3>
- </div>
- <div className="space-y-6">
- {impartialityPolicies.map((policy, i) => (
- <div key={i} className="flex gap-4">
- <ShieldCheck className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
- <p className={`text-sm leading-relaxed font-sans text-gray-800 dark:text-white`}>{policy}</p>
- </div>
- ))}
- </div>
- </div>
- </div>
- </section>
 
 
  </div>
