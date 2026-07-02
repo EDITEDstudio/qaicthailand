@@ -540,8 +540,16 @@ export default function ArticlesSection({ settings, onTabChange, isAdminMode = f
           }
         }
 
-        // Sort descending by id
-        loaded.sort((a, b) => b.id.localeCompare(a.id));
+        // Sort by category order (1. Beginner, 2. Implementation, 3. Industry) and id ascending
+        const categoryOrder = { beginner: 1, implementation: 2, industry: 3 };
+        loaded.sort((a, b) => {
+          const orderA = categoryOrder[a.category] || 99;
+          const orderB = categoryOrder[b.category] || 99;
+          if (orderA !== orderB) {
+            return orderA - orderB;
+          }
+          return a.id.localeCompare(b.id);
+        });
         setArticlesList(loaded);
       } catch (err) {
         console.error('Failed to load articles from Firestore:', err);
