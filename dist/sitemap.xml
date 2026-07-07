@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Main Domain -->
+  <url>
+    <loc>https://www.qaicthailand.com/</loc>
+    <lastmod>2026-07-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Home Page / หน้าแรก -->
+  <url>
+    <loc>https://www.qaicthailand.com/?tab=assess</loc>
+    <lastmod>2026-07-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- About Us / เกี่ยวกับเรา -->
+  <url>
+    <loc>https://www.qaicthailand.com/?tab=org</loc>
+    <lastmod>2026-07-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Accredited Services / บริการตรวจประเมิน -->
+  <url>
+    <loc>https://www.qaicthailand.com/?tab=standards</loc>
+    <lastmod>2026-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Training Courses / การฝึกอบรม -->
+  <url>
+    <loc>https://www.qaicthailand.com/?tab=training</loc>
+    <lastmod>2026-07-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- News & PR / ข่าวสารประชาสัมพันธ์ -->
+  <url>
+    <loc>https://www.qaicthailand.com/?tab=news</loc>
+    <lastmod>2026-07-06</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Verify Certificate / ตรวจใบรับรอง -->
+  <url>
+    <loc>https://www.qaicthailand.com/?tab=verify</loc>
+    <lastmod>2026-07-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Forms & Downloads / ดาวน์โหลดแบบฟอร์ม -->
+  <url>
+    <loc>https://www.qaicthailand.com/?tab=downloads</loc>
+    <lastmod>2026-07-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Client Profile / โปรไฟล์ลูกค้า -->
+  <url>
+    <loc>https://www.qaicthailand.com/?tab=profile</loc>
+    <lastmod>2026-07-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+</urlset>
