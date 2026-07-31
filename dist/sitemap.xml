@@ -3,71 +3,95 @@
   <!-- Main Domain -->
   <url>
     <loc>https://www.qaicthailand.com/</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   
   <!-- Home Page / หน้าแรก -->
   <url>
-    <loc>https://www.qaicthailand.com/?tab=assess</loc>
-    <lastmod>2026-07-06</lastmod>
+    <loc>https://www.qaicthailand.com/home</loc>
+    <lastmod>2026-07-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
 
   <!-- About Us / เกี่ยวกับเรา -->
   <url>
-    <loc>https://www.qaicthailand.com/?tab=org</loc>
-    <lastmod>2026-07-06</lastmod>
+    <loc>https://www.qaicthailand.com/about</loc>
+    <lastmod>2026-07-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <!-- Accredited Services / บริการตรวจประเมิน -->
   <url>
-    <loc>https://www.qaicthailand.com/?tab=standards</loc>
-    <lastmod>2026-07-06</lastmod>
+    <loc>https://www.qaicthailand.com/standards</loc>
+    <lastmod>2026-07-31</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <!-- Training Courses / การฝึกอบรม -->
   <url>
-    <loc>https://www.qaicthailand.com/?tab=training</loc>
-    <lastmod>2026-07-06</lastmod>
+    <loc>https://www.qaicthailand.com/training</loc>
+    <lastmod>2026-07-31</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <!-- News & PR / ข่าวสารประชาสัมพันธ์ -->
   <url>
-    <loc>https://www.qaicthailand.com/?tab=news</loc>
-    <lastmod>2026-07-06</lastmod>
+    <loc>https://www.qaicthailand.com/news</loc>
+    <lastmod>2026-07-31</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Articles & Knowledge Hub / บทความความรู้ -->
+  <url>
+    <loc>https://www.qaicthailand.com/articles</loc>
+    <lastmod>2026-07-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <!-- Verify Certificate / ตรวจใบรับรอง -->
   <url>
-    <loc>https://www.qaicthailand.com/?tab=verify</loc>
-    <lastmod>2026-07-06</lastmod>
+    <loc>https://www.qaicthailand.com/verify</loc>
+    <lastmod>2026-07-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <!-- Forms & Downloads / ดาวน์โหลดแบบฟอร์ม -->
   <url>
-    <loc>https://www.qaicthailand.com/?tab=downloads</loc>
-    <lastmod>2026-07-06</lastmod>
+    <loc>https://www.qaicthailand.com/downloads</loc>
+    <lastmod>2026-07-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
+  <!-- Careers / ร่วมงานกับเรา -->
+  <url>
+    <loc>https://www.qaicthailand.com/careers</loc>
+    <lastmod>2026-07-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Request Proposal / ขอใบเสนอราคา -->
+  <url>
+    <loc>https://www.qaicthailand.com/quote</loc>
+    <lastmod>2026-07-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
   <!-- Client Profile / โปรไฟล์ลูกค้า -->
   <url>
-    <loc>https://www.qaicthailand.com/?tab=profile</loc>
-    <lastmod>2026-07-06</lastmod>
+    <loc>https://www.qaicthailand.com/profile</loc>
+    <lastmod>2026-07-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>

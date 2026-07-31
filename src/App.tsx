@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { UserSettings, Language } from './types';
 
 import CertificateVerification from './components/CertificateVerification';
@@ -85,20 +86,15 @@ export default function App() {
     return 'assess';
   };
 
-  const [activeTab, setActiveTab] = useState<'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote' | 'news' | 'downloads' | 'careers' | 'articles'>(() => {
-    const params = new URLSearchParams(window.location.search);
-    const tabParam = params.get('tab');
-    if (tabParam && ['assess', 'standards', 'training', 'verify', 'org', 'profile', 'quote', 'news', 'downloads', 'careers', 'articles'].includes(tabParam)) {
-      return tabParam as any;
-    }
-    return getTabFromPath(window.location.pathname);
-  });
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const handleTabChange = (tab: typeof activeTab) => {
-    setActiveTab(tab);
+  const activeTab = getTabFromPath(location.pathname);
+
+  const handleTabChange = (tab: 'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote' | 'news' | 'downloads' | 'careers' | 'articles') => {
     const path = TAB_PATHS[tab] || '/home';
-    if (window.location.pathname !== path) {
-      window.history.pushState(null, '', path);
+    if (location.pathname !== path) {
+      navigate(path);
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -155,21 +151,15 @@ export default function App() {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
 
-    // Listen to back/forward browser navigation
-    const handlePopState = () => {
-      setActiveTab(getTabFromPath(window.location.pathname));
-    };
-    window.addEventListener('popstate', handlePopState);
-
     // Handle legacy query params and redirect to clean paths
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(location.search);
     const tabParam = params.get('tab');
     if (tabParam && ['assess', 'standards', 'training', 'verify', 'org', 'profile', 'quote', 'news', 'downloads', 'careers', 'articles'].includes(tabParam)) {
       const targetPath = TAB_PATHS[tabParam] || '/home';
-      window.history.replaceState(null, '', targetPath);
+      navigate(targetPath, { replace: true });
     } else {
-      if (window.location.pathname === '/') {
-        window.history.replaceState(null, '', '/home');
+      if (location.pathname === '/') {
+        navigate('/home', { replace: true });
       }
     }
 
@@ -182,10 +172,9 @@ export default function App() {
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('popstate', handlePopState);
       unsubscribe();
     };
-  }, []);
+  }, [location.pathname, location.search, navigate]);
 
   const handleLogout = async () => {
     try {
@@ -745,106 +734,107 @@ export default function App() {
 
  {/* Tab Content */}
  <div className="p-4 md:p-8 pt-3 md:pt-4">
- <AnimatePresence mode="wait">
- {activeTab === 'assess' && (
- <motion.div 
- key="assess"
- initial={{ opacity: 0, scale: 0.98 }}
- animate={{ opacity: 1, scale: 1 }}
- exit={{ opacity: 0, scale: 1.02 }}
- transition={{ duration: 0.3 }}
- >
- <InfoSections settings={settings} onTabChange={handleTabChange} />
- </motion.div>
- )}
- {activeTab === 'standards' && (
- <motion.div 
- key="standards"
- initial={{ opacity: 0, scale: 0.98 }}
- animate={{ opacity: 1, scale: 1 }}
- exit={{ opacity: 0, scale: 1.02 }}
- transition={{ duration: 0.3 }}
- >
- <StandardsDirectory settings={settings} isAdminMode={isAdminModeActive} />
- </motion.div>
- )}
- {activeTab === 'training' && (
- <motion.div 
- key="training"
- initial={{ opacity: 0, scale: 0.98 }}
- animate={{ opacity: 1, scale: 1 }}
- exit={{ opacity: 0, scale: 1.02 }}
- transition={{ duration: 0.3 }}
- >
- <TrainingSection 
- settings={settings} 
- onContactClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
- isAdminMode={isAdminModeActive}
- />
- </motion.div>
- )}
- {activeTab === 'quote' && (
- <motion.div 
- key="quote"
- initial={{ opacity: 0, scale: 0.98 }}
- animate={{ opacity: 1, scale: 1 }}
- exit={{ opacity: 0, scale: 1.02 }}
- transition={{ duration: 0.3 }}
- >
- <ProposalForm settings={settings} />
- </motion.div>
- )}
- {activeTab === 'verify' && (
- <motion.div 
- key="verify"
- initial={{ opacity: 0, scale: 0.98 }}
- animate={{ opacity: 1, scale: 1 }}
- exit={{ opacity: 0, scale: 1.02 }}
- transition={{ duration: 0.3 }}
- >
- <CertificateVerification settings={settings} user={user} />
- </motion.div>
- )}
- {activeTab === 'profile' && (
- <motion.div 
- key="profile"
- initial={{ opacity: 0, scale: 0.98 }}
- animate={{ opacity: 1, scale: 1 }}
- exit={{ opacity: 0, scale: 1.02 }}
- transition={{ duration: 0.3 }}
- >
- {user ? (
- <CustomerProfile settings={settings} user={user} />
- ) : (
- <div className="text-center py-24 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] rounded-[2.5rem] border border-dashed max-w-2xl mx-auto">
- <div className="w-20 h-20 bg-gray-50 text-gray-300 rounded-full flex items-center justify-center mx-auto mb-6">
- <UserIcon className="w-10 h-10" />
- </div>
- <h2 className="text-2xl font-display font-bold text-gray-900 dark:text-white mb-2">{t('กรุณาเข้าสู่ระบบ', 'Please Login')}</h2>
- <p className="text-gray-700 dark:text-slate-400 mb-8 max-w-sm mx-auto">{t('กรุณาเข้าสู่ระบบเพื่อดูข้อมูลการรับรอง มาตรฐานที่ได้รับ และสถานะการตรวจประเมินของคุณ', 'Please login to view your certification data, achieved standards, and audit progress.')}</p>
- <button 
- onClick={() => setAuthModal({ isOpen: true, mode: 'login' })}
- className="px-8 py-4 bg-blue-600 text-white rounded-2xl text-sm font-bold shadow-lg shadow-blue-600/20 active:scale-95 transition-all"
- >
- {t('เข้าสู่ระบบตอนนี้', 'Login Now')}
- </button>
- </div>
- )}
- </motion.div>
- )}
- {activeTab === 'news' && (
- <motion.div 
- key="news"
- initial={{ opacity: 0, scale: 0.98 }}
- animate={{ opacity: 1, scale: 1 }}
- exit={{ opacity: 0, scale: 1.02 }}
- transition={{ duration: 0.3 }}
- >
- <NewsSection settings={settings} isAdminMode={isAdminModeActive} />
- </motion.div>
- )}
-
-      {activeTab === 'articles' && (
+   <AnimatePresence mode="wait">
+    <Routes location={location} key={location.pathname}>
+      <Route path="/" element={<Navigate to="/home" replace />} />
+      <Route path="/home" element={
+        <motion.div 
+          key="assess"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.02 }}
+          transition={{ duration: 0.3 }}
+        >
+          <InfoSections settings={settings} onTabChange={handleTabChange} />
+        </motion.div>
+      } />
+      <Route path="/standards" element={
+        <motion.div 
+          key="standards"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.02 }}
+          transition={{ duration: 0.3 }}
+        >
+          <StandardsDirectory settings={settings} isAdminMode={isAdminModeActive} />
+        </motion.div>
+      } />
+      <Route path="/training" element={
+        <motion.div 
+          key="training"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.02 }}
+          transition={{ duration: 0.3 }}
+        >
+          <TrainingSection 
+            settings={settings} 
+            onContactClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
+            isAdminMode={isAdminModeActive}
+          />
+        </motion.div>
+      } />
+      <Route path="/quote" element={
+        <motion.div 
+          key="quote"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.02 }}
+          transition={{ duration: 0.3 }}
+        >
+          <ProposalForm settings={settings} />
+        </motion.div>
+      } />
+      <Route path="/verify" element={
+        <motion.div 
+          key="verify"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.02 }}
+          transition={{ duration: 0.3 }}
+        >
+          <CertificateVerification settings={settings} user={user} />
+        </motion.div>
+      } />
+      <Route path="/profile" element={
+        <motion.div 
+          key="profile"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.02 }}
+          transition={{ duration: 0.3 }}
+        >
+          {user ? (
+            <CustomerProfile settings={settings} user={user} />
+          ) : (
+            <div className="text-center py-24 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] rounded-[2.5rem] border border-dashed max-w-2xl mx-auto">
+              <div className="w-20 h-20 bg-gray-50 text-gray-300 rounded-full flex items-center justify-center mx-auto mb-6">
+                <UserIcon className="w-10 h-10" />
+              </div>
+              <h2 className="text-2xl font-display font-bold text-gray-900 dark:text-white mb-2">{t('กรุณาเข้าสู่ระบบ', 'Please Login')}</h2>
+              <p className="text-gray-700 dark:text-slate-400 mb-8 max-w-sm mx-auto">{t('กรุณาเข้าสู่ระบบเพื่อดูข้อมูลการรับรอง มาตรฐานที่ได้รับ และสถานะการตรวจประเมินของคุณ', 'Please login to view your certification data, achieved standards, and audit progress.')}</p>
+              <button 
+                onClick={() => setAuthModal({ isOpen: true, mode: 'login' })}
+                className="px-8 py-4 bg-blue-600 text-white rounded-2xl text-sm font-bold shadow-lg shadow-blue-600/20 active:scale-95 transition-all"
+              >
+                {t('เข้าสู่ระบบตอนนี้', 'Login Now')}
+              </button>
+            </div>
+          )}
+        </motion.div>
+      } />
+      <Route path="/news" element={
+        <motion.div 
+          key="news"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.02 }}
+          transition={{ duration: 0.3 }}
+        >
+          <NewsSection settings={settings} isAdminMode={isAdminModeActive} />
+        </motion.div>
+      } />
+      <Route path="/articles" element={
         <motion.div 
           key="articles"
           initial={{ opacity: 0, scale: 0.98 }}
@@ -854,31 +844,30 @@ export default function App() {
         >
           <ArticlesSection settings={settings} onTabChange={handleTabChange} isAdminMode={isAdminModeActive} />
         </motion.div>
-      )}
- {activeTab === 'org' && (
- <motion.div 
- key="org"
- initial={{ opacity: 0, scale: 0.98 }}
- animate={{ opacity: 1, scale: 1 }}
- exit={{ opacity: 0, scale: 1.02 }}
- transition={{ duration: 0.3 }}
- >
- <AboutSection settings={settings} isAdminMode={isAdminModeActive} />
- </motion.div>
- )}
- {activeTab === 'downloads' && (
- <motion.div 
- key="downloads"
- initial={{ opacity: 0, scale: 0.98 }}
- animate={{ opacity: 1, scale: 1 }}
- exit={{ opacity: 0, scale: 1.02 }}
- transition={{ duration: 0.3 }}
- >
- <DownloadsSection settings={settings} />
- </motion.div>
- )}
-
-      {activeTab === 'careers' && (
+      } />
+      <Route path="/about" element={
+        <motion.div 
+          key="org"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.02 }}
+          transition={{ duration: 0.3 }}
+        >
+          <AboutSection settings={settings} isAdminMode={isAdminModeActive} />
+        </motion.div>
+      } />
+      <Route path="/downloads" element={
+        <motion.div 
+          key="downloads"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.02 }}
+          transition={{ duration: 0.3 }}
+        >
+          <DownloadsSection settings={settings} />
+        </motion.div>
+      } />
+      <Route path="/careers" element={
         <motion.div 
           key="careers"
           initial={{ opacity: 0, scale: 0.98 }}
@@ -888,8 +877,9 @@ export default function App() {
         >
           <CareersSection settings={settings} />
         </motion.div>
-      )}
- </AnimatePresence>
+      } />
+    </Routes>
+  </AnimatePresence>
  </div>
  </div>
  </div>
