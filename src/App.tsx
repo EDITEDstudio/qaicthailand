@@ -62,7 +62,47 @@ export default function App() {
  primaryColor: '#2563eb' // Blue 600
  });
 
- const [activeTab, setActiveTab] = useState<'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote' | 'news' | 'downloads' | 'careers' | 'articles'>('assess');
+  const TAB_PATHS: Record<string, string> = {
+    assess: '/home',
+    org: '/about',
+    standards: '/standards',
+    training: '/training',
+    news: '/news',
+    articles: '/articles',
+    verify: '/verify',
+    downloads: '/downloads',
+    careers: '/careers',
+    profile: '/profile',
+    quote: '/quote',
+  };
+
+  const getTabFromPath = (path: string) => {
+    const cleanPath = path.toLowerCase().replace(/\/$/, '');
+    if (cleanPath === '' || cleanPath === '/home') return 'assess';
+    for (const [tab, p] of Object.entries(TAB_PATHS)) {
+      if (p === cleanPath) return tab as any;
+    }
+    return 'assess';
+  };
+
+  const [activeTab, setActiveTab] = useState<'assess' | 'standards' | 'training' | 'verify' | 'org' | 'profile' | 'quote' | 'news' | 'downloads' | 'careers' | 'articles'>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tabParam = params.get('tab');
+    if (tabParam && ['assess', 'standards', 'training', 'verify', 'org', 'profile', 'quote', 'news', 'downloads', 'careers', 'articles'].includes(tabParam)) {
+      return tabParam as any;
+    }
+    return getTabFromPath(window.location.pathname);
+  });
+
+  const handleTabChange = (tab: typeof activeTab) => {
+    setActiveTab(tab);
+    const path = TAB_PATHS[tab] || '/home';
+    if (window.location.pathname !== path) {
+      window.history.pushState(null, '', path);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
  const [isAiOpen, setIsAiOpen] = useState(false);
  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
  const [scrolled, setScrolled] = useState(false);
@@ -115,11 +155,22 @@ export default function App() {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
 
-    // Parse URL parameter to support direct tab routing
+    // Listen to back/forward browser navigation
+    const handlePopState = () => {
+      setActiveTab(getTabFromPath(window.location.pathname));
+    };
+    window.addEventListener('popstate', handlePopState);
+
+    // Handle legacy query params and redirect to clean paths
     const params = new URLSearchParams(window.location.search);
     const tabParam = params.get('tab');
-    if (tabParam && ['assess', 'standards', 'training', 'verify', 'org', 'profile', 'quote', 'news', 'downloads'].includes(tabParam)) {
-      setActiveTab(tabParam as any);
+    if (tabParam && ['assess', 'standards', 'training', 'verify', 'org', 'profile', 'quote', 'news', 'downloads', 'careers', 'articles'].includes(tabParam)) {
+      const targetPath = TAB_PATHS[tabParam] || '/home';
+      window.history.replaceState(null, '', targetPath);
+    } else {
+      if (window.location.pathname === '/') {
+        window.history.replaceState(null, '', '/home');
+      }
     }
 
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -131,6 +182,7 @@ export default function App() {
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('popstate', handlePopState);
       unsubscribe();
     };
   }, []);
@@ -225,7 +277,7 @@ export default function App() {
           return (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => handleTabChange(tab.id as any)}
               className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer text-left w-full relative ${
                 isActive 
                   ? 'bg-blue-600/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 border border-blue-500/10 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)]' 
@@ -420,7 +472,7 @@ export default function App() {
               <button
                 key={tab.id}
                 onClick={() => {
-                  setActiveTab(tab.id as any);
+                  handleTabChange(tab.id as any);
                   setMobileMenuOpen(false);
                 }}
                 className={`flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold uppercase tracking-wider transition-all cursor-pointer text-left w-full relative ${
@@ -591,7 +643,7 @@ export default function App() {
  className="flex flex-wrap items-center justify-center md:justify-start gap-4"
  >
  <button 
- onClick={() => setActiveTab('standards')}
+ onClick={() => handleTabChange('standards')}
  className="px-6 py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-xs font-bold transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98] flex items-center gap-2"
  >
  <span>{t('ดูมาตรฐานทั้งหมด 🧭', 'Explore Standards 🧭')}</span>
@@ -702,7 +754,7 @@ export default function App() {
  exit={{ opacity: 0, scale: 1.02 }}
  transition={{ duration: 0.3 }}
  >
- <InfoSections settings={settings} onTabChange={setActiveTab} />
+ <InfoSections settings={settings} onTabChange={handleTabChange} />
  </motion.div>
  )}
  {activeTab === 'standards' && (
@@ -800,7 +852,7 @@ export default function App() {
           exit={{ opacity: 0, scale: 1.02 }}
           transition={{ duration: 0.3 }}
         >
-          <ArticlesSection settings={settings} onTabChange={setActiveTab} isAdminMode={isAdminModeActive} />
+          <ArticlesSection settings={settings} onTabChange={handleTabChange} isAdminMode={isAdminModeActive} />
         </motion.div>
       )}
  {activeTab === 'org' && (
