@@ -964,6 +964,34 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
     setGoogleDriveName('');
   };
 
+  const handleDocumentDelete = async (docKey: string) => {
+    if (!user || audits.length === 0) return;
+
+    if (!confirm(t('คุณแน่ใจหรือไม่ว่าต้องการลบเอกสารนี้?', 'Are you sure you want to delete this document?'))) {
+      return;
+    }
+
+    setDocStatuses(prev => ({ ...prev, [docKey]: 'pending' }));
+
+    const auditId = audits[0].id;
+    const updatedUploadedDocs = { ...(audits[0] as any).uploadedDocs };
+    delete updatedUploadedDocs[docKey];
+
+    try {
+      await setDoc(doc(db, 'audits', auditId), {
+        uploadedDocs: updatedUploadedDocs
+      }, { merge: true });
+
+      // Update local state
+      setAudits(prev => prev.map(a => a.id === auditId ? { ...a, uploadedDocs: updatedUploadedDocs } : a));
+      alert(t('ลบเอกสารสำเร็จ', 'Document deleted successfully!'));
+    } catch (err) {
+      console.warn('Failed to delete document from Firestore:', err);
+      // Fallback for demo: update local state anyway
+      setAudits(prev => prev.map(a => a.id === auditId ? { ...a, uploadedDocs: updatedUploadedDocs } : a));
+    }
+  };
+
  const totalBalance = invoices
  .filter(inv => inv.status !== 'paid')
  .reduce((sum, inv) => sum + inv.amount, 0);
@@ -1596,6 +1624,18 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
                               <span>{t('เปิดลิงก์ Drive', 'Open Drive')}</span>
                             </button>
                           )}
+                          
+                          {/* Delete/Cancel Button if not yet fully approved */}
+                          {status !== 'approved' && (
+                            <button
+                              onClick={() => handleDocumentDelete(doc.key)}
+                              className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-650 text-[10px] font-bold rounded-lg transition-all flex items-center gap-1 cursor-pointer active:scale-95"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                              <span>{t('ลบไฟล์', 'Delete')}</span>
+                            </button>
+                          )}
+                          
                           <button className="px-4 py-2 bg-gray-50 text-gray-600 dark:text-slate-500 border border-gray-200 text-[11px] font-bold rounded-xl cursor-not-allowed" disabled>
                             {status === 'under_review' ? t('รอตรวจสอบ', 'Under Review') : t('ตรวจสอบแล้ว', 'Completed')}
                           </button>
