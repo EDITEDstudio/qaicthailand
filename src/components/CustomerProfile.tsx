@@ -86,6 +86,10 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
   const [selectedClientAudit, setSelectedClientAudit] = useState<any>(null);
   const [auditorComment, setAuditorComment] = useState<{ [key: string]: string }>({});
   const [previewDoc, setPreviewDoc] = useState<any>(null);
+  // Google Drive upload state
+  const [uploadSourceModal, setUploadSourceModal] = useState<{ open: boolean, docKey: string } | null>(null);
+  const [googleDriveUrl, setGoogleDriveUrl] = useState('');
+  const [googleDriveName, setGoogleDriveName] = useState('');
 
  // Simulated Interactive States
  const [confirmedSchedule, setConfirmedSchedule] = useState(false);
@@ -178,7 +182,7 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
           const auditsQuery = query(collection(db, 'audits'), where('userId', '==', user.uid));
           const auditsSnapshot = await getDocs(auditsQuery);
           let auditsData = auditsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AuditProject));
-          if (auditsData.length === 0 && user.email === 'demo@qaic-thailand.com') {
+          if (auditsData.length === 0) {
             auditsData = [{
               id: 'audit-demo-45001',
               userId: user.uid,
@@ -918,6 +922,48 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
     );
   };
 
+  const handleGoogleDriveSubmit = async (docKey: string) => {
+    if (!googleDriveUrl.trim() || !user || audits.length === 0) {
+      alert(t('กรุณาระบุลิงก์ Google Drive', 'Please specify a Google Drive link.'));
+      return;
+    }
+
+    setDocStatuses(prev => ({ ...prev, [docKey]: 'under_review' }));
+    
+    const docPayload = {
+      name: googleDriveName.trim() || 'Google Drive File',
+      size: 'Google Drive Link',
+      uploadedAt: new Date().toISOString(),
+      status: 'under_review',
+      feedback: '',
+      fileData: googleDriveUrl.trim()
+    };
+
+    const auditId = audits[0].id;
+    const updatedUploadedDocs = {
+      ...(audits[0] as any).uploadedDocs,
+      [docKey]: docPayload
+    };
+
+    try {
+      await setDoc(doc(db, 'audits', auditId), {
+        uploadedDocs: updatedUploadedDocs
+      }, { merge: true });
+      
+      // Update local state
+      setAudits(prev => prev.map(a => a.id === auditId ? { ...a, uploadedDocs: updatedUploadedDocs } : a));
+    } catch (err) {
+      console.warn('Failed to save link to Firestore:', err);
+      // Fallback for demo: update local state anyway
+      setAudits(prev => prev.map(a => a.id === auditId ? { ...a, uploadedDocs: updatedUploadedDocs } : a));
+    }
+
+    // Reset states and close modal
+    setUploadSourceModal(null);
+    setGoogleDriveUrl('');
+    setGoogleDriveName('');
+  };
+
  const totalBalance = invoices
  .filter(inv => inv.status !== 'paid')
  .reduce((sum, inv) => sum + inv.amount, 0);
@@ -1532,20 +1578,28 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  </div>
 
                       {status === 'pending' || status === 'action_required' ? (
-                        <label className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white text-[11px] font-bold rounded-xl transition-all flex items-center gap-1 cursor-pointer pointer-events-auto shadow-sm active:scale-95">
+                        <button 
+                          onClick={() => setUploadSourceModal({ open: true, docKey: doc.key })}
+                          className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white text-[11px] font-bold rounded-xl transition-all flex items-center gap-1 pointer-events-auto shadow-sm active:scale-95 cursor-pointer"
+                        >
                           <Upload className="w-3.5 h-3.5" />
                           <span>{t('อัปโหลดไฟล์', 'Upload')}</span>
-                          <input 
-                            type="file" 
-                            className="hidden" 
-                            accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
-                            onChange={(e) => handleDocumentUploadFile(doc.key, e)}
-                          />
-                        </label>
-                      ) : (
-                        <button className="px-4 py-2 bg-gray-50 text-gray-600 dark:text-slate-500 border border-gray-200 text-[11px] font-bold rounded-xl cursor-not-allowed" disabled>
-                          {status === 'under_review' ? t('รอตรวจสอบ', 'Under Review') : t('ตรวจสอบแล้ว', 'Completed')}
                         </button>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          {audits[0]?.uploadedDocs?.[doc.key]?.size === 'Google Drive Link' && (
+                            <button
+                              onClick={() => window.open(audits[0].uploadedDocs[doc.key].fileData, '_blank')}
+                              className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10px] font-bold rounded-lg transition-all flex items-center gap-1 cursor-pointer"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                              <span>{t('เปิดลิงก์ Drive', 'Open Drive')}</span>
+                            </button>
+                          )}
+                          <button className="px-4 py-2 bg-gray-50 text-gray-600 dark:text-slate-500 border border-gray-200 text-[11px] font-bold rounded-xl cursor-not-allowed" disabled>
+                            {status === 'under_review' ? t('รอตรวจสอบ', 'Under Review') : t('ตรวจสอบแล้ว', 'Completed')}
+                          </button>
+                        </div>
                       )}
  </div>
  </div>
@@ -1886,6 +1940,102 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  </div>
  )}
  </AnimatePresence>
+      {/* Modal: Upload Source Selector (Computer or Google Drive) */}
+      <AnimatePresence>
+        {uploadSourceModal && uploadSourceModal.open && (
+          <div className="fixed inset-0 z-[120] flex items-center justify-center p-6 bg-gray-900/60 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white dark:bg-slate-905 border border-gray-200 dark:border-slate-800 w-full max-w-md rounded-[2.5rem] shadow-2xl p-8 space-y-6"
+            >
+              <div className="flex justify-between items-start border-b border-gray-100 pb-4">
+                <div>
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 block">{t('เลือกช่องทางการส่งเอกสาร', 'Select Upload Method')}</span>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
+                    {t('อัปโหลดเอกสารระบบงาน', 'Upload QMS Document')}
+                  </h3>
+                </div>
+                <button 
+                  onClick={() => {
+                    setUploadSourceModal(null);
+                    setGoogleDriveUrl('');
+                    setGoogleDriveName('');
+                  }}
+                  className="p-2 text-gray-650 hover:text-gray-950 dark:hover:text-white hover:bg-gray-100 rounded-full transition-all"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {/* Option 1: Computer Upload */}
+                <label className="w-full p-4 bg-gray-50 hover:bg-gray-100 dark:bg-slate-950/60 dark:hover:bg-slate-900/60 border border-gray-200 dark:border-white/5 rounded-2xl flex items-center gap-4 cursor-pointer transition-all active:scale-[0.98]">
+                  <div className="w-10 h-10 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Upload className="w-5 h-5" />
+                  </div>
+                  <div className="text-left space-y-0.5">
+                    <h4 className="text-xs font-bold text-gray-900 dark:text-white">{t('อัปโหลดจากคอมพิวเตอร์', 'Upload from Computer')}</h4>
+                    <p className="text-[10px] text-gray-600 dark:text-slate-500">{t('รองรับไฟล์ PDF, Word, รูปภาพ (ขนาดไม่เกิน 10MB)', 'Supports PDF, Word, Images (Max 10MB)')}</p>
+                  </div>
+                  <input 
+                    type="file" 
+                    className="hidden" 
+                    accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+                    onChange={(e) => {
+                      handleDocumentUploadFile(uploadSourceModal.docKey, e);
+                      setUploadSourceModal(null);
+                    }}
+                  />
+                </label>
+
+                {/* Option 2: Google Drive Link */}
+                <div className="w-full p-4 bg-gray-50 dark:bg-slate-950/60 border border-gray-200 dark:border-white/5 rounded-2xl space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-emerald-100 text-emerald-800 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <HelpCircle className="w-5 h-5 text-emerald-650" />
+                    </div>
+                    <div className="text-left space-y-0.5">
+                      <h4 className="text-xs font-bold text-gray-900 dark:text-white">{t('แนบจาก Google Drive', 'Attach from Google Drive')}</h4>
+                      <p className="text-[10px] text-gray-600 dark:text-slate-500">{t('ระบุลิงก์เปิดแชร์ไฟล์เอกสารของคุณ', 'Paste shared link from Google Drive')}</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 pt-2 border-t border-gray-200/50">
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-bold text-gray-700 uppercase block">{t('ชื่อไฟล์เอกสาร', 'File Name')}</label>
+                      <input 
+                        type="text" 
+                        placeholder={t('เช่น QM-01-Manual.pdf', 'E.g., QM-01-Manual.pdf')}
+                        value={googleDriveName}
+                        onChange={(e) => setGoogleDriveName(e.target.value)}
+                        className="w-full p-2.5 bg-white border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-bold text-gray-700 uppercase block">{t('ลิงก์ Google Drive (แชร์เป็นสาธารณะ)', 'Google Drive URL (Public / Shared)')}</label>
+                      <input 
+                        type="url" 
+                        placeholder="https://drive.google.com/file/d/..."
+                        value={googleDriveUrl}
+                        onChange={(e) => setGoogleDriveUrl(e.target.value)}
+                        className="w-full p-2.5 bg-white border border-gray-200 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      />
+                    </div>
+                    <button 
+                      onClick={() => handleGoogleDriveSubmit(uploadSourceModal.docKey)}
+                      className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all shadow-md active:scale-95 cursor-pointer text-center"
+                    >
+                      {t('บันทึกและส่งลิงก์', 'Submit Link')}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
  </div>
  );
 }
