@@ -177,7 +177,21 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
           // Fetch Audits
           const auditsQuery = query(collection(db, 'audits'), where('userId', '==', user.uid));
           const auditsSnapshot = await getDocs(auditsQuery);
-          const auditsData = auditsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AuditProject));
+          let auditsData = auditsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AuditProject));
+          if (auditsData.length === 0 && user.email === 'demo@qaic-thailand.com') {
+            auditsData = [{
+              id: 'audit-demo-45001',
+              userId: user.uid,
+              standardId: 'iso-45001',
+              code: 'ISO 45001:2018',
+              status: 'document_review',
+              currentStep: 1,
+              totalSteps: 4,
+              scheduledDate: '2024-03-24',
+              outstandingBalance: 15400,
+              uploadedDocs: {}
+            } as any];
+          }
 
           if (certsData.length === 0 && auditsData.length === 0) {
             if (user.email === 'demo@qaic-thailand.com') {
