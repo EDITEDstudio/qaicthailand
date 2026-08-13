@@ -78,14 +78,14 @@ export default function AuthModal({ isOpen, onClose, settings, initialMode = 'lo
  } catch (err: any) {
  if (err.code === 'auth/operation-not-allowed' || err.code === 'auth/configuration-not-allowed') {
  console.warn("Firebase email auth disabled, falling back to local demo mock mode");
-  const mockUser = {
-    uid: 'mock-' + email.split('@')[0],
-    email: email,
-    displayName: displayName || email.split('@')[0],
-    isMock: true,
-    photoURL: null,
-    role: email === 'admin@qaic-thailand.com' ? 'admin' : 'user'
-  };
+    const mockUser = {
+      uid: 'mock-' + email.split('@')[0],
+      email: email,
+      displayName: displayName || email.split('@')[0],
+      isMock: true,
+      photoURL: null,
+      role: email === 'admin@qaic-thailand.com' ? 'admin' : (email === 'auditor@qaic-thailand.com' || email.includes('auditor') ? 'auditor' : 'user')
+    };
  if (onMockLogin) {
  onMockLogin(mockUser);
  }
@@ -102,17 +102,17 @@ export default function AuthModal({ isOpen, onClose, settings, initialMode = 'lo
  }
  };
 
- const handleQuickDemoLogin = (role: 'customer' | 'admin') => {
- setError(null);
- setLoading(true);
-  const mockUser = {
-    uid: role === 'admin' ? 'mock-admin-999' : 'mock-customer-111',
-    email: role === 'admin' ? 'admin@qaic-thailand.com' : 'demo@qaic-thailand.com',
-    displayName: role === 'admin' ? 'QAIC Auditor Admin' : 'QAIC Demo Customer',
-    isMock: true,
-    photoURL: null,
-    role: role
-  };
+  const handleQuickDemoLogin = (role: 'customer' | 'auditor' | 'admin') => {
+    setError(null);
+    setLoading(true);
+    const mockUser = {
+      uid: role === 'admin' ? 'mock-admin-999' : (role === 'auditor' ? 'mock-auditor-888' : 'mock-customer-111'),
+      email: role === 'admin' ? 'admin@qaic-thailand.com' : (role === 'auditor' ? 'auditor@qaic-thailand.com' : 'demo@qaic-thailand.com'),
+      displayName: role === 'admin' ? 'QAIC Auditor Admin' : (role === 'auditor' ? 'QAIC Auditor Inspector' : 'QAIC Demo Customer'),
+      isMock: true,
+      photoURL: null,
+      role: role
+    };
  
  if (onMockLogin) {
  onMockLogin(mockUser);
@@ -269,17 +269,47 @@ export default function AuthModal({ isOpen, onClose, settings, initialMode = 'lo
  </div>
  </div>
 
-  <div className="space-y-3">
-    <button 
-      type="button"
-      onClick={handleGoogleSignIn}
-      disabled={loading}
-      className="w-full py-3.5 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] hover:bg-white/60 dark:hover:bg-slate-800/60 text-gray-700 dark:text-slate-200 rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer"
-    >
-      <Chrome className="w-4 h-4 text-blue-600" />
-      <span>{t('เข้าสู่ระบบด้วย Google', 'Continue with Google')}</span>
-    </button>
-  </div>
+   <div className="space-y-3">
+     <button 
+       type="button"
+       onClick={handleGoogleSignIn}
+       disabled={loading}
+       className="w-full py-3.5 bg-white/40 backdrop-blur-[35px] border border-white/40 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] dark:bg-slate-900/40 dark:border-white/20 dark:shadow-[inset_0_1.5px_0_rgba(255,255,255,0.2)] hover:bg-white/60 dark:hover:bg-slate-800/60 text-gray-700 dark:text-slate-200 rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer"
+     >
+       <Chrome className="w-4 h-4 text-blue-600" />
+       <span>{t('เข้าสู่ระบบด้วย Google', 'Continue with Google')}</span>
+     </button>
+   </div>
+
+   {/* Demo Quick Logins */}
+   <div className="space-y-2 pt-2 border-t border-gray-100/50 dark:border-white/5 mt-4">
+     <div className="text-[10px] text-center text-gray-500 uppercase tracking-widest font-bold">
+       {t('ทดสอบระบบจำลอง (Quick Demo Login)', 'Quick Demo Login')}
+     </div>
+     <div className="grid grid-cols-3 gap-2">
+       <button 
+         type="button"
+         onClick={() => handleQuickDemoLogin('customer')}
+         className="py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10px] font-bold rounded-xl transition-all active:scale-95 cursor-pointer border border-blue-100"
+       >
+         {t('ลูกค้า', 'Customer')}
+       </button>
+       <button 
+         type="button"
+         onClick={() => handleQuickDemoLogin('auditor')}
+         className="py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-750 text-[10px] font-bold rounded-xl transition-all active:scale-95 cursor-pointer border border-indigo-100"
+       >
+         {t('ผู้ตรวจ (Auditor)', 'Auditor')}
+       </button>
+       <button 
+         type="button"
+         onClick={() => handleQuickDemoLogin('admin')}
+         className="py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 text-[10px] font-bold rounded-xl transition-all active:scale-95 cursor-pointer border border-purple-100"
+       >
+         {t('แอดมิน', 'Admin')}
+       </button>
+     </div>
+   </div>
 
  <p className="text-center text-xs text-gray-700 dark:text-slate-400 pt-4">
  {mode === 'login' ? t('ยังไม่มีบัญชี?', "Don't have an account?") : t('มีบัญชีอยู่แล้ว?', 'Already have an account?')}

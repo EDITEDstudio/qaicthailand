@@ -34,37 +34,47 @@ service cloud.firestore {
              data.email is string && data.email.size() <= 256 &&
              (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 100)) &&
              (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() <= 500)) &&
-             (!('role' in data) || (data.role in ['user', 'admin']));
+             (!('role' in data) || (data.role in ['user', 'admin', 'auditor']));
+    }
+
+    function isAuditorOrAdmin() {
+      return isSignedIn() && 
+             (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'auditor');
     }
 
     // users/{userId}
     match /users/{userId} {
-      allow get: if isOwner(userId);
-      // Only the user themselves can create their profile, and they can't set their own role to admin (unless it's the admin email)
+      allow get: if isOwner(userId) || isAuditorOrAdmin();
+      allow list: if isAuditorOrAdmin();
+      // Only the user themselves can create their profile, and they can't set their own role to admin/auditor unless it's their email
       allow create: if isOwner(userId) && 
                       isValidUser(incoming()) && 
                       incoming().uid == userId &&
-                      (incoming().role == 'user' || incoming().email == 'admin@qaic-thailand.com'); // Allow admin registration
+                      (incoming().role == 'user' || incoming().email == 'admin@qaic-thailand.com' || incoming().email == 'auditor@qaic-thailand.com');
       
       allow update: if isOwner(userId) && 
                       isValidUser(incoming()) && 
                       incoming().uid == userId &&
-                      (incoming().role == existing().role || incoming().email == 'admin@qaic-thailand.com') && // Prevent changing own role unless admin email
+                      (incoming().role == existing().role || incoming().email == 'admin@qaic-thailand.com') && 
                       incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL', 'updatedAt']);
     }
 
     match /certificates/{certId} {
-      allow read: if isOwner(resource.data.userId);
+      allow read: if isOwner(resource.data.userId) || isAuditorOrAdmin();
       allow write: if false; // System only
     }
 
     match /audits/{auditId} {
-      allow read: if isOwner(resource.data.userId);
-      allow update: if isOwner(resource.data.userId) && 
-                      incoming().diff(existing()).affectedKeys().hasOnly(['documentUploadedAt', 'updatedAt']);
+      allow read: if isOwner(resource.data.userId) || isAuditorOrAdmin();
+      allow list: if isAuditorOrAdmin();
+      allow update: if (isOwner(resource.data.userId) && 
+                      incoming().diff(existing()).affectedKeys().hasOnly(['documentUploadedAt', 'updatedAt', 'uploadedDocs'])) || 
+                      isAuditorOrAdmin();
       allow create, delete: if false; // System only
     }
 
+    // กฎสิทธิ์คลังบทความให้ความรู้ (บทความอ่านได้ทุกคน / เขียนและแก้ไขได้เฉพาะ Admin เท่านั้น)
     match /articles/{articleId} {
       allow read: if true;
       allow write: if request.auth != null && 

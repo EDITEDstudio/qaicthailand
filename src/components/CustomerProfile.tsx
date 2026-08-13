@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { db, auth } from '../lib/firebase';
-import { collection, query, where, getDocs, doc, setDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { UserSettings } from '../types';
 import { 
  ShieldCheck, 
@@ -79,6 +79,13 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  const [audits, setAudits] = useState<AuditProject[]>([]);
  const [loading, setLoading] = useState(true);
  const [portalTab, setPortalTab] = useState<'dashboard' | 'certificates' | 'tracking' | 'documents' | 'finance'>('dashboard');
+  // Auditor-specific state
+  const [clients, setClients] = useState<any[]>([]);
+  const [allAudits, setAllAudits] = useState<any[]>([]);
+  const [selectedClient, setSelectedClient] = useState<any>(null);
+  const [selectedClientAudit, setSelectedClientAudit] = useState<any>(null);
+  const [auditorComment, setAuditorComment] = useState<{ [key: string]: string }>({});
+  const [previewDoc, setPreviewDoc] = useState<any>(null);
 
  // Simulated Interactive States
  const [confirmedSchedule, setConfirmedSchedule] = useState(false);
@@ -107,115 +114,163 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
 
  const t = <T extends string | string[]>(th: T, en: T): T => settings.lang === 'TH' ? th : en;
 
- useEffect(() => {
- const fetchData = async () => {
- if (!user) {
- setLoading(false);
- return;
- }
+  const handleSelectClient = (client: any) => {
+    setSelectedClient(client);
+    const matchAudit = allAudits.find((a: any) => (a as any).userId === client.uid);
+    setSelectedClientAudit(matchAudit || null);
+    
+    // Reset feedback comments
+    const initialComments: any = {};
+    if (matchAudit && (matchAudit as any).uploadedDocs) {
+      Object.keys((matchAudit as any).uploadedDocs).forEach(key => {
+        initialComments[key] = (matchAudit as any).uploadedDocs[key].feedback || '';
+      });
+    }
+    setAuditorComment(initialComments);
+  };
 
- try {
- // Fetch Certificates
- const certsQuery = query(collection(db, 'certificates'), where('userId', '==', user.uid));
- const certsSnapshot = await getDocs(certsQuery);
- const certsData = certsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Certificate));
- 
- // Fetch Audits
- const auditsQuery = query(collection(db, 'audits'), where('userId', '==', user.uid));
- const auditsSnapshot = await getDocs(auditsQuery);
- const auditsData = auditsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AuditProject));
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
 
- // If no real data, leave them empty
- if (certsData.length === 0 && auditsData.length === 0) {
- setCerts([]);
- setAudits([]);
- setInvoices([]);
- setAssignedAuditor(null);
- setNcFinding(null);
- setDocStatuses({});
- } else {
- setCerts(certsData);
- setCerts(prev => prev.map(c => ({
- ...c,
- companyNameTH: c.companyNameTH || 'บริษัท เพรสซิเดนท์ เบเกอรี่ จำกัด (มหาชน)',
- companyNameEN: c.companyNameEN || 'President Bakery Public Company Limited',
- scopeTH: c.scopeTH || 'การผลิตและจัดจำหน่ายขนมปังและเบเกอรี่ทุกชนิด',
- scopeEN: c.scopeEN || 'Manufacture and distribution of bread and bakery products',
- provinceTH: c.provinceTH || 'กรุงเทพมหานคร',
- provinceEN: c.provinceEN || 'Bangkok',
- country: c.country || 'Thailand',
- category: c.category || c.code.split(':')[0]
- })));
- setAudits(auditsData);
- 
- // If they have audits, we can populate the demo invoices and auditor to show the portal's functionality
- if (auditsData.length > 0) {
- setInvoices([
- {
- id: 'inv-1',
- invoiceNo: 'INV-2024-001',
- descriptionTH: 'ค่าธรรมเนียมสมัครและทบทวนเอกสาร Stage 1',
- descriptionEN: 'ISO 45001 Application & Stage 1 Review Fee',
- amount: 15400,
- dueDate: '2024-01-20',
- status: 'paid',
- paidDate: '2024-01-15'
- },
- {
- id: 'inv-2',
- invoiceNo: 'INV-2024-002',
- descriptionTH: 'ค่าบริการคณะตรวจและรับรอง Stage 2',
- descriptionEN: 'ISO 45001 Stage 2 Audit & Certification Fee',
- amount: 15400,
- dueDate: '2024-03-20',
- status: 'unpaid'
- }
- ]);
- setAssignedAuditor({
- id: 'auditor-1',
- nameTH: 'คุณนิชชาภัทร เนตรทิพย์',
- nameEN: 'Ms. Nitchaphat Netthip',
- roleTH: 'หัวหน้าคณะผู้ตรวจประเมิน',
- roleEN: 'Lead Auditor',
- deptTH: 'แผนกตรวจประเมิน (EAC/ISIC)',
- deptEN: 'Auditing Department (EAC/ISIC)',
- avatar: 'NN',
- bioTH: 'ผู้ตรวจประเมินระบบงานขึ้นทะเบียน EAC/ISIC, ผู้เชี่ยวชาญการประเมินคุณภาพด้าน ISO 9001/14001/45001 ประสบการณ์ตรวจอุตสาหกรรมกว่า 12 ปี',
- bioEN: 'Registered Lead Assessor for EAC/ISIC, specializing in ISO 9001/14001/45001 with 12+ years of industrial audit experience.'
- });
- setNcFinding({
- id: 'nc-1',
- findingTH: 'รายงานบันทึกการตรวจประเมินภายในไม่ครบถ้วน',
- findingEN: 'Internal Audit Record Incomplete',
- commentTH: 'รายงานผลลัพธ์การประชุมทบทวนรายงานการตรวจสอบภายในตามแผนไม่มีหลักฐานอ้างอิงชัดเจน',
- commentEN: 'No clear record of management review inputs mapping from last internal audit.',
- clause: '9.2.2',
- severity: 'Major NC',
- status: 'action_required',
- dueDate: '2024-03-30'
- });
- setDocStatuses({
- qualityManual: 'approved',
- managementReview: 'approved',
- internalAudit: 'pending',
- riskAssessment: 'pending'
- });
- } else {
- setInvoices([]);
- setAssignedAuditor(null);
- setNcFinding(null);
- setDocStatuses({});
- }
- }
- } catch (error) {
- console.error('Error fetching profile data:', error);
- } finally {
- setLoading(false);
- }
- };
+      try {
+        const isAuditingRole = user.role === 'auditor' || user.role === 'admin';
+        
+        if (isAuditingRole) {
+          // Fetch all clients
+          const usersSnapshot = await getDocs(collection(db, 'users'));
+          const usersList = usersSnapshot.docs
+            .map(doc => ({ id: doc.id, ...doc.data() }))
+            .filter((u: any) => u.role !== 'admin' && u.role !== 'auditor'); // only regular customers
+          
+          // Fetch all audits
+          const auditsSnapshot = await getDocs(collection(db, 'audits'));
+          const auditsList = auditsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          
+          setClients(usersList);
+          setAllAudits(auditsList);
+          
+          if (usersList.length > 0) {
+            setSelectedClient(usersList[0]);
+            const matchAudit = auditsList.find((a: any) => (a as any).userId === (usersList[0] as any).uid);
+            setSelectedClientAudit(matchAudit || null);
+            
+            // Populate initial comments
+            const initialComments: any = {};
+            if (matchAudit && (matchAudit as any).uploadedDocs) {
+              Object.keys((matchAudit as any).uploadedDocs).forEach(key => {
+                initialComments[key] = (matchAudit as any).uploadedDocs[key].feedback || '';
+              });
+            }
+            setAuditorComment(initialComments);
+          }
+        } else {
+          // Regular Customer flow
+          // Fetch Certificates
+          const certsQuery = query(collection(db, 'certificates'), where('userId', '==', user.uid));
+          const certsSnapshot = await getDocs(certsQuery);
+          const certsData = certsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Certificate));
+          
+          // Fetch Audits
+          const auditsQuery = query(collection(db, 'audits'), where('userId', '==', user.uid));
+          const auditsSnapshot = await getDocs(auditsQuery);
+          const auditsData = auditsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AuditProject));
 
- fetchData();
- }, [user]);
+          if (certsData.length === 0 && auditsData.length === 0) {
+            setCerts([]);
+            setAudits([]);
+            setInvoices([]);
+            setAssignedAuditor(null);
+            setNcFinding(null);
+            setDocStatuses({});
+          } else {
+            setCerts(certsData);
+            setCerts(prev => prev.map(c => ({
+              ...c,
+              companyNameTH: c.companyNameTH || 'บริษัท เพรสซิเดนท์ เบเกอรี่ จำกัด (มหาชน)',
+              companyNameEN: c.companyNameEN || 'President Bakery Public Company Limited',
+              scopeTH: c.scopeTH || 'การผลิตและจัดจำหน่ายขนมปังและเบเกอรี่ทุกชนิด',
+              scopeEN: c.scopeEN || 'Manufacture and distribution of bread and bakery products',
+              provinceTH: c.provinceTH || 'กรุงเทพมหานคร',
+              provinceEN: c.provinceEN || 'Bangkok',
+              country: c.country || 'Thailand',
+              category: c.category || c.code.split(':')[0]
+            })));
+            setAudits(auditsData);
+            
+            const project = auditsData[0];
+            const initialStatuses: any = {
+              qualityManual: 'pending',
+              managementReview: 'pending',
+              internalAudit: 'pending',
+              riskAssessment: 'pending'
+            };
+            if (project && (project as any).uploadedDocs) {
+              Object.keys((project as any).uploadedDocs).forEach(key => {
+                initialStatuses[key] = (project as any).uploadedDocs[key].status || 'pending';
+              });
+            }
+            setDocStatuses(initialStatuses);
+
+            if (auditsData.length > 0) {
+              setInvoices([
+                {
+                  id: 'inv-1',
+                  invoiceNo: 'INV-2024-001',
+                  descriptionTH: 'ค่าธรรมเนียมสมัครและทบทวนเอกสาร Stage 1',
+                  descriptionEN: 'ISO 45001 Application & Stage 1 Review Fee',
+                  amount: 15400,
+                  dueDate: '2024-01-20',
+                  status: 'paid',
+                  paidDate: '2024-01-15'
+                },
+                {
+                  id: 'inv-2',
+                  invoiceNo: 'INV-2024-002',
+                  descriptionTH: 'ค่าบริการคณะตรวจและรับรอง Stage 2',
+                  descriptionEN: 'ISO 45001 Stage 2 Audit & Certification Fee',
+                  amount: 15400,
+                  dueDate: '2024-03-20',
+                  status: 'unpaid'
+                }
+              ]);
+              setAssignedAuditor({
+                id: 'auditor-1',
+                nameTH: 'คุณนิชชาภัทร เนตรทิพย์',
+                nameEN: 'Ms. Nitchaphat Netthip',
+                roleTH: 'หัวหน้าคณะผู้ตรวจประเมิน',
+                roleEN: 'Lead Auditor',
+                deptTH: 'แผนกตรวจประเมิน (EAC/ISIC)',
+                deptEN: 'Auditing Department (EAC/ISIC)',
+                avatar: 'NN',
+                bioTH: 'ผู้ตรวจประเมินระบบงานขึ้นทะเบียน EAC/ISIC, ผู้เชี่ยวชาญการประเมินคุณภาพด้าน ISO 9001/14001/45001 ประสบการณ์ตรวจอุตสาหกรรมกว่า 12 ปี',
+                bioEN: 'Registered Lead Assessor for EAC/ISIC, specializing in ISO 9001/14001/45001 with 12+ years of industrial audit experience.'
+              });
+              setNcFinding({
+                id: 'nc-1',
+                findingTH: 'รายงานบันทึกการตรวจประเมินภายในไม่ครบถ้วน',
+                findingEN: 'Internal Audit Record Incomplete',
+                commentTH: 'รายงานผลลัพธ์การประชุมทบทวนรายงานการตรวจสอบภายในตามแผนไม่มีหลักฐานอ้างอิงชัดเจน',
+                commentEN: 'No clear record of management review inputs mapping from last internal audit.',
+                clause: '9.2.2',
+                severity: 'Major NC',
+                status: 'action_required',
+                dueDate: '2024-03-30'
+              });
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [user]);
 
  const getStandardLogo = (category: string) => {
  const cat = category?.toUpperCase() || '';
@@ -360,6 +415,440 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  }
  }
  };
+
+  const handleDocumentUploadFile = async (docKey: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user || audits.length === 0) return;
+
+    setDocStatuses(prev => ({ ...prev, [docKey]: 'under_review' }));
+    
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64Str = reader.result as string;
+      const sizeStr = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+      
+      const docPayload = {
+        name: file.name,
+        size: sizeStr,
+        uploadedAt: new Date().toISOString(),
+        status: 'under_review',
+        feedback: '',
+        fileData: file.size < 80000 ? base64Str : 'data:application/pdf;base64,[File content matches metadata, size exceeds 80KB limit for storage. Storing reference only.]'
+      };
+
+      const auditId = audits[0].id;
+      const updatedUploadedDocs = {
+        ...(audits[0] as any).uploadedDocs,
+        [docKey]: docPayload
+      };
+
+      try {
+        await setDoc(doc(db, 'audits', auditId), {
+          uploadedDocs: updatedUploadedDocs
+        }, { merge: true });
+        
+        // Update local state
+        setAudits(prev => prev.map(a => a.id === auditId ? { ...a, uploadedDocs: updatedUploadedDocs } : a));
+      } catch (err) {
+        console.error('Failed to save document:', err);
+        alert(t('เกิดข้อผิดพลาดในการบันทึกเอกสาร', 'Error saving uploaded document.'));
+        setDocStatuses(prev => ({ ...prev, [docKey]: 'pending' }));
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleUpdateDocStatus = async (docKey: string, newStatus: 'approved' | 'action_required') => {
+    if (!selectedClientAudit || !selectedClient) return;
+
+    const feedbackText = auditorComment[docKey] || '';
+    const currentDoc = selectedClientAudit.uploadedDocs[docKey];
+    if (!currentDoc) return;
+
+    const updatedDoc = {
+      ...currentDoc,
+      status: newStatus,
+      feedback: feedbackText
+    };
+
+    const updatedUploadedDocs = {
+      ...selectedClientAudit.uploadedDocs,
+      [docKey]: updatedDoc
+    };
+
+    const auditId = selectedClientAudit.id;
+
+    try {
+      await setDoc(doc(db, 'audits', auditId), {
+        uploadedDocs: updatedUploadedDocs
+      }, { merge: true });
+
+      // Update local state in allAudits
+      setAllAudits(prev => prev.map(a => a.id === auditId ? { ...a, uploadedDocs: updatedUploadedDocs } : a));
+      
+      // Update selectedClientAudit
+      setSelectedClientAudit(prev => prev ? { ...prev, uploadedDocs: updatedUploadedDocs } : null);
+      
+      alert(t('อัปเดตสถานะเอกสารสำเร็จ', 'Document status updated successfully!'));
+    } catch (err) {
+      console.error('Failed to update document status:', err);
+      alert(t('เกิดข้อผิดพลาดในการอัปเดตสถานะ', 'Error updating document status.'));
+    }
+  };
+
+  const renderAuditorWorkspace = () => {
+  const isAuditingRole = user?.role === 'auditor' || user?.role === 'admin';
+  if (isAuditingRole) {
+    return renderAuditorWorkspace();
+  }
+
+    return (
+      <div className="max-w-7xl mx-auto pb-24 px-4 sm:px-6 lg:px-8 space-y-8">
+        {/* Welcome Banner */}
+        <div className="bg-gradient-to-r from-indigo-900 to-slate-900 text-white rounded-[2.5rem] p-8 md:p-10 shadow-xl relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.15),transparent_60%)] pointer-events-none" />
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+            <div className="flex items-center gap-6 text-center md:text-left flex-col md:flex-row">
+              <div className="w-20 h-20 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center overflow-hidden">
+                <Sliders className="w-8 h-8 text-indigo-200" />
+              </div>
+              <div className="space-y-1">
+                <span className="px-3 py-1 bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 rounded-full text-[10px] font-bold uppercase tracking-widest block w-fit mx-auto md:mx-0">
+                  {user.role === 'admin' ? t('สิทธิ์เข้าถึง: ผู้ดูแลระบบ', 'Access: Admin') : t('สิทธิ์เข้าถึง: ผู้ตรวจประเมิน', 'Access: Auditor')}
+                </span>
+                <h2 className="text-3xl font-display font-bold tracking-tight">
+                  {t('ระบบผู้ตรวจประเมินเอกสาร (Auditor Workspace)', 'Auditor Workspace')}
+                </h2>
+                <p className="text-sm text-indigo-200/80">
+                  {t('ตรวจสอบเอกสารระบบงาน (Stage 1 Audit) ของลูกค้าที่ลงทะเบียนในระบบ', 'Inspect and evaluate client Quality Manuals & Stage 1 records.')}
+                </p>
+              </div>
+            </div>
+            {/* Quick stats */}
+            <div className="flex gap-4">
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 px-5 py-3 rounded-2xl text-center">
+                <span className="block text-[10px] text-indigo-300 font-bold uppercase tracking-wider">{t('ลูกค้าทั้งหมด', 'Total Clients')}</span>
+                <span className="text-xl font-display font-bold">{clients.length}</span>
+              </div>
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 px-5 py-3 rounded-2xl text-center">
+                <span className="block text-[10px] text-indigo-300 font-bold uppercase tracking-wider">{t('รอดำเนินการ', 'Awaiting Review')}</span>
+                <span className="text-xl font-display font-bold text-amber-400">
+                  {allAudits.filter((a: any) => a.uploadedDocs && Object.values(a.uploadedDocs).some((d: any) => d.status === 'under_review')).length}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Left panel: Clients List */}
+          <div className="lg:col-span-4 space-y-4">
+            <h3 className="text-sm font-bold text-gray-700 dark:text-slate-400 uppercase tracking-widest pl-2">
+              {t('รายชื่อลูกค้าทั้งหมด', 'Registered Clients')} ({clients.length})
+            </h3>
+            <div className="bg-white/40 backdrop-blur-[35px] border border-gray-200/40 dark:bg-slate-900/40 dark:border-white/10 rounded-3xl p-4 shadow-sm space-y-2 max-h-[600px] overflow-y-auto">
+              {clients.length === 0 ? (
+                <div className="text-center py-12 text-gray-500 italic text-xs">
+                  {t('ไม่พบข้อมูลลูกค้าเข้าระบบ', 'No registered clients found.')}
+                </div>
+              ) : (
+                clients.map(client => {
+                  const clientAudit = allAudits.find((a: any) => a.userId === client.uid);
+                  const isSelected = selectedClient?.uid === client.uid;
+                  
+                  // Calculate upload progress
+                  let uploadedCount = 0;
+                  let hasAwaitingReview = false;
+                  if (clientAudit && clientAudit.uploadedDocs) {
+                    const docs = Object.values(clientAudit.uploadedDocs) as any[];
+                    uploadedCount = docs.length;
+                    hasAwaitingReview = docs.some(d => d.status === 'under_review');
+                  }
+
+                  return (
+                    <button
+                      key={client.uid}
+                      onClick={() => handleSelectClient(client)}
+                      className={`w-full text-left p-4 rounded-2xl border transition-all cursor-pointer relative flex flex-col gap-2 ${
+                        isSelected
+                          ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-600/10'
+                          : 'bg-white/60 dark:bg-slate-950/60 hover:bg-gray-50/80 dark:hover:bg-slate-900/80 border-gray-100 dark:border-white/5 text-gray-900 dark:text-white'
+                      }`}
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="font-bold text-xs truncate max-w-[150px] leading-tight">
+                            {client.displayName || client.email?.split('@')[0]}
+                          </h4>
+                          <span className={`text-[9px] block ${isSelected ? 'text-blue-200' : 'text-gray-500 dark:text-slate-400'}`}>
+                            {client.email}
+                          </span>
+                        </div>
+                        {hasAwaitingReview && (
+                          <span className="animate-pulse px-2 py-0.5 bg-amber-400 text-amber-955 text-[8px] font-bold rounded-full uppercase tracking-wider">
+                            {t('มีเอกสารรอตรวจ', 'Needs Review')}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex justify-between items-center pt-2 border-t border-gray-100/10">
+                        <span className={`text-[9px] font-bold uppercase tracking-wider ${isSelected ? 'text-blue-100' : 'text-blue-600 dark:text-blue-400'}`}>
+                          {clientAudit ? clientAudit.code : 'No Active Audit'}
+                        </span>
+                        <span className={`text-[9px] font-mono font-bold ${isSelected ? 'text-blue-200' : 'text-gray-600'}`}>
+                          {uploadedCount}/4 {t('ไฟล์', 'Files')}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          </div>
+
+          {/* Right panel: Document Inspection Details */}
+          <div className="lg:col-span-8 min-w-0">
+            {selectedClient ? (
+              <div className="bg-white/40 backdrop-blur-[35px] border border-gray-200/40 dark:bg-slate-900/40 dark:border-white/10 rounded-[2.5rem] p-6 md:p-8 shadow-sm space-y-8">
+                {/* Client detail header */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-150/40 pb-6">
+                  <div>
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 block mb-1">
+                      {t('กำลังตรวจประเมินลูกค้า', 'Inspecting Client operational logs')}
+                    </span>
+                    <h3 className="text-xl font-display font-bold text-gray-900 dark:text-white">
+                      {selectedClient.displayName || selectedClient.email?.split('@')[0]}
+                    </h3>
+                    <p className="text-xs text-gray-700 dark:text-slate-400">
+                      {t(`ติดต่อ: ${selectedClient.email}`, `Email: ${selectedClient.email}`)}
+                    </p>
+                  </div>
+                  {selectedClientAudit && (
+                    <span className="px-3.5 py-1.5 bg-blue-550 text-blue-800 text-xs font-bold rounded-xl uppercase tracking-wider border border-blue-100/50">
+                      {selectedClientAudit.code}
+                    </span>
+                  )}
+                </div>
+
+                {/* Checklist table */}
+                {!selectedClientAudit ? (
+                  <div className="text-center py-20 text-gray-500 italic text-xs space-y-2">
+                    <AlertCircle className="w-10 h-10 mx-auto text-gray-400" />
+                    <p>{t('ลูกค้ารายนี้ไม่มีโครงการตรวจประเมินประวัติประเมินผลในระบบ', 'This client does not have any active audit projects.')}</p>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    <h4 className="text-xs font-bold text-gray-650 dark:text-slate-500 uppercase tracking-widest pl-1">
+                      {t('ตรวจสอบเอกสารนำส่ง (Stage 1 Checklist)', 'Documents Submitted for Verification')}
+                    </h4>
+                    
+                    <div className="border border-gray-150/40 rounded-2xl overflow-hidden divide-y divide-gray-150/30">
+                      {[
+                        { key: 'qualityManual', titleTH: 'คู่มือคุณภาพระบบบริหารงาน (Quality Manual)', titleEN: 'System Quality Manual', code: 'QM-01' },
+                        { key: 'managementReview', titleTH: 'รายงานผลการประชุมทบทวนฝ่ายบริหาร (Management Review)', titleEN: 'Management Review minutes', code: 'MR-02' },
+                        { key: 'internalAudit', titleTH: 'รายงานผลการตรวจติดตามระบบภายใน (Internal Audit Report)', titleEN: 'Internal Audit Reports', code: 'IA-03' },
+                        { key: 'riskAssessment', titleTH: 'บันทึกวิเคราะห์และประเมินความเสี่ยงองค์กร (Risk Assessment)', titleEN: 'Risk Register & Assessment Records', code: 'RA-04' }
+                      ].map(docItem => {
+                        const docData = selectedClientAudit.uploadedDocs?.[docItem.key];
+                        return (
+                          <div key={docItem.key} className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-6 text-xs">
+                            <div className="flex items-start gap-4">
+                              <div className="w-9 h-9 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <FileText className="w-5 h-5" />
+                              </div>
+                              <div className="space-y-1">
+                                <span className="text-[9px] font-mono text-gray-500 font-bold block">{docItem.code}</span>
+                                <h5 className="font-bold text-gray-900 dark:text-white leading-tight">{t(docItem.titleTH, docItem.titleEN)}</h5>
+                                
+                                {docData ? (
+                                  <div className="text-[10px] text-gray-600 dark:text-slate-500 space-y-0.5">
+                                    <p className="font-semibold text-gray-800 dark:text-slate-350 truncate max-w-[250px]">
+                                      📄 {docData.name} ({docData.size})
+                                    </p>
+                                    <p>{t('อัปโหลดเมื่อ:', 'Uploaded at:')} {new Date(docData.uploadedAt).toLocaleString()}</p>
+                                    {docData.feedback && (
+                                      <p className="text-red-650 bg-red-50 p-2 rounded-lg border border-red-100 mt-2 font-sans">
+                                        💡 {t('คอมเมนต์เดิม:', 'Previous Comment:')} {docData.feedback}
+                                      </p>
+                                    )}
+                                  </div>
+                                ) : (
+                                  <span className="text-[10px] text-gray-500 italic block">{t('ยังไม่ได้อัปโหลดเอกสาร', 'No document uploaded.')}</span>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Status & Review Controls */}
+                            <div className="flex flex-col sm:flex-row md:items-center gap-4 justify-between md:justify-end">
+                              {docData ? (
+                                <div className="space-y-3">
+                                  {/* Status indicators */}
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-[10px] font-bold text-gray-700">{t('สถานะ:', 'Status:')}</span>
+                                    {docData.status === 'approved' && (
+                                      <span className="px-2.5 py-0.5 bg-emerald-50 text-emerald-700 font-bold rounded-full uppercase tracking-wider flex items-center gap-1">
+                                        <Check className="w-3 h-3" />
+                                        {t('ผ่านการอนุมัติ', 'Approved')}
+                                      </span>
+                                    )}
+                                    {docData.status === 'under_review' && (
+                                      <span className="px-2.5 py-0.5 bg-amber-50 text-amber-800 font-bold rounded-full uppercase tracking-wider flex items-center gap-1">
+                                        <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                                        {t('รอการตรวจสอบ', 'Awaiting Review')}
+                                      </span>
+                                    )}
+                                    {docData.status === 'action_required' && (
+                                      <span className="px-2.5 py-0.5 bg-red-50 text-red-700 font-bold rounded-full uppercase tracking-wider flex items-center gap-1">
+                                        <AlertTriangle className="w-3 h-3 text-red-600" />
+                                        {t('แจ้งกลับเพื่อแก้ไข', 'Action Required')}
+                                      </span>
+                                    )}
+                                  </div>
+
+                                  {/* Action Buttons */}
+                                  <div className="flex items-center gap-2">
+                                    <button
+                                      onClick={() => setPreviewDoc({ ...docData, title: t(docItem.titleTH, docItem.titleEN) })}
+                                      className="px-3 py-1.5 bg-gray-900 hover:bg-gray-800 text-white text-[10px] font-bold rounded-lg transition-all flex items-center gap-1 cursor-pointer"
+                                    >
+                                      <Eye className="w-3 h-3" />
+                                      {t('เปิดอ่านไฟล์', 'Inspect')}
+                                    </button>
+                                    
+                                    {docData.status === 'under_review' && (
+                                      <>
+                                        <button
+                                          onClick={() => handleUpdateDocStatus(docItem.key, 'approved')}
+                                          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold rounded-lg transition-all flex items-center gap-1 cursor-pointer"
+                                        >
+                                          <Check className="w-3 h-3" />
+                                          {t('ผ่าน (Approve)', 'Approve')}
+                                        </button>
+                                        <button
+                                          onClick={() => handleUpdateDocStatus(docItem.key, 'action_required')}
+                                          className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-bold rounded-lg transition-all flex items-center gap-1 cursor-pointer"
+                                        >
+                                          <X className="w-3 h-3" />
+                                          {t('สั่งแก้ (Reject)', 'Reject')}
+                                        </button>
+                                      </>
+                                    )}
+                                  </div>
+
+                                  {/* Auditor feedback input when checking */}
+                                  {docData.status === 'under_review' && (
+                                    <div className="space-y-1">
+                                      <label className="text-[9px] uppercase tracking-wider text-gray-700 block font-bold">{t('เขียนคำชี้แนะ/ข้อแนะนำเพิ่มเติม', 'Add auditor feedback / comment')}</label>
+                                      <input 
+                                        type="text"
+                                        placeholder={t('เช่น ขาดลายเซ็นผู้บริหาร, มีหัวข้อตกหล่น...', 'E.g., Missing executive signature, incomplete clauses...')}
+                                        value={auditorComment[docItem.key] || ''}
+                                        onChange={(e) => setAuditorComment(prev => ({ ...prev, [docItem.key]: e.target.value }))}
+                                        className="w-full p-2 bg-white border border-gray-200 rounded-lg text-[10.5px] focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                              ) : (
+                                <button className="px-4 py-2 bg-gray-50 border border-gray-200 text-gray-600 dark:text-slate-500 rounded-xl cursor-not-allowed font-bold" disabled>
+                                  {t('รอลูกค้าส่งเอกสาร', 'Awaiting Upload')}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="bg-white/40 backdrop-blur-[35px] border border-gray-200/40 dark:bg-slate-900/40 dark:border-white/10 rounded-[2.5rem] p-12 text-center shadow-sm py-28 flex flex-col justify-center items-center gap-4">
+                <Sliders className="w-12 h-12 text-gray-400" />
+                <h3 className="text-base font-bold text-gray-700 dark:text-slate-400">{t('โปรดเลือกรายชื่อลูกค้าเพื่อตรวจสอบหลักฐาน', 'Select a client to inspect documents')}</h3>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Modal: Document Inspector Simulator */}
+        <AnimatePresence>
+          {previewDoc && (
+            <div className="fixed inset-0 z-[120] flex items-center justify-center p-6 bg-gray-900/60 backdrop-blur-md">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="bg-white/95 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 w-full max-w-2xl rounded-[2.5rem] shadow-2xl p-8 overflow-y-auto max-h-[85vh] space-y-6"
+              >
+                <div className="flex justify-between items-start border-b border-gray-100 pb-4">
+                  <div>
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 block">{t('เอกสารตรวจประเมินระบบงาน', 'Accredited Quality File Preview')}</span>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">{previewDoc.title}</h3>
+                  </div>
+                  <button 
+                    onClick={() => setPreviewDoc(null)}
+                    className="p-2 text-gray-650 hover:text-gray-955 dark:hover:text-white hover:bg-gray-100 rounded-full transition-all"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="bg-gray-50 border border-gray-200/50 p-6 rounded-2xl font-mono text-xs text-gray-800 space-y-4 max-h-[400px] overflow-y-auto select-none">
+                  <div className="border-b border-gray-200/80 pb-2 text-[10px] text-gray-500 flex justify-between">
+                    <span>File: {previewDoc.name}</span>
+                    <span>Size: {previewDoc.size}</span>
+                  </div>
+                  
+                  {previewDoc.title.includes('คู่มือ') || previewDoc.title.includes('Manual') ? (
+                    <div className="space-y-4">
+                      <h4 className="font-bold text-gray-900">SECTION 1: QUALITY MANAGEMENT SYSTEM MANUAL (QMS-M01)</h4>
+                      <p>1.1 SCOPE AND EXCLUSIONS</p>
+                      <p className="leading-relaxed">This Quality Manual specifies the requirements for the Quality Management System (QMS) of the organization. All requirements of ISO 9001:2015, ISO 14001:2015, and ISO 45001:2018 are met, and processes are integrated across all operating sites, baking mills, and logistical networks.</p>
+                      <p>1.2 EXECUTIVE COMMITMENT AND STRATEGY</p>
+                      <p className="leading-relaxed">The executive board provides resources, conducts semi-annual quality inspections, and appoints a Management Representative (MR) to maintain QMS independence.</p>
+                    </div>
+                  ) : previewDoc.title.includes('ทบทวน') || previewDoc.title.includes('Review') ? (
+                    <div className="space-y-4">
+                      <h4 className="font-bold text-gray-900">MANAGEMENT REVIEW MEETING MINUTES (MR-2024-01)</h4>
+                      <p>Date: January 12, 2024 | Chairman: Chief Operations Officer (COO)</p>
+                      <p className="leading-relaxed">AGENDA ITEMS DISCUSSED:</p>
+                      <ul className="list-disc list-inside space-y-1 pl-2">
+                        <li>Status of Action Items from previous review campaign (July 2023)</li>
+                        <li>Internal and External Audits finding evaluations (Stage 1 checklists)</li>
+                        <li>Customer feedback metrics and standard corrective requests</li>
+                        <li>Risk register assessment logs and emergency plan effectiveness</li>
+                      </ul>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <h4 className="font-bold text-gray-900">OPERATIONAL SYSTEM INTERNAL AUDIT REPORT (IA-RECORD-V2)</h4>
+                      <p>Audit Period: February 2024 | Auditors: Joint Audit Committee</p>
+                      <p className="leading-relaxed">SUMMARY FINDINGS & EVIDENCE:</p>
+                      <p className="leading-relaxed">A total of 4 departments were audited. In accordance with Auditor Independence clauses, no auditor evaluated their own processes. 2 Minor NCs were raised regarding calibration tags on Baking Oven #3 and were resolved within 48 hours. Risk records were reviewed and marked acceptable.</p>
+                    </div>
+                  )}
+
+                  <div className="border-t border-gray-150/40 pt-4 text-[9px] text-gray-600/80 leading-relaxed italic text-center">
+                    *** End of Document Specimen Preview. Secure encrypted sandbox container. ***
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <button 
+                    onClick={() => setPreviewDoc(null)}
+                    className="flex-1 py-3.5 bg-gray-900 hover:bg-gray-800 text-white text-xs font-bold rounded-xl transition-all shadow-md active:scale-95 text-center cursor-pointer"
+                  >
+                    {t('ปิดหน้าต่างตรวจสอบ', 'Close Inspector')}
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+      </div>
+    );
+  };
 
  const totalBalance = invoices
  .filter(inv => inv.status !== 'paid')
@@ -974,19 +1463,22 @@ export default function CustomerProfile({ settings, user }: CustomerProfileProps
  )}
  </div>
 
- {status === 'pending' || status === 'action_required' ? (
- <button 
- onClick={() => handleDocumentUpload(doc.key)}
- className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white text-[11px] font-bold rounded-xl transition-all flex items-center gap-1 pointer-events-auto shadow-sm"
- >
- <Upload className="w-3.5 h-3.5" />
- <span>{t('อัปโหลดไฟล์', 'Upload')}</span>
- </button>
- ) : (
- <button className="px-4 py-2 bg-gray-50 text-gray-600 dark:text-slate-500 border border-gray-200 text-[11px] font-bold rounded-xl cursor-not-allowed">
- {t('ตรวจสอบแล้ว', 'Completed')}
- </button>
- )}
+                      {status === 'pending' || status === 'action_required' ? (
+                        <label className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white text-[11px] font-bold rounded-xl transition-all flex items-center gap-1 cursor-pointer pointer-events-auto shadow-sm active:scale-95">
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>{t('อัปโหลดไฟล์', 'Upload')}</span>
+                          <input 
+                            type="file" 
+                            className="hidden" 
+                            accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+                            onChange={(e) => handleDocumentUploadFile(doc.key, e)}
+                          />
+                        </label>
+                      ) : (
+                        <button className="px-4 py-2 bg-gray-50 text-gray-600 dark:text-slate-500 border border-gray-200 text-[11px] font-bold rounded-xl cursor-not-allowed" disabled>
+                          {status === 'under_review' ? t('รอตรวจสอบ', 'Under Review') : t('ตรวจสอบแล้ว', 'Completed')}
+                        </button>
+                      )}
  </div>
  </div>
  );
