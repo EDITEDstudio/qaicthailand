@@ -735,7 +735,7 @@ export default function App() {
  {/* Tab Content */}
  <div className="p-4 md:p-8 pt-3 md:pt-4">
    <AnimatePresence mode="wait">
-    <Routes location={location} key={location.pathname}>
+     <Routes {...{ location, key: location.pathname } as any}>
       <Route path="/" element={<Navigate to="/home" replace />} />
       <Route path="/home" element={
         <motion.div 
